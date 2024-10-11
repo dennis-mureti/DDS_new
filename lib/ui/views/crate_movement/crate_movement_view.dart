@@ -189,7 +189,8 @@ class CrateMovementView extends StatelessWidget {
                         model.crateList.isEmpty
                             ? Expanded(
                                 child: Center(
-                                  child: EmptyContentContainer(label: 's.'),
+                                  child: EmptyContentContainer(
+                                      label: 'There are no crates.'),
                                 ),
                               )
                             : Expanded(
@@ -234,7 +235,7 @@ class CrateMovementView extends StatelessWidget {
                                                     model.disableTextFormField
                                                         ? crate.quantity
                                                             .toStringAsFixed(0)
-                                                        : crate.quantity
+                                                        : crate.initialQuantity
                                                             .toStringAsFixed(0),
                                                 enabled:
                                                     model.disableTextFormField,

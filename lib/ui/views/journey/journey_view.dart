@@ -1,6 +1,6 @@
 import 'package:distributor/conf/style/lib/text_styles.dart';
 import 'package:distributor/ui/shared/brand_colors.dart';
-// import 'package:distributor/ui/shared/text_styles.dart';
+import 'package:distributor/ui/shared/text_styles.dart';
 import 'package:distributor/ui/views/journey/journey_view_viewmodel.dart';
 import 'package:distributor/ui/widgets/reactive/journey_console/journey_console.dart';
 import 'package:distributor/ui/widgets/smart_widgets/control/select_control/select_control_widget.dart';
@@ -18,7 +18,7 @@ class JourneyView extends StatelessWidget {
     return ViewModelBuilder<JourneyViewModel>.reactive(
         builder: (context, model, child) => Scaffold(
               appBar: AppBar(
-                title: const Text('Today\'s Journeys'),
+                title: Text('Today\'s Journeys'),
               ),
               body: Column(
                 children: [
@@ -93,14 +93,16 @@ class DeliveryJourneyExpansionPanel
                             style: kTileSubtitleTextStyle,
                             textAlign: TextAlign.right,
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(
+                            width: 8,
+                          ),
                           // deliveryJourney.dependentRoutes.isNotEmpty
                           //     ? Text('M')
                           //     : Text(deliveryJourney.dependentRoutes.length
                           //         .toString()),
                           model.selectedJourney.journeyId ==
                                   deliveryJourney.journeyId
-                              ? const Icon(Icons.star)
+                              ? Icon(Icons.star)
                               : Container(
                                   width: 0,
                                 )

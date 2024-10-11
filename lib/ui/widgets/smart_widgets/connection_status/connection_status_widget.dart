@@ -14,7 +14,7 @@ class ConnectionStatusWidget extends StatelessWidget {
       return b.Badge(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Icon(Icons.signal_wifi_off),
+          child: Icon(Icons.signal_wifi_connected_no_internet_4),
         ),
         badgeColor: Colors.yellow,
       );

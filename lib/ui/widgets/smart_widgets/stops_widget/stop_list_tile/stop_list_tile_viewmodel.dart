@@ -1,6 +1,7 @@
 import 'package:distributor/app/locator.dart';
 import 'package:distributor/app/router.gr.dart';
 import 'package:distributor/services/api_service.dart';
+import 'package:distributor/services/init_service.dart';
 import 'package:distributor/services/journey_service.dart';
 import 'package:distributor/services/location_repository.dart';
 import 'package:distributor/services/user_service.dart';
@@ -12,6 +13,11 @@ import 'package:tripletriocore/tripletriocore.dart';
 /// This class extends the [FutureViewModel] to enable it to fetch the [SalesOrder] corresponding to the sa
 class StopListTileViewModel extends BaseViewModel {
   ApiService _apiService = locator<ApiService>();
+  final _initService = locator<InitService>();
+
+  bool get enableDeliveryStatus => _initService
+      .appEnv.flavorValues.applicationParameter.enableDeliveryStatus;
+
   NavigationService _navigationService = locator<NavigationService>();
   DialogService _dialogService = locator<DialogService>();
   final _locationService = locator<LocationRepository>();
@@ -83,7 +89,6 @@ class StopListTileViewModel extends BaseViewModel {
     await _navigationService.navigateTo(Routes.deliveryNoteView,
         arguments: DeliveryNoteViewArguments(
             deliveryJourney: deliveryJourney, deliveryStop: deliveryStop));
-
     await getDeliveryNote();
     notifyListeners();
     return;

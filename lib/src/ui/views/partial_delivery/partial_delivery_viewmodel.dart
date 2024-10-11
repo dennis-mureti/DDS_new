@@ -47,7 +47,7 @@ class PartialDeliveryViewModel extends BaseViewModel {
 
   init() async {
     await fetchReasons();
-    await getUserLocation();
+    // await getUserLocation();
   }
 
   List _reasons = [];

@@ -79,7 +79,6 @@ class CustomDeliveryViewModel extends BaseViewModel {
       } else {
         await _dialogService.showDialog(
             title: '', description: 'Delivery updated successfully.');
-
         _navigationService.back(result: true);
       }
     }

@@ -19,8 +19,7 @@ class SyncWidget extends StatelessWidget {
                       LinearProgressIndicator(
                         minHeight: 5,
                         // color: kColorDDSPrimaryDark,
-                        // color: Colors.white,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        color: Colors.white,
                         backgroundColor: kColorDDSPrimaryDark,
                       )
                     ],

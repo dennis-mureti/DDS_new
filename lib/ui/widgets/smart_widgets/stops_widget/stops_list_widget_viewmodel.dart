@@ -24,39 +24,8 @@ class StopsListWidgetViewModel extends BaseViewModel {
       : _journeyId = journeyId,
         assert(journeyId != null);
 
-  // Future<void> getJourneyDetails() async {
-  //   try {
-  //     // Set the loading state to true (show the progress indicator)
-  //     setBusy(true);
-
-  //     // Make the API call to fetch journey details
-  //     var result = await _apiService.api.getJourneyDetails(
-  //         token: _userService.user.token, journeyId: _journeyId);
-
-  //     // Handle the result
-  //     if (result is DeliveryJourney) {
-  //       _deliveryJourney = result;
-  //       // Notify listeners to update the UI after data is fetched
-  //       notifyListeners();
-  //     } else if (result is CustomException) {
-  //       // Show error dialog if the result is an exception
-  //       await _dialogService.showDialog(
-  //           title: result.title, description: result.description);
-  //     }
-  //   } catch (e) {
-  //     // Handle any unexpected errors (e.g., network issues)
-  //     await _dialogService.showDialog(
-  //         title: 'Error', description: 'Failed to fetch journey details');
-  //   } finally {
-  //     // Always set the loading state to false (hide the progress indicator)
-  //     setBusy(false);
-  //   }
-  // }
-
   getJourneyDetails() async {
     setBusy(true);
-    // Simulate API call to fetch journey details
-    await Future.delayed(const Duration(seconds: 1));
     var result = await _apiService.api.getJourneyDetails(
         token: _userService.user.token, journeyId: _journeyId);
     setBusy(false);
@@ -88,14 +57,6 @@ class StopsListWidgetViewModel extends BaseViewModel {
   }
 
   void navigateToTechnicalStop(DeliveryStop deliveryStop) async {
-    // Set loading state before navigation
-    setBusy(true);
-
-    // Simulate navigation and data fetching
-    await Future.delayed(const Duration(seconds: 2));
-
-    // Set loading state to false after data is fetched
-    setBusy(false);
     await _navigationService.navigateTo(Routes.stockCollectionView,
         arguments: StockCollectionViewArguments(deliveryStop: deliveryStop));
     await getJourneyDetails();

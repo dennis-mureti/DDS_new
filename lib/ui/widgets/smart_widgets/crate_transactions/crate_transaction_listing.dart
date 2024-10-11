@@ -49,11 +49,13 @@ class CrateTransactionListingView extends StatelessWidget {
                                 children: [
                                   isSynced
                                       ? Container()
-                                      : const Icon(
+                                      : Icon(
                                           Icons.timer_sharp,
                                           size: 12,
                                         ),
-                                  const SizedBox(width: 5),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
                                   Expanded(
                                     child: Text(
                                       crateTxn['itemName'],
@@ -71,13 +73,13 @@ class CrateTransactionListingView extends StatelessWidget {
                         ),
                         onRefresh: () => model.getCrateTransactions())
                     : Container(
-                        child: const Center(
+                        child: Center(
                           child: EmptyContentContainer(
                               label: kStringNoCrateTransactions),
                         ),
                       )
             : Container(
-                child: const Center(
+                child: Center(
                   child:
                       EmptyContentContainer(label: kStringNoCrateTransactions),
                 ),

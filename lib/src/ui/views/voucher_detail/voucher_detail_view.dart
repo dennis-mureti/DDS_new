@@ -39,39 +39,39 @@ class VoucherDetailView extends StatelessWidget {
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                          !model.displayUserTransactionDropdown
-                              ? Container()
-                              : Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: DropdownButton(
-                                          dropdownColor: Colors.white,
-                                          disabledHint:
-                                              Text('Operation not possible'),
-                                          isExpanded: true,
-                                          value: model.status,
-                                          onChanged: model.disableDropdown
-                                              ? null
-                                              : (String val) {
-                                                  model.setStatus(val);
-                                                },
-                                          hint: Text(
-                                              'Accept or Cancel this transaction'),
-                                          items: model.statusStrings
-                                              .map(
-                                                (e) => DropdownMenuItem(
-                                                  child: _buildDropDownIcon(e),
-                                                  value: e,
-                                                ),
-                                              )
-                                              .toList(),
-                                        ),
-                                      ),
-                                    ],
+                          // !model.displayUserTransactionDropdown
+                          //     ? Container()
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: DropdownButton(
+                                    dropdownColor: Colors.white,
+                                    disabledHint:
+                                        Text('Operation not possible'),
+                                    isExpanded: true,
+                                    value: model.status,
+                                    onChanged: model.disableDropdown
+                                        ? null
+                                        : (String val) {
+                                            model.setStatus(val);
+                                          },
+                                    hint: Text(
+                                        'Accept or Cancel this transaction'),
+                                    items: model.statusStrings
+                                        .map(
+                                          (e) => DropdownMenuItem(
+                                            child: _buildDropDownIcon(e),
+                                            value: e,
+                                          ),
+                                        )
+                                        .toList(),
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
                           Container(
                             width: double.infinity,
                             child: Material(

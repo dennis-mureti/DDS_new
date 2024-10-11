@@ -43,7 +43,7 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
 
   @override
   initState() {
-    _tabController = TabController(length: 4, initialIndex: 0, vsync: this);
+    _tabController = TabController(length: 3, initialIndex: 0, vsync: this);
     super.initState();
   }
 
@@ -62,20 +62,19 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
                 }
               : null,
         );
+        break;
+        // case 2:
+        //   toDisplay = IconButton(
+        //     icon: Icon(Icons.add_circle_outline_sharp),
+        //     onPressed: model.enableAddPayment
+        //         ? () {
+        //             model.navigateTOAddPayment();
+        //           }
+        //         : null,
+        //   );
 
         break;
       case 2:
-        toDisplay = IconButton(
-          icon: Icon(Icons.add_circle_outline_sharp),
-          onPressed: model.enableAddPayment
-              ? () {
-                  model.navigateTOAddPayment();
-                }
-              : null,
-        );
-
-        break;
-      case 3:
         toDisplay = IconButton(
           icon: Icon(Icons.add_circle_outline_sharp),
           onPressed: model.enableAddIssue
@@ -105,7 +104,8 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
         appBar: AppBar(
           actionsIconTheme: IconThemeData(color: Colors.white),
           title: Text(
-            '${widget.customer.name}',style: kAppBarTextStyle,
+            '${widget.customer.name}',
+            style: kAppBarTextStyle,
           ),
           automaticallyImplyLeading: true,
 //          leading: IconButton(
@@ -208,14 +208,14 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
                   updateCurrentIndex(int);
                 }
               }
+              // if (int == 2) {
+              //   // Does the user have authority to check accounts
+              //   if (model.enableAccountsTab) {
+              //     result = true;
+              //     updateCurrentIndex(int);
+              //   }
+              // }
               if (int == 2) {
-                // Does the user have authority to check accounts
-                if (model.enableAccountsTab) {
-                  result = true;
-                  updateCurrentIndex(int);
-                }
-              }
-              if (int == 3) {
                 result = true;
                 updateCurrentIndex(int);
               }
@@ -231,9 +231,9 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
               Tab(
                 text: 'Orders',
               ),
-              Tab(
-                text: 'Account',
-              ),
+              // Tab(
+              //   text: 'Account',
+              // ),
               Tab(
                 text: 'Issues',
               ),
@@ -248,11 +248,11 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
             children: <Widget>[
               ContactsTabView(customer: widget.customer),
               OrderHistoryTab(customer: widget.customer),
-              model.enableAccountsTab
-                  ? AccountsTab(
-                      customer: widget.customer,
-                    )
-                  : Container(),
+              // model.enableAccountsTab
+              //     ? AccountsTab(
+              //         customer: widget.customer,
+              //       )
+              //     : Container(),
               model.enableIssuesTab
                   ? NotificationsTab(
                       customer: widget.customer,

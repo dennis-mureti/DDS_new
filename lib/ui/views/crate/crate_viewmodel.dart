@@ -43,7 +43,7 @@ class CrateViewModel extends BaseViewModel {
 
   init() async {
     if (hasSelectedJourney) {
-      await _api.pushOfflineTransactionsOnViewRefresh(user.token);
+      // await _api.pushOfflineTransactionsOnViewRefresh(user.token);
       await _getCrates();
       await _getCrateListing();
     }

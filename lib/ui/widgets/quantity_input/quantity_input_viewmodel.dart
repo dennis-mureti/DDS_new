@@ -27,6 +27,7 @@ class QuantityInputViewModel extends BaseViewModel {
 
   updateQuantity(String val) {
     var input = validateInput(val);
+
     if (input == null) return;
     _setMaxQuantityStatus(quantity);
     _setMinQuantityStatus(quantity);
@@ -39,7 +40,7 @@ class QuantityInputViewModel extends BaseViewModel {
     if (result == null) {
       _displayError = true;
       errorMsg = "Invalid input. Allowed range is $minQuantity to $maxQuantity";
-      notifyListeners();
+      // notifyListeners();
     } else {
       _quantity = result;
       _displayError = false;

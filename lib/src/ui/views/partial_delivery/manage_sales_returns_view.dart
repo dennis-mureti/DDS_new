@@ -1,3 +1,4 @@
+import 'package:distributor/conf/dds_brand_guide.dart';
 import 'package:distributor/src/ui/views/partial_delivery/manage_sales_return_viewmodel.dart';
 import 'package:distributor/ui/widgets/dumb_widgets/generic_container.dart';
 import 'package:flutter/material.dart';
@@ -72,10 +73,14 @@ class _ManageSalesReturnsViewState extends State<ManageSalesReturnsView> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
-                    onPressed: model.salesReturns.isEmpty
-                        ? null
-                        : () => model.confirmSalesReturnForSKU(),
-                    child: Text('Submit Sales Returns')),
+                  onPressed: model.salesReturns.isEmpty
+                      ? null
+                      : () => model.confirmSalesReturnForSKU(),
+                  child: const Text('Submit Sales Returns'),
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(kColDDSPrimaryDark)),
+                ),
               )
             ],
           ),

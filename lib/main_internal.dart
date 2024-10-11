@@ -7,7 +7,7 @@ import 'package:distributor/ui/setup_snackbar_ui.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tripletriocore/tripletriocore.dart';  
+import 'package:tripletriocore/tripletriocore.dart';
 
 import 'firebase_options.dart';
 
@@ -34,9 +34,7 @@ void main() async {
       flavor: Flavor.internal,
       name: 'Encours',
       flavorValues: FlavorValues(
-          // baseUrl: 'https://testdds.ddsolutions.tech/spvdev-backend/api/v1',
-           baseUrl: 'https://testdds.ddsolutions.tech/saas-backend/api/v1',
-          // baseUrl: 'https://demo.ddsolutions.tech/dds-backend/api/v1',
+          baseUrl: 'https://testdds.ddsolutions.tech/spvdev-backend/api/v1',
           applicationParameter: nairobiAppEnv),
     ),
     AppEnv(
@@ -74,6 +72,7 @@ void main() async {
               returnEmptyStock: false,
               returnEmptyCrates: false,
               enableOfflineService: false,
+              enableReceivedReturns: true,
               enableFullDelivery: false,
               enforceCreditLimit: false,
               enableCustomDelivery: true,
@@ -97,9 +96,7 @@ void main() async {
       flavor: Flavor.internal,
       name: 'Demo',
       flavorValues:
-          FlavorValues(
-            baseUrl: 'http://63.34.178.251:8888/dds-backend/api/v1'
-            ),
+          FlavorValues(baseUrl: 'http://63.34.178.251:8888/dds-backend/api/v1'),
     ),
   ];
   _initService.setAvailableEnvList(_appEnv);

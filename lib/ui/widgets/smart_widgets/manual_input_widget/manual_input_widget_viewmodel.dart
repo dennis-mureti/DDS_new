@@ -27,13 +27,12 @@ class ManualInputWidgetViewModel extends BaseViewModel {
     // });
   }
 
-  ManualInputWidgetViewModel({
-    // @required int initialQuantity,
-    @required this.product,
-    bool isAdhocSale,
-    num maxQuantity,
-    num initialQuantity,
-  })  : _isAdhocSale = isAdhocSale ?? false,
+  ManualInputWidgetViewModel(
+      {@required int initialQuantity,
+      @required this.product,
+      bool isAdhocSale,
+      num maxQuantity})
+      : _isAdhocSale = isAdhocSale ?? false,
         _initialQuantity = initialQuantity,
         _maxQuantity = maxQuantity != null ? maxQuantity.toInt() : null,
         assert(product != null);

@@ -8,7 +8,7 @@ class JourneyListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<JourneyViewModel>.reactive(
         builder: (context, model, child) => model.isBusy
-            ? const CircularProgressIndicator()
+            ? CircularProgressIndicator()
             : Expanded(
                 child: ListView.builder(
                   itemCount: model.userJourneyList.length,

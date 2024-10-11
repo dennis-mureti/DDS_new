@@ -56,7 +56,7 @@ class SyncService with ReactiveServiceMixin {
     setBusy(false);
   }
 
-  syncCustomerData({ String customerId}) async {
+  syncCustomerData({String customerId}) async {
     setBusy(true);
     // Get orders
     // Get accounts

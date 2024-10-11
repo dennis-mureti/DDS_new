@@ -278,4 +278,10 @@ class JourneyService with ReactiveServiceMixin {
     // print(result.toString());
     return;
   }
+
+  receivedReturns(String orderId, String stopId, String deliveryLocation,
+      {DeliveryNote deliveryNote}) async {
+    return await _api.receivedReturns(
+        token: _user.token, deliveryNoteID: deliveryNote.deliveryNoteId);
+  }
 }

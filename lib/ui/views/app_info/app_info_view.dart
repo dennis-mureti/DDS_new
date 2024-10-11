@@ -31,7 +31,7 @@ class AppInfoView extends StatelessWidget {
                           ),
                           Text(
                               'DDS Version : ${model.appVersion?.versionCode}'),
-                          Divider(),
+                          const Divider(),
                           Text(
                               'Android Version : ${model.androidDeviceInfo.version.release}'),
                           Text('Product : ${model.androidDeviceInfo.product}'),
@@ -39,7 +39,8 @@ class AppInfoView extends StatelessWidget {
                           Text(
                               'Manufacturer : ${model.androidDeviceInfo.manufacturer}'),
                           Text('Device : ${model.androidDeviceInfo.device}'),
-                          Text('Device Id : ${model.androidDeviceInfo.id}'),
+                          Text(
+                              'Device Id : ${model.androidDeviceInfo.androidId}'),
                         ],
                       ),
                     ),

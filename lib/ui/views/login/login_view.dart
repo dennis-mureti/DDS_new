@@ -54,19 +54,20 @@ class _LoginViewState extends State<LoginView> {
         extendBodyBehindAppBar: true,
         body: Container(
           decoration: const BoxDecoration(
-              // image: DecorationImage(
-              //     image: AssetImage('assets/images/login_bg.jpg'),
-              //     fit: BoxFit.cover),
-              color: kColDDSPrimaryDark
-              // gradient: LinearGradient(
-              //   begin: Alignment.topCenter,
-              //   end: Alignment.bottomCenter,
-              //   colors: [
-              //     kDarkNeutral,
-              //     kDarkNeutral20,
-              //   ],
-              // ),
-              ),
+            // image: DecorationImage(
+            //     opacity: 0.1,
+            //     image: AssetImage('assets/images/background.jpg'),
+            //     fit: BoxFit.fitHeight),
+            color: kColDDSPrimaryDark,
+            // gradient: LinearGradient(
+            //   begin: Alignment.topRight,
+            //   end: Alignment.bottomLeft,
+            //   colors: [
+            //     kColDDSPrimaryDark.withOpacity(0.8),
+            //     kColDDSPrimaryDark,
+            //   ],
+            // ),
+          ),
           height: MediaQuery.of(context).size.height,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -104,25 +105,21 @@ class _LoginViewState extends State<LoginView> {
                           // ),
                           Container(
                             child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              // child: Image.asset(
-                              //     'assets/images/dds.png'),
+                              padding: const EdgeInsets.all(8.0),
                               child: Image.network(
                                 'https://dds-apk-s3.s3.eu-west-1.amazonaws.com/DDS-Demo/DDS-LOGO-Inline.png',
                                 fit: BoxFit.contain,
                               ),
                             ),
-                            // width: double.infinity,
-                            // height: 100,
+                            // width: 150,
+                            // height: 80,
                           ),
                           // Image.asset('asset/images/login.png'),
 
                           // LoginTextField(
                           //   text: 'DDS Sign In',
                           // ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           TextFormFieldPadding(
                             child: TextFormField(
                               controller: _userIdController,
@@ -141,8 +138,8 @@ class _LoginViewState extends State<LoginView> {
                                 }
                                 return null;
                               },
-                              keyboardType: TextInputType.text,
-                              decoration: InputDecoration(
+                              keyboardType: TextInputType.phone,
+                              decoration: const InputDecoration(
                                 filled: false,
                                 hintText: 'Email Address / Phone ',
                                 hintStyle: kFormHintTextStyle,
@@ -153,9 +150,7 @@ class _LoginViewState extends State<LoginView> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           TextFormFieldPadding(
                             child: TextFormField(
                               validator: (value) {
@@ -227,32 +222,10 @@ class _LoginViewState extends State<LoginView> {
                               : FormErrorContainer(
                                   errorMsg: model.passwordValidationMessage,
                                 ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Padding(
-                              //   padding:
-                              //       const EdgeInsets.only(left: 8.0, top: 5),
-                              //   child: RememberMeCheckbox(),
-                              // ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 8.0, top: 10),
-                                child: TextButton(
-                                    onPressed: model.navigateToForgotPassword,
-                                    child: const Text(
-                                      'Reset Password',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          decoration: TextDecoration.underline),
-                                    )),
-                              )
-                            ],
-                          ),
-                          UIHelper.verticalSpace(10),
+
+                          UIHelper.verticalSpace(18),
                           model.isBusy
-                              ? BusyWidget()
+                              ? const BusyWidget()
                               : ElevatedButton(
                                   // padding: EdgeInsets.symmetric(
                                   //     horizontal: 20, vertical: 14),
@@ -263,7 +236,7 @@ class _LoginViewState extends State<LoginView> {
                                     child: Center(
                                       child: Text(
                                         'Sign in'.toUpperCase(),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontFamily: 'NerisBlack',
                                           color: Colors.white,
                                         ),
@@ -289,6 +262,57 @@ class _LoginViewState extends State<LoginView> {
                                           MaterialStateProperty.all(
                                               kColDDSPrimaryDark)),
                                 ),
+                          // UIHelper.verticalSpace(10),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.end,
+                          //   children: [
+                          //     Padding(
+                          //       padding: const EdgeInsets.only(right: 8.0),
+                          //       child: TextButton(
+                          //         onPressed: model.navigateToForgotPassword,
+                          //         child: const Text(
+                          //           'Forgot Password',
+                          //           style: TextStyle(
+                          //               fontSize: 14,
+                          //               fontWeight: FontWeight.w400,
+                          //               decoration: TextDecoration.underline),
+                          //         ),
+                          //       ),
+                          //     )
+                          //   ],
+                          // ),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: TextButton(
+                                  onPressed: model.navigateToForgotPassword,
+                                  child: const Text(
+                                    'Forgot Password',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        decoration: TextDecoration.underline),
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: TextButton(
+                                  // onPressed: () {},
+                                  onPressed: model.navigateToRegister,
+                                  child: const Text(
+                                    'Create Account',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        decoration: TextDecoration.underline),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -325,12 +349,12 @@ class _LoginViewState extends State<LoginView> {
     return SizedBox(
       width: 400,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 14.0),
           child: child,
         ),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             boxShadow: [
               // BoxShadow(
               //     color: kDarkNeutral20,
@@ -351,7 +375,7 @@ class _LoginViewState extends State<LoginView> {
       children: [
         Expanded(
           child: DropdownButton(
-            dropdownColor: Color(0xFF022065),
+            dropdownColor: const Color(0xFF022065),
             isExpanded: true,
             onChanged: (AppEnv val) {
               model.updateEnv(val);
@@ -361,7 +385,7 @@ class _LoginViewState extends State<LoginView> {
                 .map((e) => DropdownMenuItem(
                       child: Text(
                         e.name,
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                       value: e,
                     ))

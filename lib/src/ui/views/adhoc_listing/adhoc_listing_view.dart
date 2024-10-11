@@ -24,6 +24,6 @@ class AdhocListingView extends HookViewModelWidget<HomeViewModel> {
                 },
                 itemCount: model.adhocSalesList.length,
               )
-            : Center(child: EmptyContentContainer(label: kStringNoSales));
+            : Center(child: EmptyContentContainer(label: ""));
   }
 }

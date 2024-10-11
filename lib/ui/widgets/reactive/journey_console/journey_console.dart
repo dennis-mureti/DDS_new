@@ -19,7 +19,7 @@ class JourneyConsole extends StatelessWidget {
                     Container(
                       width: double.infinity,
                       height: 70,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         gradient: LinearGradient(
                           stops: [0, 0.9],
                           begin: Alignment.bottomCenter,
@@ -173,16 +173,16 @@ class JourneyConsole extends StatelessWidget {
                                                 Navigator.pop(context);
                                               },
                                             ),
-                                            ListTile(
-                                              leading: Icon(Icons.ad_units),
-                                              title: Text(
-                                                  'Return Stock To Branch'),
-                                              onTap: () async {
-                                                await model
-                                                    .navigateToStockView();
-                                                Navigator.pop(context);
-                                              },
-                                            ),
+                                            // ListTile(
+                                            //   leading: Icon(Icons.ad_units),
+                                            //   title: Text(
+                                            //       'Return Stock To Branch'),
+                                            //   onTap: () async {
+                                            //     await model
+                                            //         .navigateToStockView();
+                                            //     Navigator.pop(context);
+                                            //   },
+                                            // ),
                                             // ListTile(
                                             //   leading: Icon(Icons.location_on),
                                             //   title: Text('Show Journey Map'),

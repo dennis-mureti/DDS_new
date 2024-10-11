@@ -2,7 +2,6 @@ import 'package:distributor/conf/style/lib/colors.dart';
 import 'package:distributor/conf/style/lib/text_styles.dart';
 import 'package:distributor/ui/views/crate/crate_view.dart';
 import 'package:distributor/ui/views/stock/stock_viewmodel.dart';
-import 'package:distributor/ui/widgets/dumb_widgets/flat_button_widget.dart';
 import 'package:distributor/ui/widgets/smart_widgets/crate_transactions/crate_transaction_listing.dart';
 import 'package:distributor/ui/widgets/smart_widgets/crew_order_history/crew_history_view.dart';
 import 'package:distributor/ui/widgets/smart_widgets/info_bar_controller/info_bar_controller_view.dart';
@@ -27,44 +26,44 @@ class StockView extends StatelessWidget {
                       ? Expanded(
                           child: Column(
                             children: [
-                              Container(
-                                height: 50,
-                                margin: EdgeInsets.only(bottom: 5),
-                                child: Material(
-                                  elevation: 1,
-                                  child: ButtonBar(
-                                    alignment: MainAxisAlignment.spaceEvenly,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      if (model
-                                          .renderPendingStockTransactionsButton)
-                                        FlatButtonWidget(
-                                          onTap: () async {
-                                            await model
-                                                .navigateToPendingTransactionsView();
-                                            model.setRebuildTree(true);
-                                            model.notifyListeners();
-                                          },
-                                          label: 'Pending Transactions',
-                                        ),
-                                      FlatButtonWidget(
-                                          label: 'Return Stock',
-                                          onTap: () async {
-                                            await model
-                                                .navigateToReturnStockView();
-                                            model.notifyListeners();
-                                          }),
-                                      // FlatButtonWidget(
-                                      //     label: 'Return Crates',
-                                      //     onTap: () async {
-                                      //       await model
-                                      //           .navigateToReturnCrateView();
-                                      //       model.notifyListeners();
-                                      //     })
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              // Container(
+                              //   height: 50,
+                              //   margin: EdgeInsets.only(bottom: 5),
+                              //   child: Material(
+                              //     elevation: 1,
+                              //     child: ButtonBar(
+                              //       alignment: MainAxisAlignment.spaceEvenly,
+                              //       mainAxisSize: MainAxisSize.max,
+                              //       children: [
+                              //         if (model
+                              //             .renderPendingStockTransactionsButton)
+                              //           FlatButtonWidget(
+                              //             onTap: () async {
+                              //               await model
+                              //                   .navigateToPendingTransactionsView();
+                              //               model.setRebuildTree(true);
+                              //               model.notifyListeners();
+                              //             },
+                              //             label: 'Pending Transactions',
+                              //           ),
+                              //         FlatButtonWidget(
+                              //             label: 'Return Stock',
+                              //             onTap: () async {
+                              //               await model
+                              //                   .navigateToReturnStockView();
+                              //               model.notifyListeners();
+                              //             }),
+                              //         // FlatButtonWidget(
+                              //         //     label: 'Return Crates',
+                              //         //     onTap: () async {
+                              //         //       await model
+                              //         //           .navigateToReturnCrateView();
+                              //         //       model.notifyListeners();
+                              //         //     })
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
                               Expanded(
                                 child: StockControllerWidget(
                                   rebuildWidgetTree: model.rebuildTree,

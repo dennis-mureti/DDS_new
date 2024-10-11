@@ -39,13 +39,13 @@ class LoginViewModel extends BaseViewModel {
 
   List<AppEnv> get environments => _initService.availableEnvList;
 
-  // List<String> get languages => <String>[
-  //       'English',
-  //       'Swahili',
-  //     ];
+  List<String> get languages => <String>[
+        'English',
+        'Swahili',
+      ];
 
   String _language;
-  // String get language => _language ?? languages.first;
+  String get language => _language ?? languages.first;
   setLanguage(String val) {
     _language = val;
     notifyListeners();
@@ -122,6 +122,7 @@ class LoginViewModel extends BaseViewModel {
       _appVersion = value;
       _versionCode = _appVersion.versionCode.toString();
       // await checkForUpdates();
+      // Future.delayed(Duration(seconds: 5), await checkForUpdates());
     });
     setBusy(false);
     notifyListeners();
@@ -152,12 +153,12 @@ class LoginViewModel extends BaseViewModel {
               'You are currently using ${appVersion.versionCode}. The latest version is ${remoteVersion.versionCode}',
           confirmationTitle: 'Update');
       if (dialogResponse.confirmed) {
-        snackBarService.showSnackbar(message: 'Download started');
+        // snackBarService.showSnackbar(message: 'Download started', title: 'Download started');
         await _versionService.downloadAndUpdate(
             remoteVersion.remoteUrl, remoteVersion.versionCode);
-        snackBarService.showSnackbar(
-            message: 'Download Completed',
-            onTap: (_) => _versionService.openFile());
+        // snackBarService.showSnackbar(
+        //     message: 'Download Completed',
+        //     onTap: (_) => _versionService.openFile());
       }
     }
   }
@@ -276,6 +277,10 @@ class LoginViewModel extends BaseViewModel {
 
   void navigateToForgotPassword() async {
     await _navigationService.navigateTo(Routes.resetPasswordView);
+  }
+
+  void navigateToRegister() async {
+    await _navigationService.navigateTo(Routes.registerView);
   }
 
   String _initScript = "";

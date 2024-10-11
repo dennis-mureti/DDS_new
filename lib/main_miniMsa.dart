@@ -19,12 +19,18 @@ void main() async {
   setupSnackbarUi();
   InitService _initService = locator<InitService>();
   ApplicationParameter appParam = ApplicationParameter(
+      enablePrintingService: false,
       enableFullDelivery: true,
+      enableGeofenceService: false,
+      enableForeignName: false,
+      enableDeliveryStatus: true,
+      enableAutoUpdateService: true,
       enforceCreditLimit: true,
       enableCustomDelivery: false,
       enforceCustomerSecurity: true,
       enableAdhocSales: true,
       enableWalkIn: true,
+      enableOfflineService: false,
       enableContractCustomers: true);
   _initService.setAvailableEnvList([
     AppEnv(

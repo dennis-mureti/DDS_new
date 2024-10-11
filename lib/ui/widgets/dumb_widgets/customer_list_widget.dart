@@ -177,6 +177,16 @@ Widget CustomerList({List<Customer> customerList, Function onTap}) {
                     '${customer.branch}'.toUpperCase(),
                     style: kTileSubtitleTextStyle,
                   ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  customer.foreignName != null
+                      ? Text(
+                          '${customer.foreignName}'.toUpperCase(),
+                          style: kTileSubtitleTextStyle.copyWith(
+                              color: Colors.orangeAccent),
+                        )
+                      : Container(),
                 ],
               ),
             ),

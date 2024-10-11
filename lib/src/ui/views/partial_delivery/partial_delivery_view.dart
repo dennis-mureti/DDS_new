@@ -42,7 +42,7 @@ class _PartialDeliveryViewState extends State<PartialDeliveryView> {
             ),
             body: Container(
               margin: EdgeInsets.symmetric(horizontal: 8),
-              child: model.userLocation == null
+              child: model.isBusy
                   ? Center(child: BusyWidget())
                   : Column(
                       children: [

@@ -8,6 +8,7 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:auto_route/legacy.dart';
+import 'package:distributor/ui/views/register/register_view.dart';
 import 'package:flutter/material.dart';
 import 'package:tripletriocore/tripletriocore.dart';
 
@@ -57,6 +58,7 @@ class Routes {
   static const String homeView = '/home-view';
   static const String startupView = '/';
   static const String loginView = '/login-view';
+  static const String registerView = '/register-view';
   static const String adhocDetailView = '/adhoc-detail-view';
   static const String journeyView = '/journey-view';
   static const String customerDetailView = '/customer-detail-view';
@@ -133,6 +135,7 @@ class Routes {
     journeyLog,
     territoryDetailView,
     journeyInfoView,
+    registerView
   };
 }
 
@@ -143,6 +146,7 @@ class Router extends RouterBase {
     RouteDef(Routes.homeView, page: HomeView),
     RouteDef(Routes.startupView, page: StartupView),
     RouteDef(Routes.loginView, page: LoginView),
+    RouteDef(Routes.registerView, page: RegisterView),
     RouteDef(Routes.adhocDetailView, page: AdhocDetailView),
     RouteDef(Routes.journeyView, page: JourneyView),
     RouteDef(Routes.customerDetailView, page: CustomerDetailView),
@@ -211,6 +215,12 @@ class Router extends RouterBase {
           userId: args.userId,
           password: args.password,
         ),
+        settings: data,
+      );
+    },
+    RegisterView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => const RegisterView(),
         settings: data,
       );
     },

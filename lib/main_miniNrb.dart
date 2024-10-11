@@ -22,12 +22,12 @@ void main() async {
       enforceCreditLimit: false,
       enableCustomDelivery: false,
       enforceCustomerSecurity: false,
-      enableOfflineService: false,
-      returnEmptyCrates: true,
-      returnEmptyStock: true,
-      currency: "Kshs",
       enableAdhocSales: false,
       enableWalkIn: true,
+      currency: "Kshs",
+      returnEmptyStock: true,
+      returnEmptyCrates: true,
+      enableOfflineService: false,
       enableContractCustomers: true);
   InitService _initService = locator<InitService>();
   _initService.setAvailableEnvList([
@@ -35,6 +35,7 @@ void main() async {
       flavor: Flavor.miniNrb,
       name: 'Mini-Nrb',
       flavorValues: FlavorValues(
+          // baseUrl: 'https://testdds.ddsolutions.tech/dds-backend/api/v1',
           baseUrl: 'https://mbnl.ddsolutions.tech/dds-backend/api/v1',
           applicationParameter: appParam),
     ),

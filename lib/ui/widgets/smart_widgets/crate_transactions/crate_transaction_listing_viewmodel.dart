@@ -38,7 +38,7 @@ class CrateTransactionListingViewModel extends BaseViewModel {
 
   init() async {
     if (_journeyService.hasJourney && _journeyService.journeyId.isNotEmpty) {
-      await api.pushOfflineTransactionsOnViewRefresh(user.token);
+      // await api.pushOfflineTransactionsOnViewRefresh(user.token);
       await getCrateTransactions();
     }
   }

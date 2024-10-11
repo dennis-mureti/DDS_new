@@ -10,6 +10,15 @@ class AccessControlService {
 
   List<Authority> get authList => user.authorities;
 
+  bool get isOutlet {
+    Authority authMinishop = Authority(auth: 'STF.MN');
+    bool res1 = checkIfAuthExists(authList, authMinishop);
+    if (res1) {
+      return true;
+    }
+    return false;
+  }
+
   enableSignIn() {}
   bool get enableHomeTab {
     bool result = false;

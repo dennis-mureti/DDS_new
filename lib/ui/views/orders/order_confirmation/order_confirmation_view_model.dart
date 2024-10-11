@@ -49,7 +49,7 @@ class OrderConfirmationViewModel extends ReactiveViewModel {
     var dialogResponse = await _dialogService.showConfirmationDialog(
         title: 'Confirm Order',
         description:
-            'Are you sure that the order you are about to place for ${customer.name} is accurate?}',
+            'Are you sure that the order you are about to place for ${customer.name} is accurate?',
         confirmationTitle: 'Yes',
         cancelTitle: 'NO');
     if (dialogResponse.confirmed) {

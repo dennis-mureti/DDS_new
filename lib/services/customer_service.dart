@@ -161,7 +161,7 @@ class CustomerService with ReactiveServiceMixin {
       notifyListeners();
     } else {
       await _dialogService.showDialog(
-          title: result.title, description: result.description);
+          title: result.label, description: result.description);
       _customerAccount.value = CustomerAccount();
       notifyListeners();
     }
@@ -185,7 +185,11 @@ class CustomerService with ReactiveServiceMixin {
 
   listWarehouses() async {
     var result = await api.listWarehouses(user.token);
-    print(result);
-    return result;
+    return result.map<Warehouse>((e) => Warehouse.fromMap(e)).toList();
+  }
+
+  listVirtualWarehouses() async {
+    var result = await api.listVirtualWarehouse(user.token, user.branch, 1);
+    return result.map<Warehouse>((e) => Warehouse.fromMap(e)).toList();
   }
 }

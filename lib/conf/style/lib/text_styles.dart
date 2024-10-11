@@ -17,7 +17,7 @@ const kTileLeadingLargeTextStyle = TextStyle(
 const kTileLeadingTextStyle = TextStyle(
     fontFamily: kFontThinBody,
     color: kColorDDSColorDark,
-    fontSize: kBodyTextSize * 1.1);
+    fontSize: kBodyTextSize);
 const kTileLeadingSecondaryTextStyle = TextStyle(
     fontFamily: kFontThinBody,
     color: kColorDDSPrimaryLight,

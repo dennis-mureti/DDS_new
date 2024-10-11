@@ -12,22 +12,21 @@ import 'sales_order_item_model.dart';
 class SalesOrderItemWidget<T> extends StatelessWidget {
   final Product item;
   final salesOrderViewModel;
-  // final quantity;
-  final initialQuantity;
+  final quantity;
 
-  const SalesOrderItemWidget({
-    @required this.item,
-    @required this.salesOrderViewModel,
-    this.initialQuantity,
-    Key key,
-  }) : super(key: key);
+  SalesOrderItemWidget(
+      {@required this.item,
+      @required this.salesOrderViewModel,
+      this.quantity,
+      Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<SalesOrderItemModel>.reactive(
       viewModelBuilder: () => SalesOrderItemModel(
         product: item,
-        maxQuantity: initialQuantity,
+        maxQuantity: quantity,
       ),
       builder: (context, model, child) => Material(
         type: MaterialType.card,
@@ -42,12 +41,11 @@ class SalesOrderItemWidget<T> extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      // item.initialQuantity.toString(),
                       '${item.itemName}',
                       style: kTileLeadingTextStyle,
 //                    overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 2,
                     ),
                     Row(
@@ -59,7 +57,7 @@ class SalesOrderItemWidget<T> extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 2,
                     ),
                     Row(
@@ -124,8 +122,7 @@ class SalesOrderItemWidget<T> extends StatelessWidget {
                           InkWell(
                             onTap: () async {
                               var difference = await showQuantityDialog(
-                                  initialQuantity: model.initialQuantity,
-                                  model: model);
+                                  quantity: model.quantity, model: model);
                               if (difference is int) {
                                 num totalDifference =
                                     difference * model.product.itemPrice;
@@ -214,14 +211,13 @@ class SalesOrderItemWidget<T> extends StatelessWidget {
 }
 
 showQuantityDialog(
-    {@required int initialQuantity,
-    @required SalesOrderItemModel model}) async {
+    {@required int quantity, @required SalesOrderItemModel model}) async {
   return await showDialog(
       context: StackedService.navigatorKey.currentContext,
       builder: (context) {
         bool isAdhocSale = model.maxQuantity != null;
         return ManualInputWidget(
-          quantity: initialQuantity.toInt(),
+          quantity: quantity.toInt(),
           maxQuantity: model.maxQuantity,
           isAdhocSale: isAdhocSale,
           product: model.product,

@@ -10,7 +10,9 @@ import 'package:tripletriocore/tripletriocore.dart';
 
 class ConfirmStockTransferView extends StatelessWidget {
   final List<Product> stockTransferItems;
-  const ConfirmStockTransferView({Key key, this.stockTransferItems})
+  final String sourceOutlet;
+  const ConfirmStockTransferView(
+      {Key key, this.stockTransferItems, this.sourceOutlet})
       : super(key: key);
 
   @override
@@ -19,10 +21,10 @@ class ConfirmStockTransferView extends StatelessWidget {
         builder: (context, model, child) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Confirm Stock Transfer Items'),
+              title: const Text('Confirm Stock Transfer Items'),
             ),
             body: stockTransferItems.isEmpty
-                ? Center(
+                ? const Center(
                     child: EmptyContentContainer(
                         label: 'You have not selected any items.'),
                   )
@@ -50,7 +52,7 @@ class ConfirmStockTransferView extends StatelessWidget {
                         ),
                       ),
                       model.isBusy
-                          ? BusyWidget()
+                          ? const BusyWidget()
                           : ActionButton(
                               label: 'Submit',
                               onPressed: model.commit,
@@ -60,6 +62,6 @@ class ConfirmStockTransferView extends StatelessWidget {
           );
         },
         viewModelBuilder: () =>
-            ConfirmStockTransferViewModel(stockTransferItems));
+            ConfirmStockTransferViewModel(stockTransferItems, sourceOutlet));
   }
 }

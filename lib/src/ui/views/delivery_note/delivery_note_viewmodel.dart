@@ -8,6 +8,7 @@ import 'package:distributor/services/api_service.dart';
 import 'package:distributor/services/journey_service.dart';
 import 'package:distributor/services/location_repository.dart';
 import 'package:distributor/services/user_service.dart';
+import 'package:distributor/src/ui/views/pos/payment_view/payment_view.dart';
 import 'package:distributor/src/ui/views/print_view/print_view.dart';
 import 'package:distributor/ui/views/custom_delivery/custom_delivery_view.dart';
 import 'package:flutter/foundation.dart';
@@ -37,6 +38,8 @@ class DeliveryNoteViewModel extends BaseViewModel {
   bool get enableSalesReturns => appParams.enableSalesReturn;
 
   String get currency => appParams.currency;
+
+  bool get enableReceivedReturns => appParams.enableReceivedReturns;
 
   Future<Uint8List> generatePdf(PdfPageFormat format, String title) async {
     String title = "Receipt";
@@ -114,6 +117,32 @@ class DeliveryNoteViewModel extends BaseViewModel {
 
   handleOrderAction(String action) async {
     switch (action) {
+      case 'received_returns':
+        DialogResponse response = await _dialogService.showConfirmationDialog(
+            description:
+                'You are about to return SKUs for the Delivery note ${deliveryStop.deliveryNoteId} for ${deliveryStop.customerId}.',
+            title: 'RECEIVED RETURNS',
+            confirmationTitle: 'CONFIRM',
+            cancelTitle: 'CANCEL');
+        if (response.confirmed) {
+          setBusy(true);
+          var result = await _journeyService.receivedReturns(
+            deliveryStop.orderId,
+            deliveryStop.stopId,
+            deliveryLocation,
+            deliveryNote: deliveryNote,
+          );
+          setBusy(false);
+          if (result is CustomException) {
+            await _dialogService.showDialog(
+                title: "${result.title}", description: result.description);
+          } else {
+            await getDeliveryNote();
+            _snackbarService.showSnackbar(
+                message: 'Actioned performed successfully', title: 'Success');
+          }
+        }
+        break;
       case 'custom_delivery':
         if (_journeyService.currentJourney?.journeyId == null) {
           await _dialogService.showDialog(
@@ -128,7 +157,22 @@ class DeliveryNoteViewModel extends BaseViewModel {
               customer: customer,
             ),
           );
-          await getDeliveryNote();
+          if (result) {
+            await getDeliveryNote();
+            var paymentSuccess = await _navigationService.navigateToView(
+              PaymentView(
+                items: deliveryNote.deliveryItems,
+                total: deliveryNote.total,
+                ref: deliveryNote.deliveryNoteId,
+                docType: "DN",
+              ),
+            );
+            if (paymentSuccess is bool) if (result == true) {
+              //Navigate to the preview
+              await getDeliveryNote();
+              await navigateToPreview();
+            }
+          }
         }
         break;
       case 'full_delivery':
@@ -147,11 +191,21 @@ class DeliveryNoteViewModel extends BaseViewModel {
               deliveryLocation,
               deliveryNote: deliveryNote,
             );
+
             setBusy(false);
             if (result is CustomException) {
               await _dialogService.showDialog(
                   title: result.title, description: result.description);
             } else {
+              //If the delivery was succesfull
+              // Navigate to the payment
+              await getDeliveryNote();
+              await _navigationService.navigateToView(PaymentView(
+                items: deliveryNote.deliveryItems,
+                total: deliveryNote.total,
+                ref: deliveryNote.deliveryNoteId,
+                docType: "DN",
+              ));
               await getDeliveryNote();
               _snackbarService.showSnackbar(
                   message: 'The delivery was closed successfully',
@@ -164,7 +218,6 @@ class DeliveryNoteViewModel extends BaseViewModel {
               description:
                   'You have not selected a journey.\nYou need to select a journey to fulfill a delivery');
         }
-
         break;
       case 'partial_delivery':
         var result = await _navigationService.navigateTo(
@@ -189,12 +242,19 @@ class DeliveryNoteViewModel extends BaseViewModel {
         }
         break;
       case 'add_payment':
-        var result = await _navigationService.navigateTo(Routes.addPaymentView,
-            arguments: AddPaymentViewArguments(customer: customer));
-        if (result) {
-          _snackbarService.showSnackbar(
-              message: 'The payment was added successfully.', title: 'Success');
-        }
+        var paymentSuccess = await _navigationService.navigateToView(
+          PaymentView(
+            items: deliveryNote.deliveryItems,
+            total: deliveryNote.total,
+            ref: deliveryNote.deliveryNoteId,
+            docType: "DN",
+          ),
+        );
+        // if (paymentSuccess is bool) if (result == true) {
+        //   //Navigate to the preview
+        await getDeliveryNote();
+        await navigateToPreview();
+        // }
         break;
       case 'not_possible':
         await _dialogService.showDialog(
@@ -225,6 +285,9 @@ class DeliveryNoteViewModel extends BaseViewModel {
               customer: customer,
               deliveryStop: deliveryStop),
         );
+        break;
+      case 'print':
+        await navigateToPreview();
         break;
     }
   }

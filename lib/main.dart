@@ -13,7 +13,6 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:tripletriocore/tripletriocore.dart';
 import 'package:distributor/app/router.gr.dart' as app_router;
-
 import 'conf/dds_brand_guide.dart';
 
 class MainApp extends StatelessWidget {
@@ -97,34 +96,29 @@ ThemeData _buildAppTheme() {
 TextTheme _buildAppTextTheme(TextTheme base) {
   return base
       .copyWith(
-        // headlineSmall: base.headlineSmall.copyWith(
-        headline6: base.headline6.copyWith(
+        headlineSmall: base.headlineSmall.copyWith(
           color: kColorDDSPrimaryLight,
           fontFamily: kFontBoldBody,
         ),
-        // titleMedium: base.titleMedium.copyWith(
-           headline5: base.headline5.copyWith(
+        titleMedium: base.titleMedium.copyWith(
             fontFamily: kFontThinBody,
             color: kColorDDSColorDark,
             fontSize: kBodyTextSize),
-        // titleLarge: base.titleLarge.copyWith(
-           headline4: base.headline4.copyWith(
+        titleLarge: base.titleLarge.copyWith(
             fontFamily: kFontThinBody,
             fontSize: kBodyTextSize,
             color: kColorDDSPrimaryDark),
-        // bodySmall: base.bodySmall
-         bodyText1: base.bodyText1
+        bodySmall: base.bodySmall
             .copyWith(fontFamily: kFontThinBody, fontSize: kBodyTextSize),
-        // bodyLarge: base.bodyLarge.copyWith(
-           bodyText2: base.bodyText2.copyWith(
+        bodyLarge: base.bodyLarge.copyWith(
             fontFamily: kFontLightBody,
             fontSize: kBodyTextSize,
             color: kColorDDSColorDark),
-        // labelLarge: base.labelLarge.copyWith(color: kColDDSPrimaryLight),
-        // bodyMedium: base.bodyMedium.copyWith(
-        //     fontFamily: kFontLightBody,
-        //     fontSize: kBodyTextSize,
-        //     color: kColorDDSColorDark),
+        labelLarge: base.labelLarge.copyWith(color: kColDDSPrimaryLight),
+        bodyMedium: base.bodyMedium.copyWith(
+            fontFamily: kFontLightBody,
+            fontSize: kBodyTextSize,
+            color: kColorDDSColorDark),
       )
       .apply(
         fontFamily: kFontLightBody,

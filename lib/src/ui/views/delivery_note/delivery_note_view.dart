@@ -28,7 +28,7 @@ class DeliveryNoteView extends StatelessWidget {
                   mainTitle: model.deliveryStop.customerId,
                   subTitle: model.deliveryStop.deliveryNoteId,
                 ),
-                bottom: const TabBar(
+                bottom: TabBar(
                   tabs: [
                     Tab(
                       child: Text(
@@ -46,10 +46,11 @@ class DeliveryNoteView extends StatelessWidget {
                   ],
                 ),
                 actions: [
-                  if (model.enablePrint)
-                    IconButton(
-                        onPressed: () => model.navigateToPreview(),
-                        icon: Icon(Icons.print)),
+                  // if (model.enablePrint)
+                  IconButton(
+                    onPressed: () => model.navigateToPreview(),
+                    icon: Icon(Icons.print),
+                  ),
                   PopupMenuButton(
                     itemBuilder: (context) {
                       return <PopupMenuEntry<Object>>[
@@ -92,14 +93,24 @@ class DeliveryNoteView extends StatelessWidget {
                                 ? 'partial_delivery'
                                 : 'not_possible',
                           ),
+                        if (model.enableReceivedReturns)
+                          PopupMenuItem(
+                            child: Text('Received Returns'),
+                            value: model.deliveryStop.stopId != null &&
+                                    model.deliveryNote.deliveryStatus
+                                            .toLowerCase() ==
+                                        'in journey'
+                                ? 'received_returns'
+                                : 'not_possible',
+                          ),
                         // PopupMenuItem(
                         //     child: Text('Return Crates'),
                         //     value: 'crates_return'),
-                        // PopupMenuDivider(),
-                        // PopupMenuItem(
-                        //   child: Text('Receive Returns'),
-                        //   value: 'receive_return',
-                        // ),
+                        PopupMenuDivider(),
+                        PopupMenuItem(
+                          child: Text('Add Payment'),
+                          value: 'add_payment',
+                        ),
                         // PopupMenuDivider(),
                         // PopupMenuItem(
                         //   child: Text('Add Payment'),
@@ -116,13 +127,13 @@ class DeliveryNoteView extends StatelessWidget {
               body: TabBarView(
                 children: [
                   model.deliveryNote == null
-                      ? const Center(child: BusyWidget())
+                      ? Center(child: BusyWidget())
                       : Container(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
-                                margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
                                 child: Material(
                                   type: MaterialType.card,
                                   color: Colors.white,
@@ -138,7 +149,7 @@ class DeliveryNoteView extends StatelessWidget {
                                           children: <Widget>[
                                             Text(
                                               'Order No : ${model.deliveryStop.deliveryNoteId}',
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w700),
                                             ),
@@ -155,17 +166,17 @@ class DeliveryNoteView extends StatelessWidget {
                                                       Text(
                                                         'fulfilled'
                                                             .toUpperCase(),
-                                                        style: const TextStyle(
+                                                        style: TextStyle(
                                                             color:
                                                                 Colors.purple,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w700),
                                                       ),
-                                                      const SizedBox(
+                                                      SizedBox(
                                                         width: 5,
                                                       ),
-                                                      const Icon(
+                                                      Icon(
                                                         Icons
                                                             .access_time_rounded,
                                                         size: 15,

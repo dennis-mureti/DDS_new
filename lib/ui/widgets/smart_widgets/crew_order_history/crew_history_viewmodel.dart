@@ -21,7 +21,7 @@ class CrewHistoryViewModel extends BaseViewModel {
   List<SalesOrder> get orders => _orders;
 
   init() async {
-    await _pushOfflineTransactionsOnViewRefresh();
+    // await _pushOfflineTransactionsOnViewRefresh();
     await _fetchOrders();
   }
 

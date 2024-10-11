@@ -35,10 +35,10 @@ class StartupViewModel extends BaseViewModel {
 
   Future handleStartUpLogic() async {
     bool result = await _initService.init();
-
     await _versionService.getVersion();
     String userId;
     String password;
+
     if (!result) {
       userId = "";
       password = "";
