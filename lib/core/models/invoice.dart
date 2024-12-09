@@ -15,8 +15,6 @@ class Invoice {
   num gross;
   double net;
   double tax;
-  double withholdingTax;
-  double discount;
   String deviceNo;
   String warehouse;
   String sellingPriceList;
@@ -26,7 +24,6 @@ class Invoice {
   String verificationCode;
   String remarks;
   String mode;
-  num invoiceNumber;
 
   String get customerName => customerDetail.customerName;
   String get sellerName => sellerDetail.sellerName;
@@ -50,9 +47,6 @@ class Invoice {
       this.gross,
       this.sellingPriceList,
       this.transactionType,
-      this.discount,
-      this.withholdingTax,
-      this.invoiceNumber,
       CustomerDetail customerDetail,
       SellerDetail sellerDetail,
       String transactionDate})
@@ -64,7 +58,6 @@ class Invoice {
     return Invoice(
         mode: adhocDetail.mode,
         fdn: adhocDetail.fdn,
-        withholdingTax: adhocDetail.withholdingTax,
         qrCode: adhocDetail.qrCode,
         remarks: adhocDetail.remarks,
         verificationCode: adhocDetail.verificationCode,
@@ -82,7 +75,6 @@ class Invoice {
         deviceNo: adhocDetail.deviceNo,
         net: adhocDetail.net,
         sellerDetail: sellerDetail,
-        discount: adhocDetail.discount,
         tax: adhocDetail.tax);
   }
 
@@ -96,13 +88,11 @@ class Invoice {
     return Invoice(
         warehouse: deliveryNote.deliveryWarehouse,
         currency: currency,
-        discount: deliveryNote.discount,
         verificationCode: deliveryNote.verificationCode,
         remarks: deliveryNote.remarks,
         qrCode: deliveryNote.qrCode,
         fdn: deliveryNote.fdn,
         mode: deliveryNote.mode,
-        withholdingTax: deliveryNote.withholdingTax,
         gross: deliveryNote.gross,
         net: deliveryNote.net,
         total: deliveryNote.total,
@@ -121,19 +111,8 @@ class Invoice {
   factory Invoice.fromMap(var data) {
     List items = data['items'];
     String id = data['id'];
-    double discount = data['discount'] ?? 0.00;
-    double withholding = data['withholding'] ?? 0.00;
     String deliveryStatus = data['deliveryStatus'];
-    double tax = data['tax'] ?? 0.00;
-    num invoiceNumber = data['invoiceNumber'] ?? 0;
-
-    return Invoice(
-        items: items,
-        id: id,
-        discount: discount,
-        withholdingTax: withholding,
-        tax: tax,
-        invoiceNumber: invoiceNumber);
+    return Invoice(items: items, id: id);
   }
 }
 

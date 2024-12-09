@@ -4,13 +4,7 @@ import 'package:distributor/core/enums.dart';
 import 'package:distributor/services/access_controller_service.dart';
 import 'package:distributor/services/logistics_service.dart';
 import 'package:distributor/services/user_service.dart';
-import 'package:distributor/src/ui/views/pos/invoicing/invoicing_view.dart';
-import 'package:distributor/src/ui/views/pos/item_selection/pos_view.dart';
-import 'package:distributor/src/ui/views/pos/sales_returns/sales_returns_view.dart';
-import 'package:distributor/src/ui/views/quotation_view/quotation_view.dart';
-import 'package:distributor/src/ui/views/stock_transaction/stock_transaction_list_view.dart';
 import 'package:distributor/traits/contextual_viewmodel.dart';
-import 'package:distributor/ui/views/stock_transfer_request/stock_transfer_request_view.dart';
 import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -49,15 +43,13 @@ class DashboardViewModel extends FutureViewModel<List<DeliveryJourney>>
   //Check if user can list journeys
   bool get canListJourneys => _accessControlService.enableJourneyTab;
 
-  // bool get isMiniShop {
-  //   if (user.hasSalesChannel) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
-  bool get isMiniShop => _accessControlService.isOutlet;
+  bool get isMiniShop {
+    if (user.hasSalesChannel) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   Future fetchUserJourneys() async {
     //Check if this is a minishop
@@ -97,54 +89,4 @@ class DashboardViewModel extends FutureViewModel<List<DeliveryJourney>>
 
   UserSummary _userSummary;
   UserSummary get userSummary => _userSummary;
-
-  navigateToPostSale() async {
-    _navigationService.navigateToView(POSView());
-  }
-
-  navigateToSalesTab() async {
-    _navigationService.navigateTo(
-      Routes.homeView,
-      arguments: HomeViewArguments(index: 1),
-    );
-  }
-
-  navigateToSalesReturns() async {
-    await _navigationService.navigateToView(SalesReturnsView());
-  }
-
-  navigateToPendingTransactions() async {
-    _navigationService.navigateToView(
-      StockTransactionListView(),
-    );
-  }
-
-  navigateToStockTransferRequest() async {
-    _navigationService.navigateToView(
-      StockTransferRequestView(),
-    );
-  }
-
-  navigateToCreateQuotationView() async {
-    _navigationService.navigateToView(
-      QuotationView(),
-    );
-  }
-
-  navigateToInvoicingView() async {
-    _navigationService.navigateTo(
-      Routes.homeView,
-      arguments: HomeViewArguments(index: 4),
-    );
-  }
-
-  navigateToAddAdhocSale() async {
-    var result = await _navigationService.navigateTo(Routes.adhocSalesView);
-    if (result is bool) {
-      setBusy(true);
-      // _startDate = DateTime.now();
-      // await fetchAdhocSales();
-      setBusy(false);
-    }
-  }
 }

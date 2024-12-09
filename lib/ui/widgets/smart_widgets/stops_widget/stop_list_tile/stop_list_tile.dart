@@ -1,4 +1,3 @@
-import 'package:distributor/conf/dds_brand_guide.dart';
 import 'package:distributor/conf/style/lib/text_styles.dart';
 import 'package:distributor/ui/widgets/dumb_widgets/busy_widget.dart';
 import 'package:distributor/ui/widgets/smart_widgets/stops_widget/stop_list_tile/stop_list_tile_viewmodel.dart';
@@ -56,36 +55,13 @@ class StopListTile extends StatelessWidget {
                       )
                     ],
                   ),
-                  isThreeLine: true,
                   subtitle: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       model.deliveryNote.isSynced
-                          ? Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  !model.enableDeliveryStatus
-                                      ? '${model.deliveryStop.orderStatus}'
-                                          .toUpperCase()
-                                      : model.deliveryNote.deliveryStatus
-                                          .toUpperCase(),
-                                  style: kTileSubtitleTextStyle,
-                                  textAlign: TextAlign.right,
-                                ),
-                                SizedBox(width: 5),
-                                model.deliveryNote.foreignName.isNotEmpty
-                                    ? Text(
-                                        model.deliveryNote.foreignName,
-                                        style: kTileSubtitleTextStyle.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: kColDDSPrimaryLight),
-                                      )
-                                    : Container(
-                                        height: 0,
-                                      ),
-                              ],
+                          ? Text(
+                              '${model.deliveryStop.orderStatus}'.toUpperCase(),
+                              style: kTileSubtitleTextStyle,
                             )
                           : Row(
                               children: [

@@ -1,0 +1,91 @@
+{
+  "project_info": {
+    "project_number": "1027587126449",
+    "firebase_url": "https://tripletrio-l1.firebaseio.com",
+    "project_id": "tripletrio-l1",
+    "storage_bucket": "tripletrio-l1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1027587126449:android:4545fc69c51aae06315e90",
+        "android_client_info": {
+          "package_name": "tripletriolimited.distributor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1027587126449-abrijo1dovaldfe05k9mr6uf77gorep2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tripletriolimited.distributor",
+            "certificate_hash": "fa4792253a7fe78d933096a4f38b3afbd447844f"
+          }
+        },
+        {
+          "client_id": "1027587126449-nk4psalnnjro25pcl8b4pgcr049bci24.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCN3HvfBMxMr8j9RK0nNSp3NO0i-7eirJ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1027587126449-nk4psalnnjro25pcl8b4pgcr049bci24.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1027587126449-mk64bvo51hj0fp0trit6mh1i59etag0n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "tripletriolimited.distributor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1027587126449:android:4854042009cc4c9e315e90",
+        "android_client_info": {
+          "package_name": "tripletriolimited.distributor.internal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1027587126449-nk4psalnnjro25pcl8b4pgcr049bci24.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCN3HvfBMxMr8j9RK0nNSp3NO0i-7eirJ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1027587126449-nk4psalnnjro25pcl8b4pgcr049bci24.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1027587126449-mk64bvo51hj0fp0trit6mh1i59etag0n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "tripletriolimited.distributor"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

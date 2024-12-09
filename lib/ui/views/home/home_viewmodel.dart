@@ -4,7 +4,6 @@ import 'package:distributor/app/locator.dart';
 import 'package:distributor/app/router.gr.dart';
 import 'package:distributor/core/enums.dart';
 import 'package:distributor/core/models/app_models.dart';
-import 'package:distributor/core/models/product_service.dart';
 import 'package:distributor/services/access_controller_service.dart';
 import 'package:distributor/services/activity_service.dart';
 import 'package:distributor/services/adhoc_cart_service.dart';
@@ -14,11 +13,7 @@ import 'package:distributor/services/journey_service.dart';
 import 'package:distributor/services/logistics_service.dart';
 import 'package:distributor/services/permission_service.dart';
 import 'package:distributor/services/timeout_service.dart';
-import 'package:distributor/services/transaction_service.dart';
 import 'package:distributor/services/user_service.dart';
-import 'package:distributor/src/ui/views/pos/item_selection/pos_view.dart';
-import 'package:distributor/src/ui/views/quotation_view/quotation_detail_view.dart';
-import 'package:distributor/src/ui/views/quotation_view/quotation_view.dart';
 import 'package:distributor/traits/contextual_viewmodel.dart';
 import 'package:distributor/ui/views/adhoc_sales/adhoc_sales_view.dart';
 import 'package:distributor/ui/views/customers/customer_view.dart';
@@ -42,25 +37,14 @@ class HomeViewModel extends ReactiveViewModel with ContextualViewmodel {
   AdhocCartService _adhocCartService = locator<AdhocCartService>();
   final _timeoutService = locator<TimeoutService>();
   final _snackbarService = locator<SnackbarService>();
-  final _productService = locator<ProductService>();
-  final _transactionService = locator<TransactionService>();
   Timer get timer => _timeoutService.timer;
   // final geoFenceService = locator<GeoFenceService>();
 
   ConnectivityStatus _connectivityStatus;
   ConnectivityStatus get connectivityStatus => _connectivityStatus;
 
-  navigateToQuotationDetailView(var quotation) async {
-    await _navigationService.navigateToView(QuotationDetailView(
-      quotationId: quotation['id'],
-      customerName: quotation['customer']['customer_name'],
-      status: quotation['status'],
-    ));
-    await fetchQuotations();
-  }
-
   String get currency =>
-      _initService.appEnv.flavorValues.applicationParameter?.currency ?? "Kshs";
+      _initService.appEnv.flavorValues.applicationParameter.currency;
 
   updateConnectivityStatus(ConnectivityStatus connectivityStatus) {
     _connectivityStatus = connectivityStatus;
@@ -74,10 +58,8 @@ class HomeViewModel extends ReactiveViewModel with ContextualViewmodel {
   InitService _initService = locator<InitService>();
   AccessControlService _accessControlService = locator<AccessControlService>();
 
-  bool get enableOffline =>
-      _initService
-          .appEnv.flavorValues.applicationParameter?.enableOfflineService ??
-      false;
+  bool get enableOffline => _initService
+      .appEnv.flavorValues.applicationParameter.enableOfflineService;
 
   final _dialogService = locator<DialogService>();
 
@@ -119,7 +101,6 @@ class HomeViewModel extends ReactiveViewModel with ContextualViewmodel {
 
   get enableJourneyTab => _accessControlService.enableJourneyTab;
   get enableHomeTab => _accessControlService.enableHomeTab;
-  get isMiniShop => _accessControlService.isOutlet;
 
   get enableAdhocTab => _accessControlService.enableAdhocView;
 
@@ -249,15 +230,13 @@ class HomeViewModel extends ReactiveViewModel with ContextualViewmodel {
       _initService.appEnv.flavorValues.applicationParameter.enableAdhocSales;
 
   init() async {
-    await fetchQuotations();
-    await _transactionService.init();
     // await fetchAllCustomers();
     // geoFenceService.listenToGeofenceStatusStream();
     //Check if the user has permissions before enabling this
     if (user.hasSalesChannel || enableAdhocSales) {
       await fetchAdhocSales();
     } else {
-      await _logisticsService.fetchJourneys();
+      // await _logisticsService.fetchJourneys();
       await _permissionService.init();
     }
     return;
@@ -282,20 +261,6 @@ class HomeViewModel extends ReactiveViewModel with ContextualViewmodel {
         arguments: HomeViewArguments(index: index));
   }
 
-  List _quotations = [];
-  List get quotations => _quotations;
-
-  get sortedQuotationsByPostingDate => quotations.isNotEmpty
-      ? quotations.sort((a, b) => b['postingDate'].compareTo(a['postingDate']))
-      : quotations;
-
-  fetchQuotations() async {
-    setBusy(true);
-    _quotations = await _productService.fetchQuotationList();
-    setBusy(false);
-    notifyListeners();
-  }
-
   int _currentIndex;
   int get currentIndex => _currentIndex;
   updateCurrentIndex(int val) {
@@ -309,49 +274,34 @@ class HomeViewModel extends ReactiveViewModel with ContextualViewmodel {
         notifyListeners();
         break;
       case 1: //Journey
-        _currentIndex = val;
-        notifyListeners();
+        if (_accessControlService.enableJourneyTab) {
+          _currentIndex = val;
+          notifyListeners();
+        }
         break;
       case 2: //Adhoc
-        _currentIndex = val;
-        notifyListeners();
+        if (_accessControlService.enableAdhocView) {
+          _currentIndex = val;
+          notifyListeners();
+        }
         break;
-      case 3: // Quotations
-        _currentIndex = val;
-        notifyListeners();
+      case 3: // Stock Balance
+        if (_accessControlService.enableStockTab) {
+          _currentIndex = val;
+          notifyListeners();
+        }
         break;
-      case 4: // Stock Controller
-        _currentIndex = val;
-        notifyListeners();
-        break;
-      case 5: // Invoices
-        _currentIndex = val;
-        notifyListeners();
-        break;
-      case 6: // Customers
-        _currentIndex = val;
-        notifyListeners();
+      case 4: // Customers
+        if (_accessControlService.enableCustomerTab) {
+          _currentIndex = val;
+          notifyListeners();
+        }
         break;
     }
   }
 
   void navigateToAddAdhocSale() async {
     var result = await _navigationService.navigateTo(Routes.adhocSalesView);
-    if (result is bool) {
-      setBusy(true);
-      _startDate = DateTime.now();
-      await fetchAdhocSales();
-      setBusy(false);
-    }
-  }
-
-  void navigateToCreateQuotation() async {
-    await _navigationService.navigateToView(QuotationView());
-    await fetchQuotations();
-  }
-
-  void navigateToAddPOSSale() async {
-    var result = await _navigationService.navigateToView(POSView());
     if (result is bool) {
       setBusy(true);
       _startDate = DateTime.now();
@@ -475,13 +425,8 @@ class HomeViewModel extends ReactiveViewModel with ContextualViewmodel {
       case 'print':
         break;
       case 'make_adhoc_sale':
-        // navigateToAddPOSSale();
         navigateToAddAdhocSale();
         break;
     }
-  }
-
-  void updateFinalizedOrderRange(DateTimeRange result) {
-    print("updating");
   }
 }

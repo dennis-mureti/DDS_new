@@ -19,25 +19,20 @@ void main() async {
   setupSnackbarUi();
   InitService _initService = locator<InitService>();
   ApplicationParameter appParam = ApplicationParameter(
-      enablePrintingService: false,
       enableFullDelivery: true,
-      enableGeofenceService: false,
-      enableForeignName: false,
-      enableDeliveryStatus: true,
-      enableAutoUpdateService: true,
       enforceCreditLimit: true,
       enableCustomDelivery: false,
       enforceCustomerSecurity: true,
       enableAdhocSales: true,
       enableWalkIn: true,
-      enableOfflineService: false,
       enableContractCustomers: true);
   _initService.setAvailableEnvList([
     AppEnv(
       flavor: Flavor.miniMsa,
       name: 'Mini-Mombasa',
       flavorValues: FlavorValues(
-          baseUrl: 'https://dds.ddsolutions.tech/dds-backend/api/v1',
+          // baseUrl: 'https://dds.ddsolutions.tech/dds-backend/api/v1',
+          baseUrl: 'https://demo.ddsolutions.tech/spvdev-backend/api/v1',
           applicationParameter: appParam),
     ),
   ]);

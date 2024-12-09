@@ -44,7 +44,7 @@ class CrateView extends StatelessWidget {
                                         ],
                                       ),
                                       ProductQuantityContainer(
-                                        quantity: crate.initialQuantity.toInt(),
+                                        quantity: crate.quantity.toInt(),
                                       ),
                                     ],
                                   ),

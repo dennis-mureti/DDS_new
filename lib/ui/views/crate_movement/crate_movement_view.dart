@@ -235,7 +235,7 @@ class CrateMovementView extends StatelessWidget {
                                                     model.disableTextFormField
                                                         ? crate.quantity
                                                             .toStringAsFixed(0)
-                                                        : crate.initialQuantity
+                                                        : crate.quantity
                                                             .toStringAsFixed(0),
                                                 enabled:
                                                     model.disableTextFormField,

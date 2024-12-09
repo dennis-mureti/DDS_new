@@ -10,7 +10,6 @@ class BottomNavBarViewModel extends BaseViewModel {
 
   updateIndex(int val) {
     _index = val;
-    print("index is $index");
     notifyListeners();
   }
 

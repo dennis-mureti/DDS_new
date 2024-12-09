@@ -42,6 +42,9 @@ import '../services/user_service.dart' as _i33;
 import '../services/version_service.dart' as _i34;
 import '../services/waypoint_service.dart'
     as _i35; // ignore_for_file: unnecessary_lambdas
+import '../services/visit_service.dart' as _i37;
+import '../services/out_of_route.dart' as _i38;
+import '../services/start_day_service.dart' as _i39;
 
 // ignore_for_file: lines_longer_than_80_chars
 /// initializes the registration of provided dependencies inside of [GetIt]
@@ -102,6 +105,14 @@ _i1.GetIt $initGetIt(_i1.GetIt get,
   gh.lazySingleton<_i34.VersionService>(() => _i34.VersionService());
   gh.lazySingleton<_i35.WaypointService>(
       () => thirdPartyServicesModule.waypointService);
+  // gh.lazySingleton<_i36.VisitService>(
+  //     () => thirdPartyServicesModule.visitService);
+  gh.lazySingleton<_i37.VisitService>(() => _i37.VisitService());
+
+  gh.lazySingleton<_i38.OutOfRouteService>(
+      () => thirdPartyServicesModule.outOfRouteService);
+  gh.lazySingleton<_i39.StartDayService>(
+      () => thirdPartyServicesModule.startDayService);
   return get;
 }
 
@@ -149,4 +160,11 @@ class _$ThirdPartyServicesModule extends _i36.ThirdPartyServicesModule {
   _i33.UserService get userService => _i33.UserService();
   @override
   _i35.WaypointService get waypointService => _i35.WaypointService();
+  @override
+  _i37.VisitService get visitService => _i37.VisitService();
+  @override
+  _i38.OutOfRouteService get outOfRouteService => _i38.OutOfRouteService();
+  @override
+  _i39.StartDayService get startDayService =>
+      _i39.StartDayService(); // Fixed typo
 }

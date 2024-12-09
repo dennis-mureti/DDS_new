@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "PROD-Flavor",
+      "program": "[project-folder]/lib/main_internal.dart",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "DEV-Flavor",
+      "program": "[project-folder]/lib/main_mini.dart",
+      "request": "launch",
+      "type": "dart"
+    }
+  ]
+}

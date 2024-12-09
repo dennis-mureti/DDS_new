@@ -13,21 +13,19 @@ class SalesOrderItemModel extends BaseViewModel {
   double _total = 0.00;
   double get total => _total;
 
-  num _quantity;
+  num _quantity = 0;
   num get quantity => _quantity;
 
   num _maxQuantity;
   num get maxQuantity => _maxQuantity;
-  SalesOrderItemModel(
-      {@required this.product, num maxQuantity, num initialQuantity})
+  SalesOrderItemModel({@required this.product, num maxQuantity})
       : assert(product != null),
-        _maxQuantity = maxQuantity,
-        _quantity = initialQuantity ?? 0;
+        _maxQuantity = maxQuantity;
 
   bool get isEnabled => product.itemPrice > 0;
 
   String get currency =>
-      _initService.appEnv.flavorValues.applicationParameter?.currency ?? "Kshs";
+      _initService.appEnv.flavorValues.applicationParameter.currency;
 
   /// If the item has a price enable the add item quantity
   addItemQuantity({int val}) {

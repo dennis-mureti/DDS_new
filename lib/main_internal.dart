@@ -50,7 +50,6 @@ void main() async {
       flavorValues: FlavorValues(
           baseUrl: 'https://testdds.ddsolutions.tech/spv-backend/api/v1'),
     ),
-
     AppEnv(
       flavor: Flavor.internal,
       name: 'Live - Mini-Nairobi',
@@ -72,7 +71,6 @@ void main() async {
               returnEmptyStock: false,
               returnEmptyCrates: false,
               enableOfflineService: false,
-              enableReceivedReturns: true,
               enableFullDelivery: false,
               enforceCreditLimit: false,
               enableCustomDelivery: true,
@@ -97,6 +95,13 @@ void main() async {
       name: 'Demo',
       flavorValues:
           FlavorValues(baseUrl: 'http://63.34.178.251:8888/dds-backend/api/v1'),
+    ),
+    AppEnv(
+      flavor: Flavor.internal,
+      name: 'Test - CRM',
+      flavorValues: FlavorValues(
+        baseUrl: 'http://165.227.255.167:9087/spvdev-backend/api/v1',
+      ),
     ),
   ];
   _initService.setAvailableEnvList(_appEnv);

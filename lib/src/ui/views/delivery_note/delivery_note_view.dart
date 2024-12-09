@@ -46,11 +46,10 @@ class DeliveryNoteView extends StatelessWidget {
                   ],
                 ),
                 actions: [
-                  // if (model.enablePrint)
-                  IconButton(
-                    onPressed: () => model.navigateToPreview(),
-                    icon: Icon(Icons.print),
-                  ),
+                  if (model.enablePrint)
+                    IconButton(
+                        onPressed: () => model.navigateToPreview(),
+                        icon: Icon(Icons.print)),
                   PopupMenuButton(
                     itemBuilder: (context) {
                       return <PopupMenuEntry<Object>>[
@@ -93,24 +92,14 @@ class DeliveryNoteView extends StatelessWidget {
                                 ? 'partial_delivery'
                                 : 'not_possible',
                           ),
-                        if (model.enableReceivedReturns)
-                          PopupMenuItem(
-                            child: Text('Received Returns'),
-                            value: model.deliveryStop.stopId != null &&
-                                    model.deliveryNote.deliveryStatus
-                                            .toLowerCase() ==
-                                        'in journey'
-                                ? 'received_returns'
-                                : 'not_possible',
-                          ),
                         // PopupMenuItem(
                         //     child: Text('Return Crates'),
                         //     value: 'crates_return'),
-                        PopupMenuDivider(),
-                        PopupMenuItem(
-                          child: Text('Add Payment'),
-                          value: 'add_payment',
-                        ),
+                        // PopupMenuDivider(),
+                        // PopupMenuItem(
+                        //   child: Text('Receive Returns'),
+                        //   value: 'receive_return',
+                        // ),
                         // PopupMenuDivider(),
                         // PopupMenuItem(
                         //   child: Text('Add Payment'),

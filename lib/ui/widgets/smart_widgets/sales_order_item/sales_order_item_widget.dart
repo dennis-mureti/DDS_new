@@ -24,10 +24,8 @@ class SalesOrderItemWidget<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<SalesOrderItemModel>.reactive(
-      viewModelBuilder: () => SalesOrderItemModel(
-        product: item,
-        maxQuantity: quantity,
-      ),
+      viewModelBuilder: () =>
+          SalesOrderItemModel(product: item, maxQuantity: quantity),
       builder: (context, model, child) => Material(
         type: MaterialType.card,
         elevation: model.isEnabled ? 1.0 : 0.0,

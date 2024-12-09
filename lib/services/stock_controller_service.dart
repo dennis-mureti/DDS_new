@@ -36,25 +36,6 @@ class StockControllerService {
     }
   }
 
-  getSalesReturns() async {
-    return await _api.getSalesReturns(_user.token);
-  }
-
-  makeOutletSalesReturns(Map<String, dynamic> data) async {
-    data['deliveryWarehouse'] =
-        _user.branch ?? _journeyService.currentJourney.route;
-    return await _api.makeOutletReturn(_user.token, data);
-  }
-
-  ///
-  /// pending, finalized , failed
-  ///
-  getInvoices(String type, {DateTime deliveryDate, DateTime endDate}) async {
-    return await _api.getInvoices(_user.token, type,
-        deliveryDate: deliveryDate ?? DateTime.now(),
-        endDate: endDate ?? DateTime.now());
-  }
-
 //	Stock balance tab on L1 app is enabled if the user has
 //	"virtual_stock_balance.view".
 //	When the balances are displayed, the specific column "value of stock"
@@ -115,7 +96,6 @@ class StockControllerService {
     }
     var result =
         await _api.getStockBalance(token: _user.token, branchId: branchId);
-
     return result;
   }
 
@@ -135,7 +115,9 @@ class StockControllerService {
   }
 
   confirmStockCollection(
-      {String journeyId, String stopId, String deliveryLocation}) async {
+      {@required String journeyId,
+      @required String stopId,
+      String deliveryLocation}) async {
     Map<String, dynamic> data = {
       "deliveryLocation": "string",
       "orderId": "string",
@@ -152,9 +134,9 @@ class StockControllerService {
    * [toWarehouse] is the branch
    */
   routeReturn({
-    List<SalesOrderItem> stockReturnItems,
-    String fromWarehouse,
-    String toWarehouse,
+    @required List<SalesOrderItem> stockReturnItems,
+    @required String fromWarehouse,
+    @required String toWarehouse,
     String reason = "",
   }) async {
     Map<String, dynamic> data = {

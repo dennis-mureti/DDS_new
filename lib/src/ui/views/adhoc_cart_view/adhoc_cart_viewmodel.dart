@@ -69,7 +69,7 @@ class AdhocCartViewModel extends ReactiveViewModel {
   bool get isWalkin => _isWalkin;
   Customer get customer => _customer;
 
-  AdhocCartViewModel({bool isWalkin, Customer customer})
+  AdhocCartViewModel({@required bool isWalkin, @required Customer customer})
       : _isWalkin = isWalkin,
         _customer = customer;
 

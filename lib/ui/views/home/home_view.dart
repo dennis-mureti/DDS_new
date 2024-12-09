@@ -3,13 +3,13 @@ import 'package:distributor/core/enums.dart';
 import 'package:distributor/core/helper.dart';
 import 'package:distributor/src/ui/common/network_sensitive_widget.dart';
 import 'package:distributor/src/ui/views/adhoc_listing/adhoc_listing_view.dart';
-import 'package:distributor/src/ui/views/pos/invoicing/invoicing_view.dart';
-import 'package:distributor/src/ui/views/quotation_view/quotation_listing_view.dart';
 import 'package:distributor/ui/access_controllers/global/bottom_navbar/bottom_nav_bar.dart';
 import 'package:distributor/ui/shared/brand_colors.dart';
+import 'package:distributor/ui/views/crm/dashboard_view.dart';
 import 'package:distributor/ui/views/customers/customer_view.dart';
 import 'package:distributor/ui/views/dashboard/dashboard_view.dart';
 import 'package:distributor/ui/views/home/home_viewmodel.dart';
+import 'package:distributor/ui/views/routes/route_listing_view.dart';
 import 'package:distributor/ui/views/stock/stock_view.dart';
 import 'package:distributor/ui/widgets/drawer.dart';
 import 'package:distributor/ui/widgets/dumb_widgets/busy_widget.dart';
@@ -18,8 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
-
-import '../routes/route_listing_view.dart';
 
 class HomeView extends StatelessWidget {
   final int index;
@@ -51,7 +49,6 @@ class HomeView extends StatelessWidget {
                       IconButton(
                         onPressed: () {
                           model.navigateToAddAdhocSale();
-                          ;
                         },
                         icon: Icon(Icons.add_circle_outline),
                         tooltip: 'Add Adhoc Sale',
@@ -59,7 +56,7 @@ class HomeView extends StatelessWidget {
                       PopupMenuButton(
                         itemBuilder: (context) => <PopupMenuEntry<Object>>[
                           PopupMenuItem(
-                            child: Text('Post Sale'),
+                            child: Text('Make Sale'),
                             value: 'make_adhoc_sale',
                           ),
                           PopupMenuDivider(),
@@ -67,11 +64,11 @@ class HomeView extends StatelessWidget {
                             child: Text('Stock Transfer Request'),
                             value: 'stock_transfer_request',
                           ),
-                          // PopupMenuDivider(),
-                          // PopupMenuItem(
-                          //   child: Text('Inter Outlet Transfer Request'),
-                          //   value: 'inter_outlet_transfer_request',
-                          // )
+                          PopupMenuDivider(),
+                          PopupMenuItem(
+                            child: Text('View Transfer Requests'),
+                            value: 'view_stock_transfers',
+                          )
                         ],
                         onSelected: (val) {
                           model.takeAction(val);
@@ -80,32 +77,11 @@ class HomeView extends StatelessWidget {
                     ],
                   )
                 : model.currentIndex == 3
-                    ? IconButton(
-                        onPressed: () {
-                          model.navigateToCreateQuotation();
-                        },
-                        icon: Icon(Icons.add_circle_outline),
-                        tooltip: 'Create Quotation',
-                      )
-                    : model.currentIndex == 5
-                        ? TransactionPopupView(
-                            onSelected: model.onStockBalancePopupSelected)
+                    ? TransactionPopupView(
+                        onSelected: model.onStockBalancePopupSelected)
+                    : model.currentIndex == 1
+                        ? Container()
                         : Container(),
-            // model.currentIndex == 4
-            //     ? IconButton(
-            //         icon: Icon(Icons.calendar_month),
-            //         onPressed: () async {
-            //           var result = await showDateRangePicker(
-            //               context: context,
-            //               firstDate:
-            //                   DateTime.now().subtract(Duration(days: 30)),
-            //               lastDate: DateTime.now());
-            //           if (result is DateTimeRange) {
-            //             model.updateFinalizedOrderRange(result);
-            //           }
-            //         },
-            //       )
-            //     : Container()
 
             // MapIconButton(),
           ],
@@ -161,7 +137,10 @@ class HomeView extends StatelessWidget {
       case 0:
         return Stack(
           children: [
-            DashboardView(),
+            // LocationWidget(),
+            // DashboardView(),
+            CRMDashboardView()
+            // NetworkSensitiveWidget(),
           ],
         );
         break;
@@ -185,29 +164,12 @@ class HomeView extends StatelessWidget {
       case 3:
         return Column(
           children: [
-            Expanded(child: QuotationListingView()),
+            Expanded(child: StockView()),
             model.enableOffline ? NetworkSensitiveWidget() : Container(),
           ],
         );
         break;
       case 4:
-        return Column(
-          children: [
-            Expanded(
-              child: InvoicingView(),
-            ),
-            model.enableOffline ? NetworkSensitiveWidget() : Container(),
-          ],
-        );
-        break;
-      case 5:
-        return Column(
-          children: [
-            Expanded(child: StockView()),
-          ],
-        );
-        break;
-      case 6:
         return Column(
           children: [
             // LocationWidget(),
@@ -221,7 +183,8 @@ class HomeView extends StatelessWidget {
           children: [
             // NetworkSensitiveWidget(),
             // LocationWidget(),
-            DashboardView(),
+            // DashboardView(),
+            CRMDashboardView()
           ],
         );
         break;
@@ -250,23 +213,11 @@ class HomeView extends StatelessWidget {
         break;
       case 3:
         return Text(
-          'Quotations',
-          style: kAppBarTextStyle,
-        );
-        break;
-      case 4:
-        return Text(
-          'Invoicing',
-          style: kAppBarTextStyle,
-        );
-        break;
-      case 5:
-        return Text(
           'Stock Balance',
           style: kAppBarTextStyle,
         );
         break;
-      case 6:
+      case 4:
         return Text(
           'Customers',
           style: kAppBarTextStyle,

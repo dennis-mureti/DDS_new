@@ -53,21 +53,20 @@ class _LoginViewState extends State<LoginView> {
                 : Container()),
         extendBodyBehindAppBar: true,
         body: Container(
-          decoration: const BoxDecoration(
-            // image: DecorationImage(
-            //     opacity: 0.1,
-            //     image: AssetImage('assets/images/background.jpg'),
-            //     fit: BoxFit.fitHeight),
-            color: kColDDSPrimaryDark,
-            // gradient: LinearGradient(
-            //   begin: Alignment.topRight,
-            //   end: Alignment.bottomLeft,
-            //   colors: [
-            //     kColDDSPrimaryDark.withOpacity(0.8),
-            //     kColDDSPrimaryDark,
-            //   ],
-            // ),
-          ),
+          decoration: BoxDecoration(
+              // image: DecorationImage(
+              //     image: AssetImage('assets/images/login_bg.jpg'),
+              //     fit: BoxFit.cover),
+              color: kColDDSPrimaryDark
+              // gradient: LinearGradient(
+              //   begin: Alignment.topCenter,
+              //   end: Alignment.bottomCenter,
+              //   colors: [
+              //     kDarkNeutral,
+              //     kDarkNeutral20,
+              //   ],
+              // ),
+              ),
           height: MediaQuery.of(context).size.height,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -106,20 +105,20 @@ class _LoginViewState extends State<LoginView> {
                           Container(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Image.network(
-                                'https://dds-apk-s3.s3.eu-west-1.amazonaws.com/DDS-Demo/DDS-LOGO-Inline.png',
-                                fit: BoxFit.contain,
-                              ),
+                              child: Image.asset(
+                                  'assets/images/dds_logo_horizontal.png'),
                             ),
                             // width: 150,
-                            // height: 80,
+                            height: 80,
                           ),
                           // Image.asset('asset/images/login.png'),
 
                           // LoginTextField(
                           //   text: 'DDS Sign In',
                           // ),
-                          const SizedBox(height: 10),
+                          SizedBox(
+                            height: 10,
+                          ),
                           TextFormFieldPadding(
                             child: TextFormField(
                               controller: _userIdController,
@@ -139,7 +138,7 @@ class _LoginViewState extends State<LoginView> {
                                 return null;
                               },
                               keyboardType: TextInputType.phone,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 filled: false,
                                 hintText: 'Email Address / Phone ',
                                 hintStyle: kFormHintTextStyle,
@@ -150,7 +149,9 @@ class _LoginViewState extends State<LoginView> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(
+                            height: 10,
+                          ),
                           TextFormFieldPadding(
                             child: TextFormField(
                               validator: (value) {
@@ -169,19 +170,19 @@ class _LoginViewState extends State<LoginView> {
                                 filled: false,
                                 hintText: 'password',
                                 hintStyle: kFormHintTextStyle,
-                                prefixIcon: const Icon(
+                                prefixIcon: Icon(
                                   Icons.lock,
                                   size: 20,
                                 ),
                                 suffixIcon: IconButton(
                                   onPressed: model.toggleObscurePassword,
                                   icon: model.obscurePassword
-                                      ? const Icon(
+                                      ? Icon(
                                           FontAwesomeIcons.eye,
                                           size: 15,
                                           color: Colors.grey,
                                         )
-                                      : const Icon(
+                                      : Icon(
                                           FontAwesomeIcons.eyeSlash,
                                           size: 15,
                                           color: Colors.grey,
@@ -191,41 +192,63 @@ class _LoginViewState extends State<LoginView> {
                             ),
                           ),
 
-                          // Padding(
-                          //   padding:
-                          //       const EdgeInsets.symmetric(horizontal: 18.0),
-                          //   child: Row(
-                          //     children: [
-                          //       Text('Select Language : '),
-                          //       SizedBox(
-                          //         width: 5,
-                          //       ),
-                          //       Expanded(
-                          //         child: DropdownButton(
-                          //             isExpanded: true,
-                          //             value: model.language,
-                          //             items: model.languages
-                          //                 .map(
-                          //                   (e) => DropdownMenuItem(
-                          //                     child: Text(e),
-                          //                     value: e,
-                          //                   ),
-                          //                 )
-                          //                 .toList(),
-                          //             onChanged: model.setLanguage),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 18.0),
+                            child: Row(
+                              children: [
+                                Text('Select Language : '),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  child: DropdownButton(
+                                      isExpanded: true,
+                                      value: model.language,
+                                      items: model.languages
+                                          .map(
+                                            (e) => DropdownMenuItem(
+                                              child: Text(e),
+                                              value: e,
+                                            ),
+                                          )
+                                          .toList(),
+                                      onChanged: model.setLanguage),
+                                ),
+                              ],
+                            ),
+                          ),
                           model.passwordValidationMessage == null
                               ? Container()
                               : FormErrorContainer(
                                   errorMsg: model.passwordValidationMessage,
                                 ),
-
-                          UIHelper.verticalSpace(18),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // Padding(
+                              //   padding:
+                              //       const EdgeInsets.only(left: 8.0, top: 5),
+                              //   child: RememberMeCheckbox(),
+                              // ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8.0, top: 10),
+                                child: TextButton(
+                                    onPressed: model.navigateToForgotPassword,
+                                    child: Text(
+                                      'Reset Password',
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          decoration: TextDecoration.underline),
+                                    )),
+                              )
+                            ],
+                          ),
+                          UIHelper.verticalSpace(10),
                           model.isBusy
-                              ? const BusyWidget()
+                              ? BusyWidget()
                               : ElevatedButton(
                                   // padding: EdgeInsets.symmetric(
                                   //     horizontal: 20, vertical: 14),
@@ -236,7 +259,7 @@ class _LoginViewState extends State<LoginView> {
                                     child: Center(
                                       child: Text(
                                         'Sign in'.toUpperCase(),
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontFamily: 'NerisBlack',
                                           color: Colors.white,
                                         ),
@@ -262,73 +285,22 @@ class _LoginViewState extends State<LoginView> {
                                           MaterialStateProperty.all(
                                               kColDDSPrimaryDark)),
                                 ),
-                          // UIHelper.verticalSpace(10),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.end,
-                          //   children: [
-                          //     Padding(
-                          //       padding: const EdgeInsets.only(right: 8.0),
-                          //       child: TextButton(
-                          //         onPressed: model.navigateToForgotPassword,
-                          //         child: const Text(
-                          //           'Forgot Password',
-                          //           style: TextStyle(
-                          //               fontSize: 14,
-                          //               fontWeight: FontWeight.w400,
-                          //               decoration: TextDecoration.underline),
-                          //         ),
-                          //       ),
-                          //     )
-                          //   ],
-                          // ),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: TextButton(
-                                  onPressed: model.navigateToForgotPassword,
-                                  child: const Text(
-                                    'Forgot Password',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        decoration: TextDecoration.underline),
-                                  ),
-                                ),
-                              ),
-                              const Spacer(),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: TextButton(
-                                  // onPressed: () {},
-                                  onPressed: model.navigateToRegister,
-                                  child: const Text(
-                                    'Create Account',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        decoration: TextDecoration.underline),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-              // Align(
-              //   alignment: Alignment.bottomCenter,
-              //   child: GestureDetector(
-              //     onTap: () => model.checkForUpdates(),
-              //     child: Text(
-              //       'Version : ${model.versionCode}',
-              //       style: TextStyle(fontSize: 14, color: Colors.white),
-              //     ),
-              //   ),
-              // ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: GestureDetector(
+                  onTap: () => model.checkForUpdates(),
+                  child: Text(
+                    'Version : ${model.versionCode}',
+                    style: TextStyle(fontSize: 14, color: Colors.white),
+                  ),
+                ),
+              ),
               Spacer(),
               model.hasUpdate && !model.isComplete
                   ? Align(
@@ -349,12 +321,12 @@ class _LoginViewState extends State<LoginView> {
     return SizedBox(
       width: 400,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 14.0),
           child: child,
         ),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
             boxShadow: [
               // BoxShadow(
               //     color: kDarkNeutral20,
@@ -375,7 +347,7 @@ class _LoginViewState extends State<LoginView> {
       children: [
         Expanded(
           child: DropdownButton(
-            dropdownColor: const Color(0xFF022065),
+            dropdownColor: Color(0xFF022065),
             isExpanded: true,
             onChanged: (AppEnv val) {
               model.updateEnv(val);
@@ -385,7 +357,7 @@ class _LoginViewState extends State<LoginView> {
                 .map((e) => DropdownMenuItem(
                       child: Text(
                         e.name,
-                        style: const TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white),
                       ),
                       value: e,
                     ))

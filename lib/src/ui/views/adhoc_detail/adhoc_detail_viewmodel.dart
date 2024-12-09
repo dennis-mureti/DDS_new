@@ -5,7 +5,6 @@ import 'package:distributor/services/adhoc_cart_service.dart';
 import 'package:distributor/services/init_service.dart';
 import 'package:distributor/services/stock_controller_service.dart';
 import 'package:distributor/services/user_service.dart';
-import 'package:distributor/src/ui/views/print_view/print_invoice_view.dart';
 import 'package:distributor/src/ui/views/print_view/print_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -23,7 +22,7 @@ class AdhocDetailViewModel extends BaseViewModel {
       locator<StockControllerService>();
 
   String get currency =>
-      _initService.appEnv.flavorValues.applicationParameter?.currency ?? "Kshs";
+      _initService.appEnv.flavorValues.applicationParameter.currency;
 
   List<Product> _productList;
   List<Product> get productList => _productList;
@@ -262,7 +261,7 @@ class AdhocDetailViewModel extends BaseViewModel {
         adhocDetail.saleItems.map((e) => SaleItem.fromMap(e)).toList();
   }
 
-  void navigateToPrint() async{
+  void navigateToPrint() {
     CustomerDetail customerDetail = CustomerDetail.fromCustomer(
       Customer(
         id: customerId,
@@ -272,23 +271,13 @@ class AdhocDetailViewModel extends BaseViewModel {
     );
     Invoice _invoice = Invoice.fromAdhocDetail(adhocDetail, currency,
         customerDetail: customerDetail);
-    await _navigationService.navigateToView(PrintView(
+    _navigationService.navigateToView(PrintView(
       invoice: _invoice,
       deliveryNote: adhocDetail,
-      title: "E-Invoice",
-      customerTIN: "",
-      items: adhocDetail.saleItems,
-      orderId: adhocDetail.deliveryNoteId,
+      title: 'e-Invoice',
       user: _userService.user,
+      orderId: referenceNo,
+      customerTIN: adhocDetail.customerTIN,
     ));
-    //
-    // _navigationService.navigateToView(PrintView(
-    //   invoice: _invoice,
-    //   deliveryNote: adhocDetail,
-    //   title: 'Invoice',
-    //   user: _userService.user,
-    //   orderId: referenceNo,
-    //   customerTIN: adhocDetail.customerTIN,
-    // ));
   }
 }

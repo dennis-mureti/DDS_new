@@ -11,7 +11,7 @@ class ReturnStockTileViewmodel extends BaseViewModel {
 
   ReturnStockTileViewmodel(Product product, Function onChange)
       : product = product,
-        maxQuantity = product.initialQuantity.toInt(),
+        maxQuantity = product.quantity.toInt(),
         onChange = onChange,
         item = Item(
             id: product.itemCode,
@@ -39,12 +39,7 @@ class ReturnStockTileViewmodel extends BaseViewModel {
         notifyListeners();
       }
     }
-  }
 
-  bool _isValidInput = true;
-  bool get isValidInput => _isValidInput;
-  setIsValidInput(bool val) {
-    _isValidInput = val;
     notifyListeners();
   }
 

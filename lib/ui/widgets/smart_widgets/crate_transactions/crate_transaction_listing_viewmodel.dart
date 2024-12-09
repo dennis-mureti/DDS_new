@@ -38,7 +38,7 @@ class CrateTransactionListingViewModel extends BaseViewModel {
 
   init() async {
     if (_journeyService.hasJourney && _journeyService.journeyId.isNotEmpty) {
-      // await api.pushOfflineTransactionsOnViewRefresh(user.token);
+      await api.pushOfflineTransactionsOnViewRefresh(user.token);
       await getCrateTransactions();
     }
   }
@@ -50,9 +50,7 @@ class CrateTransactionListingViewModel extends BaseViewModel {
     setBusy(false);
     if (result is CustomException) {
       await _dialogService.showDialog(
-        title: 'Sorry! There are no Crate Listings Available.',
-        // description: result.description,
-      );
+          title: 'Error', description: result.description);
       return;
     } else {
       List temp = result;

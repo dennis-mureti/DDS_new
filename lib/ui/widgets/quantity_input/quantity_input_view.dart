@@ -41,12 +41,12 @@ class QuantityInput extends StatelessWidget {
                 Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 15),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 Divider(),
-                Text(description,
-                    style:
-                        TextStyle(fontWeight: FontWeight.w400, fontSize: 14)),
+                Text(description),
               ],
             ),
           ),
@@ -130,21 +130,21 @@ class _TextEditingHook extends HookViewModelWidget<QuantityInputViewModel> {
   Widget buildViewModelWidget(
       BuildContext context, QuantityInputViewModel model) {
     var controller =
-        useTextEditingController();
+        useTextEditingController(text: model.initialQuantity.toString());
     return TextFormField(
       autofocus: true,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
-          // suffixIcon: IconButton(
-          //   icon: Icon(
-          //     Icons.refresh_outlined,
-          //     color: Colors.grey,
-          //   ),
-          //   onPressed: () {
-          //     model.resetQuantity();
-          //     controller.text = model.quantity.toString();
-          //   },
-          // ),
+          suffixIcon: IconButton(
+            icon: Icon(
+              Icons.refresh_outlined,
+              color: Colors.grey,
+            ),
+            onPressed: () {
+              model.resetQuantity();
+              controller.text = model.quantity.toString();
+            },
+          ),
           focusedBorder: OutlineInputBorder(
               borderSide:
                   BorderSide(color: Colors.grey.withOpacity(0.5), width: 1)),
@@ -155,14 +155,14 @@ class _TextEditingHook extends HookViewModelWidget<QuantityInputViewModel> {
       onChanged: (value) {
         model.updateQuantity(value);
       },
-      onEditingComplete: () {
-        //Close the keyboard
-        print('on edit complete');
-      },
-      onFieldSubmitted: (val) {
-        model.updateQuantity(val);
-        print('on edit field submitted');
-      },
+      // onEditingComplete: () {
+      //   //Close the keyboard
+      //   print('on edit complete');
+      // },
+      // onFieldSubmitted: (val) {
+      //   model.updateQuantity(val);
+      //   print('on edit field submitted');
+      // },
     );
   }
 }

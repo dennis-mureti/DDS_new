@@ -173,7 +173,7 @@ class JourneyService with ReactiveServiceMixin {
     return result;
   }
 
-  /// The list of [LatLng] coordinates for the [DeliveryJourney]
+  // / The list of [LatLng] coordinates for the [DeliveryJourney]
 
   RxValue<DeliveryJourney> _currentJourney =
       RxValue(initial: DeliveryJourney());
@@ -277,11 +277,5 @@ class JourneyService with ReactiveServiceMixin {
     // print(result);
     // print(result.toString());
     return;
-  }
-
-  receivedReturns(String orderId, String stopId, String deliveryLocation,
-      {DeliveryNote deliveryNote}) async {
-    return await _api.receivedReturns(
-        token: _user.token, deliveryNoteID: deliveryNote.deliveryNoteId);
   }
 }

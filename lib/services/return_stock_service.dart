@@ -1,6 +1,5 @@
 import 'package:distributor/app/locator.dart';
 import 'package:distributor/services/api_service.dart';
-import 'package:distributor/services/journey_service.dart';
 import 'package:distributor/services/stock_controller_service.dart';
 import 'package:distributor/services/user_service.dart';
 import 'package:injectable/injectable.dart';
@@ -11,13 +10,9 @@ import 'package:tripletriocore/tripletriocore.dart';
 class ReturnStockService {
   UserService _userService = locator<UserService>();
   ApiService _apiService = locator<ApiService>();
-  final _journeyService = locator<JourneyService>();
   final _dialogService = locator<DialogService>();
   final _stockControllerService = locator<StockControllerService>();
   Api get api => _apiService.api;
-
-  String _branch;
-  String get branch => _branch ?? _userService.user.branch;
 
   User get user => _userService.user;
   String get userChannel => user.salesChannel;
@@ -56,17 +51,15 @@ class ReturnStockService {
   returnEmpty() async {
     // Data for shop return
     var data = {
-      "fromWarehouse": userChannel.isEmpty ? user.branch : userChannel,
+      "fromWarehouse": userChannel,
       "items": [],
-      "toWarehouse": user.hasSalesChannel
-          ? user.branch
-          : _journeyService.currentJourney.branch
+      "toWarehouse": user.branch
     };
     var result = await api.shopReturn(user.token, stockTransferData: data);
     return result;
   }
 
-  returnItems(List itemsToReturn, {String destinationOutlet}) async {
+  returnItems() async {
     DialogResponse dialogResponse = await _dialogService.showConfirmationDialog(
         title: 'Stock Return Confirmation',
         description: 'Are you sure you want to process stock to the branch ?',
@@ -84,21 +77,11 @@ class ReturnStockService {
         });
       }
       // Data for shop return
-      // var data = {
-      //   "fromWarehouse": userChannel,
-      //   "items": _payload.toList(),
-      //   "toWarehouse": user.branch
-      // };
       var data = {
-        "fromWarehouse": _journeyService.currentJourney.route ??
-            _userService.user.salesChannel,
+        "fromWarehouse": userChannel,
         "items": _payload.toList(),
-        // "toWarehouse": user.hasSalesChannel
-        //     ? user.branch
-        //     : _journeyService.currentJourney.branch,
-        "toWarehouse": destinationOutlet,
+        "toWarehouse": user.branch
       };
-      print(data);
       var result = await api.shopReturn(user.token, stockTransferData: data);
       if (result is String) {
         await _dialogService.showDialog(title: 'Error', description: result);
@@ -106,7 +89,8 @@ class ReturnStockService {
       } else {
         await _dialogService.showDialog(
             title: 'Success',
-            description: 'The stock was returned successfully.');
+            description:
+                'The stock was returned successfully.Use the Pending Stock Transactions Button to commit this transaction.');
         return true;
       }
     }

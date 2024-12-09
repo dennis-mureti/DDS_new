@@ -25,25 +25,27 @@ class ReturnStockTileWidget extends StatelessWidget {
                   style: kListStyleItemCount,
                   secondaryStyle: kListStyleItemCount,
                 ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product.itemName,
-                        style: kTileLeadingTextStyle,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(
-                        height: 2,
-                      ),
-                      Text(
-                        product.itemCode,
-                        style: kTileSubtitleTextStyle,
-                      ),
-                    ],
-                  ),
+                SizedBox(
+                  width: 1,
                 ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.itemName,
+                      style: kTileLeadingTextStyle,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(
+                      height: 2,
+                    ),
+                    Text(
+                      product.itemCode,
+                      style: kTileSubtitleTextStyle,
+                    ),
+                  ],
+                ),
+                Spacer(),
                 Container(
                   // width: 180,
                   decoration: BoxDecoration(
@@ -89,13 +91,7 @@ class ReturnStockTileWidget extends StatelessWidget {
                                           padding: const EdgeInsets.all(8.0),
                                           child: TextField(
                                             onChanged: (val) {
-                                              if (int.parse(val) >
-                                                  model.maxQuantity) {
-                                                model.setIsValidInput(false);
-                                              } else {
-                                                model.setIsValidInput(true);
-                                                model.updateProduct(val);
-                                              }
+                                              model.updateProduct(val);
                                             },
                                             decoration:
                                                 InputDecoration(filled: false),
@@ -109,11 +105,9 @@ class ReturnStockTileWidget extends StatelessWidget {
                                           padding: const EdgeInsets.all(8.0),
                                           child: ElevatedButton(
                                             onPressed: () {
-                                              if (model.isValidInput) {
-                                                onChange(model.product);
-                                                Navigator.pop(
-                                                    context, model.product);
-                                              }
+                                              onChange(model.product);
+                                              Navigator.pop(
+                                                  context, model.product);
                                             },
                                             child: Text(
                                               'Submit',

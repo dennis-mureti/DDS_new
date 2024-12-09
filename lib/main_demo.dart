@@ -28,8 +28,10 @@ void main() async {
     AppEnv(
       flavor: Flavor.demo,
       name: 'DDS Demo',
-      flavorValues:
-          FlavorValues(baseUrl: 'http://63.34.178.251:8888/dds-backend/api/v1'),
+      flavorValues: FlavorValues(
+        // baseUrl: 'http://63.34.178.251:8888/dds-backend/api/v1'
+        baseUrl: 'http://165.227.255.167:9087/spvdev-backend/api/v1',
+      ),
     ),
   ]);
   ByteData data =

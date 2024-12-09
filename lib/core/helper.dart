@@ -87,15 +87,4 @@ class Helper {
     }
     return formattedString;
   }
-
-  static formatCurrencyWithLess(var valToFormat) {
-    var f = NumberFormat("###,##0");
-    String formattedString;
-    if (valToFormat == null) {
-      formattedString = " ";
-    } else {
-      formattedString = f.format(valToFormat);
-    }
-    return formattedString;
-  }
 }

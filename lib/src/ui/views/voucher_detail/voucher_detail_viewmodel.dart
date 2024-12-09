@@ -1,5 +1,4 @@
 import 'package:distributor/app/locator.dart';
-import 'package:distributor/app/router.gr.dart';
 import 'package:distributor/core/models/app_models.dart';
 import 'package:distributor/services/user_service.dart';
 import 'package:distributor/src/ui/common/transaction_viewmodel.dart';
@@ -76,8 +75,7 @@ class VoucherDetailViewmodel extends TransactionViewmodel {
             description: 'The transaction has been ${val}ed successfully');
         _disableDropdown = true;
         getTransaction();
-        _navigationService.pushNamedAndRemoveUntil(Routes.homeView,
-            arguments: HomeViewArguments(index: 5));
+        _navigationService.back(result: true);
       } else {
         await _dialogService.showDialog(
             title: 'Pending Transaction Error',

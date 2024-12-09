@@ -21,7 +21,7 @@ class CrateTransactionListingView extends StatelessWidget {
       builder: (context, model, child) {
         return model.hasSelectedJourney == true
             ? model.isBusy
-                ? const Center(child: BusyWidget())
+                ? Center(child: BusyWidget())
                 : model.crateTransactionListings.isNotEmpty
                     ? RefreshIndicator(
                         backgroundColor: kColorDDSPrimaryDark,

@@ -22,7 +22,7 @@ class ConfirmStockTransferViewModel extends BaseViewModel {
   List<Product> _modifiedItems;
   List<Product> get modifiedItems => _modifiedItems;
 
-  ConfirmStockTransferViewModel(this.stockTransferItems, this.sourceOutlet)
+  ConfirmStockTransferViewModel(this.stockTransferItems)
       : _modifiedItems = stockTransferItems;
 
   deleteItem(Product p) {
@@ -44,10 +44,10 @@ class ConfirmStockTransferViewModel extends BaseViewModel {
         },
         "quantity": element.quantity
       };
-      items.add(e);
+      items.add(e);  
     });
     var payload = {
-      "fromWarehouse": sourceOutlet, // Source Branch
+      "fromWarehouse": branch, // Source Branch
       "toWarehouse": salesChannel, // Destination shop
       "items": items.toList(),
     };
@@ -76,6 +76,4 @@ class ConfirmStockTransferViewModel extends BaseViewModel {
     }
     setBusy(false);
   }
-
-  final String sourceOutlet;
 }

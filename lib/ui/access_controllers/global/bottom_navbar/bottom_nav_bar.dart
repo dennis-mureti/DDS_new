@@ -84,50 +84,33 @@ class BottomNavBar extends StatelessWidget {
             BottomNavigationBarItem(
               backgroundColor: Color(0xFF182848),
               icon: IconButton(
-                  splashColor: kColorDDSPrimaryDark,
-                  icon: Icon(Icons.question_answer_outlined),
-                  onPressed: () {
-                    model.updateIndex(3);
-                    onTap(model.index);
-                    // onTap(Pages.routes, "Routes");
-                  }),
-              label: 'Quotations'.toUpperCase(),
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: Color(0xFF182848),
-              icon: IconButton(
                 splashColor: kColorDDSPrimaryDark,
-                onPressed: () {
-                  {
-                    model.updateIndex(4);
-                    onTap(model.index);
-                  }
-                },
-                icon: Icon(Icons.add_chart_rounded),
+                icon: Icon(Icons.apps),
+                onPressed: model.isEnabled(3)
+                    ? model.onStockBalanceTap()
+                        ? () {
+                            model.updateIndex(3);
+                            // onTap(Pages.products, "Stock Balance");
+                            onTap(model.index);
+                          }
+                        : null
+                    : null,
               ),
-              label: 'Invoices'.toUpperCase(),
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: Color(0xFF182848),
-              icon: IconButton(
-                  splashColor: kColorDDSPrimaryDark,
-                  icon: Icon(Icons.apps),
-                  onPressed: () {
-                    model.updateIndex(5);
-                    // onTap(Pages.products, "Stock Balance");
-                    onTap(model.index);
-                  }),
               label: 'Stock Balance'.toUpperCase(),
             ),
             BottomNavigationBarItem(
               backgroundColor: Color(0xFF182848),
               icon: IconButton(
                 splashColor: kColorDDSPrimaryDark,
-                onPressed: () {
-                  model.updateIndex(6);
-                  onTap(model.index);
-                  // onTap(Pages.customers, "Customers");
-                },
+                onPressed: model.isEnabled(4)
+                    ? model.onCustomerTabTap()
+                        ? () {
+                            model.updateIndex(4);
+                            onTap(model.index);
+                            // onTap(Pages.customers, "Customers");
+                          }
+                        : null
+                    : null,
                 icon: Icon(Icons.people),
               ),
               label: 'Customers'.toUpperCase(),

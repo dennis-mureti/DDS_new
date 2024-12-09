@@ -26,10 +26,8 @@ class OrderHistoryTabViewModel extends ReactiveViewModel {
   List<SalesOrder> _customerSalesOrders = [];
   List<SalesOrder> get customerSalesOrders => _customerSalesOrders;
 
-  bool get enableOffline =>
-      _initService
-          .appEnv.flavorValues.applicationParameter?.enableOfflineService ??
-      false;
+  bool get enableOffline => _initService
+      .appEnv.flavorValues.applicationParameter.enableOfflineService;
 
   Future fetchCustomerOrders() async {
     setBusy(true);

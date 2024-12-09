@@ -13,6 +13,7 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:tripletriocore/tripletriocore.dart';
 import 'package:distributor/app/router.gr.dart' as app_router;
+
 import 'conf/dds_brand_guide.dart';
 
 class MainApp extends StatelessWidget {

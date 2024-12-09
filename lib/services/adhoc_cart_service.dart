@@ -23,9 +23,8 @@ class AdhocCartService with ReactiveServiceMixin {
 
   ApplicationParameter get appParams => _apiService.appParams;
 
-  bool get enforceCreditLimit => appParams?.enforceCreditLimit ?? false;
-  bool get enforceCustomerSecurity =>
-      appParams?.enforceCustomerSecurity ?? false;
+  bool get enforceCreditLimit => appParams.enforceCreditLimit;
+  bool get enforceCustomerSecurity => appParams.enforceCustomerSecurity;
 
   UserLocation _userLocation;
   UserLocation get userLocation => _userLocation;
@@ -73,8 +72,7 @@ class AdhocCartService with ReactiveServiceMixin {
   String get customerType => _customerType.value;
 
   RxValue<List<Product>> _itemsInCart = RxValue(initial: <Product>[]);
-  List<Product> get itemsInCart =>
-      _itemsInCart.value.where((item) => item.quantity > 0).toList();
+  List<Product> get itemsInCart => _itemsInCart.value;
 
   RxValue<List> _paymentModeDetails = RxValue(initial: []);
   List get paymentModeDetails => _paymentModeDetails.value;
@@ -100,9 +98,6 @@ class AdhocCartService with ReactiveServiceMixin {
 
   CustomerSecurity _customerSecurity;
   CustomerSecurity get customerSecurity => _customerSecurity;
-
-  bool _isVariable;
-  bool get isVariable => _isVariable;
 
   init() async {
     if (_logisticsService.currentJourney != null) {
@@ -137,9 +132,6 @@ class AdhocCartService with ReactiveServiceMixin {
     if (enforceCustomerSecurity) {
       var result = await _customerService.getCustomerSecurity(customer);
       _customerSecurity = CustomerSecurity.fromMap(result);
-      _isVariable = _customerSecurity.securityType.toLowerCase() == "variable"
-          ? true
-          : false;
       _securityBalance.value =
           double.tryParse(_customerSecurity.securityAmount) ?? 0.0;
 
@@ -165,7 +157,6 @@ class AdhocCartService with ReactiveServiceMixin {
   Api get api => _apiService.api;
   String get token => _userService.user.token;
 
-  RxValue _phoneNumber = RxValue(initial: "");
   RxValue _customer = RxValue();
   RxValue _total = RxValue(initial: 0);
   RxValue _paymentMode = RxValue(initial: "");
@@ -198,7 +189,6 @@ class AdhocCartService with ReactiveServiceMixin {
   List<Product> get customerProductList => _customerProductList;
 
   calculateSecurity(Product item, var quantity) {
-    num defaultSecurity = double.tryParse(customerSecurity.securityAmount);
     // Is customer calculated for the security? If no, return 0.0
     if (customerSecurity.calcSecurity.toLowerCase() != "yes") {
       return _securityAmount.value;
@@ -212,26 +202,29 @@ class AdhocCartService with ReactiveServiceMixin {
 
     var itemFactor = double.tryParse(item.itemFactor) ?? 0.5;
     var result = (quantity * securityAmount * itemFactor).toDouble();
+    print(result);
     _securityBalance.value += result;
-    itemsInCart.forEach((i) {
-      // var ite = ddsItemRepository.getItemByCode(item.itemCode!);
-      // Now calculate the variable security
-      if (i.itemCode.toLowerCase() == item.itemCode.toLowerCase()) {
-        print(item.quantity);
+    print("This is the security to ADD:::: ${securityBalance}");
 
-        var quantity = item.quantity ?? 0;
-        var securityAmount = int.tryParse(customerSecurity.securityAmount) ?? 0;
-        // var result = (quantity * securityAmount * item.itemFactor).toDouble();
-        var result = (quantity * securityAmount).toDouble();
-        // var result = (quantity * securityAmount).toDouble();
-        _securityBalance.value += result;
-      }
-    });
+    // itemsInCart.forEach((i) {
+    //   // var ite = ddsItemRepository.getItemByCode(item.itemCode!);
+    //   // Now calculate the variable security
+    //   if (i.itemCode.toLowerCase() == item.itemCode.toLowerCase()) {
+    //     print(item.quantity);
+    //
+    //     var quantity = item.quantity ?? 0;
+    //     var securityAmount = int.tryParse(customerSecurity.securityAmount) ?? 0;
+    //     // var result = (quantity * securityAmount * item.itemFactor).toDouble();
+    //     var result = (quantity * securityAmount).toDouble();
+    //     // var result = (quantity * securityAmount).toDouble();
+    //     _securityBalance.value += result;
+    //     print("This is the security to ADD:::: ${securityBalance}");
+    //   }
+    // });
   }
 
   AdhocCartService() {
     listenToReactiveValues([
-      _phoneNumber,
       _total,
       _paymentMode,
       _customerId,
@@ -264,13 +257,6 @@ class AdhocCartService with ReactiveServiceMixin {
     _paymentMode.value = val;
   }
 
-  initializeSalesOrderItems(List<Product> productList) {
-    for (int i = 0; i < productList.length; i++) {
-      SalesOrderItem s = SalesOrderItem(item: productList[i], quantity: 0);
-      _items.value.add(s);
-    }
-  }
-
   increaseSalesOrderItems(Product p, quantity) {
     if (_itemsInCart.value.contains(p)) {
       // Get the element that contains the product in the sales item
@@ -278,7 +264,6 @@ class AdhocCartService with ReactiveServiceMixin {
         if (_items.value[i].item == p) {
           // Increase the value of the sales order item
           _items.value[i].quantity += quantity;
-          // calculateSecurity(p, quantity);
           notifyListeners();
         }
       }
@@ -286,9 +271,12 @@ class AdhocCartService with ReactiveServiceMixin {
       _itemsInCart.value.add(p);
       SalesOrderItem s = SalesOrderItem(item: p, quantity: quantity);
       _items.value.add(s);
-      // calculateSecurity(p, quantity);
       notifyListeners();
     }
+
+    //@TODO : Calculate the security
+
+    //@TODO : Calculate the credit balance
   }
 
   resetTotal() {
@@ -313,7 +301,6 @@ class AdhocCartService with ReactiveServiceMixin {
         }
       }
     }
-    // calculateSecurity(p, -quantity);
     notifyListeners();
   }
 
@@ -359,31 +346,18 @@ class AdhocCartService with ReactiveServiceMixin {
     }
   }
 
-  String get phoneNumber => _phoneNumber.value ?? "";
-  setPhoneNumber(String val) {
-    _phoneNumber.value = val;
-  }
-
-  double _cashValue;
-  double get cashValue => _cashValue ?? 0;
-
-  setCashValue(String val) {
-    _phoneNumber.value = val;
-  }
-
   get customerName => _customerName.value;
 
-  createPayment({var cashValue}) async {
+  createPayment() async {
     // await getCurrentLocation();
     Map<String, dynamic> data = {
       "customerId": customerId,
       "customerName": customerName,
-      "items": items.where((element) => element.quantity > 0)
+      "items": items
           .map((e) => {
                 "itemCode": e.item.itemCode,
                 "itemName": e.item.itemName,
                 "itemRate": e.item.itemPrice,
-                "itemPrice": e.item.itemPrice,
                 "quantity": e.quantity
               })
           .toList(),
@@ -392,23 +366,21 @@ class AdhocCartService with ReactiveServiceMixin {
         "externalAccountId": "string",
         "externalTxnID": "string",
         "externalTxnNarrative": "string",
-        "phone": phoneNumber ?? "",
-        "mpesa_amount": total - cashValue,
         "payerAccount": "string",
         "payerName": "string",
         "paymentMode": paymentMode == 'INVOICE' ? 'ACCOUNT' : paymentMode,
         "userTxnNarrative": "string"
       },
-      "deliveryLocation": ",",
+      "deliveryLocation":
+          "${userLocation?.latitude},${userLocation?.longitude}",
       "remarks": remarks,
       "sellingPriceList": sellingPriceList,
       "warehouseId":
           _userService.user.salesChannel ?? _journeyService.currentJourney.route
     };
 
-    dynamic result = await api.makePayment(
-        modeOfPayment:
-            paymentMode == 'INVOICE' ? 'ACCOUNT' : paymentMode.toLowerCase(),
+    var result = await api.createPOSPayment(
+        modeOfPayment: paymentMode == 'INVOICE' ? 'ACCOUNT' : paymentMode,
         data: data,
         token: token);
 
@@ -422,8 +394,7 @@ class AdhocCartService with ReactiveServiceMixin {
   final _initService = locator<InitService>();
 
   get enableAdhocSale =>
-      _initService.appEnv.flavorValues.applicationParameter?.enableAdhocSales ??
-      true;
+      _initService.appEnv.flavorValues.applicationParameter.enableAdhocSales;
 
   fetchAdhocSalesList({DateTime postingDate}) async {
     String route = "";
@@ -464,27 +435,4 @@ class AdhocCartService with ReactiveServiceMixin {
   }
 
   void resetCart() {}
-
-  calculateTotal() {
-    num total = 0;
-    for (int i = 0; i < _itemsInCart.value.length; i++) {
-      total += _itemsInCart.value[i].quantity * _itemsInCart.value[i].itemPrice;
-    }
-    return total;
-  }
-
-  void deleteItem(item) {
-    if (_itemsInCart.value.contains(item)) {
-      _itemsInCart.value.remove(item);
-      for (int i = 0; i < _items.value.length; i++) {
-        if (_items.value[i].item == item) {
-          _itemsInCart.value.remove(item);
-          _items.value.removeAt(i);
-          //Update the total
-          _total.value -= item.itemPrice * item.quantity;
-        }
-      }
-    }
-    notifyListeners();
-  }
 }
