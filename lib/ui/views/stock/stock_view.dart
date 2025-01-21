@@ -73,11 +73,12 @@ class StockView extends StatelessWidget {
                           ),
                         )
                       : DefaultTabController(
-                          length: 4,
+                          // length: 4,
+                          length: 2,
                           child: Expanded(
                             child: Column(
                               children: [
-                                Material(
+                                const Material(
                                   color: kColorNeutral,
                                   elevation: 3,
                                   child: TabBar(
@@ -86,6 +87,7 @@ class StockView extends StatelessWidget {
                                     unselectedLabelColor: kColorLabelColor1,
                                     indicatorColor: kColorDDSPrimaryDark,
                                     indicatorWeight: 3,
+                                    // indicatorWeight: 1,
                                     tabs: [
                                       Tab(
                                         child: Text(
@@ -93,19 +95,19 @@ class StockView extends StatelessWidget {
                                           style: kTabTextStyleActive,
                                         ),
                                       ),
-                                      Tab(
-                                        child: Text(
-                                          'Crates',
-                                          style: kTabTextStyleActive,
-                                        ),
-                                      ),
-                                      Tab(
-                                        child: Text(
-                                          'Crates Movement',
-                                          textAlign: TextAlign.center,
-                                          style: kTabTextStyleActive,
-                                        ),
-                                      ),
+                                      // Tab(
+                                      //   child: Text(
+                                      //     'Crates',
+                                      //     style: kTabTextStyleActive,
+                                      //   ),
+                                      // ),
+                                      // Tab(
+                                      //   child: Text(
+                                      //     'Crates Movement',
+                                      //     textAlign: TextAlign.center,
+                                      //     style: kTabTextStyleActive,
+                                      //   ),
+                                      // ),
                                       Tab(
                                         child: Text(
                                           'Order Summary',
@@ -123,8 +125,8 @@ class StockView extends StatelessWidget {
                                         rebuildWidgetTree: model.rebuildTree,
                                       ),
                                       // Container(),
-                                      CrateView(),
-                                      CrateTransactionListingView(),
+                                      // CrateView(),
+                                      // CrateTransactionListingView(),
                                       CrewHistoryView()
                                     ],
                                   ),

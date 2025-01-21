@@ -23,7 +23,7 @@ class OrderHistoryTile extends StatelessWidget {
         },
         isThreeLine: true,
         subtitle: Padding(
-          padding: EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.only(bottom: 8),
           child: Text(
               // 'Order Date : ${Helper.getDay(salesOrder.orderDate.toString())} \nDue Date : ${Helper.getDay(salesOrder.dueDate.toString())}'),
               'Order Date : ${salesOrder.orderDate.toString()} \nDue Date : ${salesOrder.dueDate.toString()}'),
@@ -37,7 +37,7 @@ class OrderHistoryTile extends StatelessWidget {
                     ? Container(
                         width: 0,
                       )
-                    : Icon(
+                    : const Icon(
                         (Icons.timer_sharp),
                         size: 16,
                       ),

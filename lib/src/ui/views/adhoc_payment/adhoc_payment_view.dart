@@ -15,24 +15,22 @@ class AdhocPaymentView extends StatelessWidget {
         builder: (context, model, child) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(
+              title: const Text(
                 'Selling : Payment',
                 style: kAppBarTextStyle,
               ),
             ),
             body: Container(
-              margin: EdgeInsets.only(
+              margin: const EdgeInsets.only(
                   left: 10.0, right: 10.0, bottom: 10.0, top: 10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                       'Amount Due :  ${model.currency} ${model.total.toStringAsFixed(2)}'),
-                  SizedBox(
-                    height: 8,
-                  ),
+                  const SizedBox(height: 8),
                   DropdownButton(
-                      key: Key('paymentmodes'),
+                      key: const Key('paymentmodes'),
                       items: model.paymentModes
                           .map((e) => DropdownMenuItem(
                                 child: Text(e),
@@ -42,23 +40,23 @@ class AdhocPaymentView extends StatelessWidget {
                       value: model.paymentMode,
                       isExpanded: true,
                       dropdownColor: Colors.white,
-                      hint: Text('Select payment mode'),
+                      hint: const Text('Select payment mode'),
                       onChanged: (val) {
                         model.setPaymentType(val);
                       }),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   _buildPaymentFields(model.paymentMode),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   // _RemarksTextField(),
-                  SizedBox(
+                  const SizedBox(
                     width: 24,
                   ),
                   model.isBusy
-                      ? Center(child: BusyWidget())
+                      ? const Center(child: BusyWidget())
                       : Container(
                           width: MediaQuery.of(context).size.width,
                           child: ElevatedButton(
@@ -70,7 +68,7 @@ class AdhocPaymentView extends StatelessWidget {
                                     model.completeAdhoc();
                                   }
                                 : null,
-                            child: Text(
+                            child: const Text(
                               'COMPLETE',
                               style: TextStyle(
                                 color: Colors.white,
@@ -112,7 +110,7 @@ class _RemarksTextField extends HookViewModelWidget<AdhocPaymentViewmodel> {
       maxLines: 3,
       onChanged: model.updateRemarks,
       keyboardType: TextInputType.name,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         hintText: 'Remarks',
       ),
     );
@@ -127,19 +125,19 @@ class _MPESAFormField extends HookViewModelWidget<AdhocPaymentViewmodel> {
       child: Column(
         children: [
           TextFormField(
-            decoration: InputDecoration(hintText: 'Till/Paybill Number'),
+            decoration: const InputDecoration(hintText: 'Till/Paybill Number'),
           ),
           TextFormField(
-            decoration: InputDecoration(hintText: 'Telephone Number'),
+            decoration: const InputDecoration(hintText: 'Telephone Number'),
           ),
           TextFormField(
-            decoration: InputDecoration(hintText: 'Reference'),
+            decoration: const InputDecoration(hintText: 'Reference'),
           ),
           TextFormField(
-            decoration: InputDecoration(hintText: 'Telephone Number'),
+            decoration: const InputDecoration(hintText: 'Telephone Number'),
           ),
           TextFormField(
-            decoration: InputDecoration(hintText: 'Payer Name'),
+            decoration: const InputDecoration(hintText: 'Payer Name'),
           ),
         ],
       ),

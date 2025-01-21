@@ -19,7 +19,7 @@ class JourneyConsole extends StatelessWidget {
                     Container(
                       width: double.infinity,
                       height: 70,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           stops: [0, 0.9],
                           begin: Alignment.bottomCenter,
@@ -44,7 +44,7 @@ class JourneyConsole extends StatelessWidget {
                                   ? model.updateJourneyStatus
                                   : null,
                               child: model.isBusy
-                                  ? SizedBox(
+                                  ? const SizedBox(
                                       width: 50,
                                       height: 50,
                                       child: Center(child: BusyWidget()),
@@ -57,17 +57,17 @@ class JourneyConsole extends StatelessWidget {
                                           : model.journeyStatus
                                                   .toLowerCase()
                                                   .contains('dispatched')
-                                              ? JourneyControlButton(
+                                              ? const JourneyControlButton(
                                                   label: 'START',
                                                 )
                                               : model.journeyStatus
                                                       .toLowerCase()
                                                       .contains('completed')
-                                                  ? Icon(
+                                                  ? const Icon(
                                                       Icons.check,
                                                       color: kStartControl,
                                                     )
-                                                  : JourneyControlButton(
+                                                  : const JourneyControlButton(
                                                       label: 'STOP',
                                                       backgroundColor:
                                                           Color(0xFFff0000),
@@ -136,9 +136,7 @@ class JourneyConsole extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              width: 10,
-                            ),
+                            const SizedBox(width: 10),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -156,23 +154,24 @@ class JourneyConsole extends StatelessWidget {
                                                   MainAxisAlignment.end,
                                               children: [
                                                 IconButton(
-                                                  icon: Icon(Icons.close),
+                                                  icon: const Icon(Icons.close),
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
                                                 ),
                                               ],
                                             ),
-                                            ListTile(
-                                              leading: Icon(Icons.read_more),
-                                              title: Text(
-                                                  'Return Crates To Warehouse'),
-                                              onTap: () async {
-                                                await model
-                                                    .navigateToCrateView();
-                                                Navigator.pop(context);
-                                              },
-                                            ),
+                                            // ListTile(
+                                            //   leading:
+                                            //       const Icon(Icons.read_more),
+                                            //   title: const Text(
+                                            //       'Return Crates To Warehouse'),
+                                            //   onTap: () async {
+                                            //     await model
+                                            //         .navigateToCrateView();
+                                            //     Navigator.pop(context);
+                                            //   },
+                                            // ),
                                             // ListTile(
                                             //   leading: Icon(Icons.ad_units),
                                             //   title: Text(
@@ -198,16 +197,17 @@ class JourneyConsole extends StatelessWidget {
                                                     .navigateToJourneyInfoRoute();
                                                 Navigator.pop(context);
                                               },
-                                              leading: Icon(Icons.swap_calls),
-                                              title:
-                                                  Text('View other journeys'),
+                                              leading:
+                                                  const Icon(Icons.swap_calls),
+                                              title: const Text(
+                                                  'View other journeys'),
                                             ),
                                           ],
                                         ),
                                       ),
                                     );
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.expand_more,
                                     size: 30,
                                     color: Colors.white,

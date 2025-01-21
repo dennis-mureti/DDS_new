@@ -42,7 +42,7 @@ class CreateSalesOrderView extends StatelessWidget {
             //     Navigator.pop(context, false);
             //   },
             // ),
-            actions: [
+            actions: const [
               IconButton(onPressed: null, icon: Icon(Icons.list)),
               // IconButton(onPressed: null, icon: Icon(Icons.list)),
             ],
@@ -52,11 +52,11 @@ class CreateSalesOrderView extends StatelessWidget {
             ),
           ),
           body: model.isBusy
-              ? Center(
+              ? const Center(
                   child: BusyWidget(),
                 )
               : model.productList.isEmpty
-                  ? Center(
+                  ? const Center(
                       child: EmptyContentContainer(label: 'No SKUs found'),
                     )
                   : Column(
@@ -89,14 +89,14 @@ class CreateSalesOrderView extends StatelessWidget {
                               return Dismissible(
                                 background: Container(
                                   color: Colors.green,
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.add_circle,
                                     color: Colors.white,
                                   ),
                                 ),
                                 secondaryBackground: Container(
                                   color: Colors.red,
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.remove_circle,
                                     color: Colors.white,
                                   ),
@@ -173,9 +173,7 @@ class CreateSalesOrderView extends StatelessWidget {
                                         style: kTileLeadingTextStyle,
 //                    overflow: TextOverflow.ellipsis,
                                       ),
-                                      SizedBox(
-                                        height: 2,
-                                      ),
+                                      const SizedBox(height: 2),
                                       Row(
                                         children: [
                                           Text(
@@ -274,7 +272,7 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(
+                const Text(
                   'Order Details',
                   style: TextStyle(
                     fontSize: 20,
@@ -290,14 +288,14 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
                         builder: (context) {
                           return SafeArea(
                             child: Container(
-                              margin: EdgeInsets.fromLTRB(10, 15, 10, 15),
+                              margin: const EdgeInsets.fromLTRB(10, 15, 10, 15),
                               child: Column(
                                 children: <Widget>[
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Text(
+                                      const Text(
                                         'REMARKS',
                                         style: TextStyle(
                                             fontSize: 20,
@@ -305,11 +303,11 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
                                       ),
                                       IconButton(
                                         onPressed: () => Navigator.pop(context),
-                                        icon: Icon(Icons.close),
+                                        icon: const Icon(Icons.close),
                                       ),
                                     ],
                                   ),
-                                  Divider(),
+                                  const Divider(),
                                   TextFormField(
                                     controller: _textEditingController,
                                     keyboardType: TextInputType.text,
@@ -318,17 +316,17 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
                                     },
                                     minLines: 5,
                                     maxLines: 10,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                         hintText: 'Any additional remarks'),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 10,
                                   ),
                                   ElevatedButton(
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
-                                    child: Text(
+                                    child: const Text(
                                       'SAVE REMARKS',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
@@ -340,11 +338,11 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
                           );
                         });
                   },
-                  child: Icon(Icons.add_comment),
+                  child: const Icon(Icons.add_comment),
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             Padding(
@@ -352,10 +350,10 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Delivery Date'),
+                  const Text('Delivery Date'),
                   widget.model.dueDate == null
                       ? Row(
-                          children: [
+                          children: const [
                             Icon(AntDesign.exclamationcircleo),
                             SizedBox(
                               width: 5,
@@ -389,7 +387,7 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Items In Cart'),
+                  const Text('Items In Cart'),
                   Text(widget.model.itemsInCart.length.toString())
                 ],
               ),
@@ -412,7 +410,7 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Order Total'),
+                  const Text('Order Total'),
                   Text(
                     '${model.currency} ${Helper.formatCurrency(widget.model.total)}',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -420,7 +418,7 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 4,
             ),
             Container(
@@ -428,13 +426,13 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
               child: ElevatedButton(
                 style: ButtonStyle(
                     padding: MaterialStateProperty.all(
-                      EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                     ),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)))),
                 child: Text(
                   'Continue'.toUpperCase(),
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontFamily: 'ProximaNova500',
                       color: Colors.white,
                       fontSize: 18),
@@ -454,7 +452,7 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
                       ? showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                                title: Text(
+                                title: const Text(
                                   'DUE DATE REQUIRED',
                                   style: TextStyle(color: Colors.indigo),
                                 ),
@@ -468,7 +466,7 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
                                 ],
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
+                                  children: const <Widget>[
                                     Icon(
                                       FontAwesomeIcons.calendarAlt,
                                       size: 50,
@@ -486,15 +484,15 @@ class _SummaryDraggableSheetState extends State<SummaryDraggableSheet> {
                           ? showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: Text(
+                                title: const Text(
                                   'NO ITEMS ADDED',
                                   style: TextStyle(color: Colors.indigo),
                                 ),
                                 actions: <Widget>[
                                   TextButton.icon(
                                     onPressed: () => Navigator.pop(context),
-                                    icon: Icon(Icons.close),
-                                    label: Text('CLOSE'),
+                                    icon: const Icon(Icons.close),
+                                    label: const Text('CLOSE'),
                                     // splashColor: Colors.indigo,
                                   )
                                 ],
@@ -561,7 +559,7 @@ class SearchBar extends HookViewModelWidget<SalesOrderViewModel> {
           filled: true,
           fillColor: Colors.grey[200],
           hintText: 'Search',
-          prefixIcon: Icon(Icons.search),
+          prefixIcon: const Icon(Icons.search),
           // hintText: 'Search for an SKU',
           suffixIcon: IconButton(
               onPressed: () {
@@ -578,9 +576,9 @@ class _ResultsView extends HookViewModelWidget<SalesOrderViewModel> {
   @override
   Widget buildViewModelWidget(BuildContext context, SalesOrderViewModel model) {
     return ListView.separated(
-        physics: ClampingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         separatorBuilder: (context, index) {
-          return Divider(
+          return const Divider(
             height: 0.1,
           );
         },

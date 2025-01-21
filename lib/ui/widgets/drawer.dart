@@ -11,13 +11,13 @@ class CustomDrawer extends HookViewModelWidget<HomeViewModel> {
   @override
   Widget buildViewModelWidget(BuildContext context, HomeViewModel model) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: kColorNeutral,
       ),
       child: Row(
         children: [
           Container(
-            decoration: BoxDecoration(color: kColorDDSPrimaryDark),
+            decoration: const BoxDecoration(color: kColorDDSPrimaryDark),
             width: MediaQuery.of(context).size.width * .15,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -46,97 +46,166 @@ class CustomDrawer extends HookViewModelWidget<HomeViewModel> {
                   children: <Widget>[
                     Expanded(
                       child: UserAccountsDrawerHeader(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.transparent,
                         ),
                         accountEmail: Text(
                           '${model.user.email ?? model.user.mobile}',
-                          style: TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black),
                         ),
                         accountName: Text(
                           '${model.user.full_name}',
-                          style: TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
                     ),
                   ],
                 )),
-                DrawerListTile(
-                  isEnabled: model.enableHomeTab,
-                  label: 'Home',
+                // DrawerListTile(
+                //   isEnabled: model.enableHomeTab,
+                //   label: 'Home',
+                //   onTap: () {
+                //     Navigator.pop(context);
+                //     model.navigateToHome(0);
+                //   },
+                //   iconData: Icons.home,
+                // ),
+
+                ListTile(
+                  leading: Text(
+                    'Home'.toUpperCase(),
+                    style: const TextStyle(
+                        fontFamily: 'NerisBlack', color: kColDDSPrimaryDark),
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     model.navigateToHome(0);
                   },
-                  iconData: Icons.home,
+                  trailing: const Icon(Icons.home, color: kColDDSPrimaryDark),
                 ),
-                DrawerListTile(
-                  isEnabled: model.enableHomeTab,
-                  label: 'Journey',
+
+                // DrawerListTile(
+                //   isEnabled: model.enableHomeTab,
+                //   label: 'Journey',
+                //   onTap: () {
+                //     Navigator.pop(context);
+                //     model.navigateToHome(1);
+                //   },
+                //   iconData: Icons.swap_calls,
+                // ),
+                ListTile(
+                  leading: Text(
+                    'Journey'.toUpperCase(),
+                    style: const TextStyle(
+                        fontFamily: 'NerisBlack', color: kColDDSPrimaryDark),
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     model.navigateToHome(1);
                   },
-                  iconData: Icons.swap_calls,
+                  trailing:
+                      const Icon(Icons.swap_calls, color: kColDDSPrimaryDark),
                 ),
                 ListTile(
                   leading: Text(
                     'Selling'.toUpperCase(),
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontFamily: 'NerisBlack', color: kColDDSPrimaryDark),
                   ),
                   onTap: () {
                     Navigator.pop(context);
                     model.navigateToHome(2);
                   },
-                  trailing:
-                      Icon(Icons.add_shopping_cart, color: kColDDSPrimaryDark),
+                  trailing: const Icon(Icons.add_shopping_cart,
+                      color: kColDDSPrimaryDark),
                 ),
                 ListTile(
                   leading: Text(
                     'Quotations'.toUpperCase(),
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontFamily: 'NerisBlack', color: kColDDSPrimaryDark),
                   ),
                   onTap: () {
                     Navigator.pop(context);
                     model.navigateToHome(3);
                   },
-                  trailing:
-                      Icon(Icons.question_answer, color: kColDDSPrimaryDark),
+                  trailing: const Icon(Icons.question_answer,
+                      color: kColDDSPrimaryDark),
                 ),
-                DrawerListTile(
-                  isEnabled: true,
-                  // isEnabled: model.enableProductTab,
-                  label: 'Invoicing',
+                // DrawerListTile(
+                //   isEnabled: true,
+                //   // isEnabled: model.enableProductTab,
+                //   label: 'Invoicing',
+                //   onTap: () {
+                //     Navigator.pop(context);
+                //     model.navigateToHome(4);
+                //   },
+                //   iconData: Icons.add_chart_rounded,
+                // ),
+
+                ListTile(
+                  leading: Text(
+                    'Invoicing'.toUpperCase(),
+                    style: const TextStyle(
+                        fontFamily: 'NerisBlack', color: kColDDSPrimaryDark),
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     model.navigateToHome(4);
                   },
-                  iconData: Icons.add_chart_rounded,
+                  trailing: const Icon(Icons.add_chart_rounded,
+                      color: kColDDSPrimaryDark),
                 ),
-                DrawerListTile(
-                  isEnabled: model.enableProductTab,
-                  label: 'Stock Controller',
+
+                // DrawerListTile(
+                //   isEnabled: model.enableProductTab,
+                //   label: 'Stock Controller',
+                //   onTap: () {
+                //     Navigator.pop(context);
+                //     model.navigateToHome(5);
+                //   },
+                //   iconData: Icons.apps,
+                // ),
+
+                ListTile(
+                  leading: Text(
+                    'Stock Controller'.toUpperCase(),
+                    style: const TextStyle(
+                        fontFamily: 'NerisBlack', color: kColDDSPrimaryDark),
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     model.navigateToHome(5);
                   },
-                  iconData: Icons.apps,
+                  trailing: const Icon(Icons.apps, color: kColDDSPrimaryDark),
                 ),
 
-                DrawerListTile(
-                  isEnabled: model.enableCustomerTab,
-                  label: 'Customers',
+                // DrawerListTile(
+                //   isEnabled: model.enableCustomerTab,
+                //   label: 'Customers',
+                //   onTap: () {
+                //     Navigator.pop(context);
+                //     model.navigateToHome(6);
+                //   },
+                //   iconData: Icons.people,
+                // ),
+
+                ListTile(
+                  leading: Text(
+                    'Customers'.toUpperCase(),
+                    style: const TextStyle(
+                        fontFamily: 'NerisBlack', color: kColDDSPrimaryDark),
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     model.navigateToHome(6);
                   },
-                  iconData: Icons.people,
+                  trailing: const Icon(Icons.people, color: kColDDSPrimaryDark),
                 ),
-                Divider(),
+
+                const Divider(),
                 ListTile(
-                  title: Text(
+                  title: const Text(
                     'CHANGE PASSWORD',
                     style: TextStyle(
                         fontFamily: 'NerisBlack', color: kColDDSPrimaryDark),
@@ -148,7 +217,7 @@ class CustomDrawer extends HookViewModelWidget<HomeViewModel> {
                 ),
 
                 ListTile(
-                  title: Text(
+                  title: const Text(
                     'LOG OUT',
                     style: TextStyle(
                         fontFamily: 'NerisBlack', color: kColDDSPrimaryDark),

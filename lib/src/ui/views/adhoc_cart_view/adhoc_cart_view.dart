@@ -40,11 +40,11 @@ class AdhocCartView extends StatelessWidget {
             ),
           ),
           body: model.isBusy
-              ? Center(
+              ? const Center(
                   child: BusyWidget(),
                 )
               : model.productList.isEmpty
-                  ? Center(
+                  ? const Center(
                       child: EmptyContentContainer(label: 'No SKUs found'),
                     )
                   : Column(
@@ -177,7 +177,7 @@ class _ResultsView extends HookViewModelWidget<SalesOrderViewModel> {
   @override
   Widget buildViewModelWidget(BuildContext context, SalesOrderViewModel model) {
     return ListView.builder(
-        physics: ClampingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         shrinkWrap: true,
         itemCount: model.productList.length,
         itemBuilder: (context, index) {
@@ -222,14 +222,14 @@ class SearchBar extends HookViewModelWidget<SalesOrderViewModel> {
           filled: true,
           fillColor: Colors.grey[200],
           hintText: 'Search',
-          prefixIcon: Icon(Icons.search),
+          prefixIcon: const Icon(Icons.search),
           // hintText: 'Search for an SKU',
           suffixIcon: IconButton(
               onPressed: () {
                 searchString.text = '';
                 viewModel.resetSearch();
               },
-              icon: Icon(Icons.cancel_outlined))),
+              icon: const Icon(Icons.cancel_outlined))),
     );
   }
 }

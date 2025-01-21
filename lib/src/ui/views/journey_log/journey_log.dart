@@ -15,7 +15,7 @@ class JourneyLog extends StatelessWidget {
       builder: (context, model, child) {
         return Scaffold(
           appBar: AppBar(
-            title: Text("Journey Detail"),
+            title: const Text("Journey Detail"),
           ),
           body: model.isBusy
               ? BusyWidget()

@@ -28,11 +28,11 @@ class DeliveryNoteView extends StatelessWidget {
                   mainTitle: model.deliveryStop.customerId,
                   subTitle: model.deliveryStop.deliveryNoteId,
                 ),
-                bottom: TabBar(
+                bottom: const TabBar(
                   tabs: [
                     Tab(
                       child: Text(
-                        'Summary',
+                        'Sumconstmary',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -49,14 +49,14 @@ class DeliveryNoteView extends StatelessWidget {
                   // if (model.enablePrint)
                   IconButton(
                     onPressed: () => model.navigateToPreview(),
-                    icon: Icon(Icons.print),
+                    icon: const Icon(Icons.print),
                   ),
                   PopupMenuButton(
                     itemBuilder: (context) {
                       return <PopupMenuEntry<Object>>[
                         if (model.enableCustomDelivery)
                           PopupMenuItem(
-                            child: Text('Make Delivery'),
+                            child: const Text('Make Delivery'),
                             value: model.deliveryStop.stopId != null &&
                                     model.deliveryNote.deliveryStatus
                                             .toLowerCase() ==
@@ -67,7 +67,7 @@ class DeliveryNoteView extends StatelessWidget {
                           ),
                         if (model.enableFullDelivery)
                           PopupMenuItem(
-                            child: Text('Full Delivery'),
+                            child: const Text('Full Delivery'),
                             value: model.deliveryStop.stopId != null &&
                                     model.deliveryNote.deliveryStatus
                                             .toLowerCase() ==
@@ -76,16 +76,16 @@ class DeliveryNoteView extends StatelessWidget {
                                 ? 'full_delivery'
                                 : 'not_possible',
                           ),
-                        PopupMenuDivider(),
-                        PopupMenuItem(
-                            child: Text('Collect Crates'),
-                            value: 'receive_crates'),
-                        PopupMenuItem(
-                            child: Text('Drop Crates'), value: 'drop_crates'),
-                        PopupMenuDivider(),
+                        // PopupMenuDivider(),
+                        // PopupMenuItem(
+                        //     child: Text('Collect Crates'),
+                        //     value: 'receive_crates'),
+                        // PopupMenuItem(
+                        //     child: Text('Drop Crates'), value: 'drop_crates'),
+                        const PopupMenuDivider(),
                         if (model.enableSalesReturns)
                           PopupMenuItem(
-                            child: Text('Sales Returns'),
+                            child: const Text('Sales Returns'),
                             value: model.deliveryStop.stopId != null &&
                                     model.deliveryNote.deliveryStatus
                                             .toLowerCase() ==
@@ -95,7 +95,7 @@ class DeliveryNoteView extends StatelessWidget {
                           ),
                         if (model.enableReceivedReturns)
                           PopupMenuItem(
-                            child: Text('Received Returns'),
+                            child: const Text('Received Returns'),
                             value: model.deliveryStop.stopId != null &&
                                     model.deliveryNote.deliveryStatus
                                             .toLowerCase() ==
@@ -127,7 +127,7 @@ class DeliveryNoteView extends StatelessWidget {
               body: TabBarView(
                 children: [
                   model.deliveryNote == null
-                      ? Center(child: BusyWidget())
+                      ? const Center(child: BusyWidget())
                       : Container(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,14 +149,14 @@ class DeliveryNoteView extends StatelessWidget {
                                           children: <Widget>[
                                             Text(
                                               'Order No : ${model.deliveryStop.deliveryNoteId}',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w700),
                                             ),
                                             model.isSynced
                                                 ? Text(
                                                     '${model.deliveryNote.deliveryStatus.toUpperCase()}',
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         color: Colors.purple,
                                                         fontWeight:
                                                             FontWeight.w700),
@@ -166,17 +166,17 @@ class DeliveryNoteView extends StatelessWidget {
                                                       Text(
                                                         'fulfilled'
                                                             .toUpperCase(),
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             color:
                                                                 Colors.purple,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w700),
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         width: 5,
                                                       ),
-                                                      Icon(
+                                                      const Icon(
                                                         Icons
                                                             .access_time_rounded,
                                                         size: 15,
@@ -186,7 +186,7 @@ class DeliveryNoteView extends StatelessWidget {
                                           ],
                                         ),
 
-                                        Divider(),
+                                        const Divider(),
 
                                         Text(
                                             'Sales Order No : ${model.deliveryStop.orderId}'),
@@ -203,7 +203,7 @@ class DeliveryNoteView extends StatelessWidget {
                                           child: Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
-                                            children: <Widget>[
+                                            children: const <Widget>[
                                               // salesOrder.orderStatus
                                               //         .contains('To Bill')
                                               //     ? Text('Due Date : Delivered')
@@ -240,7 +240,7 @@ class DeliveryNoteView extends StatelessWidget {
                   model.deliveryNote == null
                       ? BusyWidget()
                       : Container(
-                          margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
+                          margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,

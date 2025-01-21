@@ -65,10 +65,10 @@ class AddIssueView extends StatelessWidget {
                       hintText: 'Ticket Description',
                       labelText: 'Give us more information about the issue'),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 24,
                 ),
                 model.isBusy
@@ -80,7 +80,7 @@ class AddIssueView extends StatelessWidget {
                             await model.addIssue();
                             Navigator.pop(context);
                           },
-                          child: Text(
+                          child: const Text(
                             'ADD ISSUE',
                             style: TextStyle(
                                 color: Colors.white, fontFamily: 'NerisBlack'),

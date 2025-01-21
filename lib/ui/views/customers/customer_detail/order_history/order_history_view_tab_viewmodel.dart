@@ -26,6 +26,8 @@ class OrderHistoryTabViewModel extends ReactiveViewModel {
   List<SalesOrder> _customerSalesOrders = [];
   List<SalesOrder> get customerSalesOrders => _customerSalesOrders;
 
+  // var customerSalesOrders = <SalesOrder>[].obs;
+
   bool get enableOffline =>
       _initService
           .appEnv.flavorValues.applicationParameter?.enableOfflineService ??
@@ -41,6 +43,11 @@ class OrderHistoryTabViewModel extends ReactiveViewModel {
     notifyListeners();
   }
 
+  void addOrder(SalesOrder newOrder) {
+    customerSalesOrders.add(newOrder);
+    notifyListeners(); // Notify listeners to trigger UI update
+  }
+
   navigateToOrder(SalesOrder salesOrder, DeliveryJourney deliveryJourney,
       String stopId) async {
     await _navigationService.navigateTo(Routes.orderDetailView,
@@ -53,6 +60,19 @@ class OrderHistoryTabViewModel extends ReactiveViewModel {
 
   init() async {
     await fetchCustomerOrders();
+  }
+
+  Future<void> refreshOrders() async {
+    setBusy(true);
+    try {
+      // Call your data-fetching logic here
+      await fetchCustomerOrders(); // Assuming fetchOrders updates customerSalesOrders
+    } catch (e) {
+      // Handle error
+      setError(e);
+    } finally {
+      setBusy(false);
+    }
   }
 
   @override

@@ -17,7 +17,7 @@ class ContactsTabView extends StatelessWidget {
     return ViewModelBuilder<ContactsTabViewViewModel>.nonReactive(
         builder: (context, model, child) => SingleChildScrollView(
               child: Container(
-                margin: EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 10.0),
+                margin: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 10.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -34,8 +34,8 @@ class ContactsTabView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(5),
                                 elevation: 2.0,
                                 child: Container(
-                                  margin: EdgeInsets.only(bottom: 10.0),
-                                  padding: EdgeInsets.all(15.0),
+                                  margin: const EdgeInsets.only(bottom: 10.0),
+                                  padding: const EdgeInsets.all(15.0),
                                   width: double.infinity,
                                   child: Column(
                                     crossAxisAlignment:
@@ -44,7 +44,7 @@ class ContactsTabView extends StatelessWidget {
                                       Center(
                                           child: Text(
                                         'General Information'.toUpperCase(),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 18.0),
                                       )),

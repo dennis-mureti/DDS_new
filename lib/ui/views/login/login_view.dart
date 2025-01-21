@@ -119,6 +119,37 @@ class _LoginViewState extends State<LoginView> {
                           // LoginTextField(
                           //   text: 'DDS Sign In',
                           // ),
+                          // const SizedBox(height: 10),
+                          // TextFormFieldPadding(
+                          //   child: TextFormField(
+                          //     controller: _userIdController,
+                          //     style: kFormInputTextStyle,
+                          //     onChanged: (String val) {
+                          //       model.setUserId(val);
+                          //     },
+                          //     onFieldSubmitted: (value) {
+                          //       FocusScope.of(context).nextFocus();
+                          //     },
+                          //     onEditingComplete: () =>
+                          //         FocusScope.of(context).nextFocus(),
+                          //     validator: (String value) {
+                          //       if (value != null) {
+                          //         return 'Please enter a business ID';
+                          //       }
+                          //       return null;
+                          //     },
+                          //     keyboardType: TextInputType.text,
+                          //     decoration: const InputDecoration(
+                          //       filled: false,
+                          //       hintText: 'Business ID (Optional)',
+                          //       hintStyle: kFormHintTextStyle,
+                          //       prefixIcon: Icon(
+                          //         Icons.add_business,
+                          //         size: 24,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                           const SizedBox(height: 10),
                           TextFormFieldPadding(
                             child: TextFormField(
@@ -138,7 +169,7 @@ class _LoginViewState extends State<LoginView> {
                                 }
                                 return null;
                               },
-                              keyboardType: TextInputType.phone,
+                              keyboardType: TextInputType.text,
                               decoration: const InputDecoration(
                                 filled: false,
                                 hintText: 'Email Address / Phone ',
@@ -263,28 +294,11 @@ class _LoginViewState extends State<LoginView> {
                                               kColDDSPrimaryDark)),
                                 ),
                           // UIHelper.verticalSpace(10),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.end,
-                          //   children: [
-                          //     Padding(
-                          //       padding: const EdgeInsets.only(right: 8.0),
-                          //       child: TextButton(
-                          //         onPressed: model.navigateToForgotPassword,
-                          //         child: const Text(
-                          //           'Forgot Password',
-                          //           style: TextStyle(
-                          //               fontSize: 14,
-                          //               fontWeight: FontWeight.w400,
-                          //               decoration: TextDecoration.underline),
-                          //         ),
-                          //       ),
-                          //     )
-                          //   ],
-                          // ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
+                                padding: const EdgeInsets.only(right: 8.0),
                                 child: TextButton(
                                   onPressed: model.navigateToForgotPassword,
                                   child: const Text(
@@ -295,24 +309,41 @@ class _LoginViewState extends State<LoginView> {
                                         decoration: TextDecoration.underline),
                                   ),
                                 ),
-                              ),
-                              const Spacer(),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: TextButton(
-                                  // onPressed: () {},
-                                  onPressed: model.navigateToRegister,
-                                  child: const Text(
-                                    'Create Account',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        decoration: TextDecoration.underline),
-                                  ),
-                                ),
-                              ),
+                              )
                             ],
                           ),
+                          // Row(
+                          //   children: [
+                          //     Padding(
+                          //       padding: const EdgeInsets.only(left: 8.0),
+                          //       child: TextButton(
+                          //         onPressed: model.navigateToForgotPassword,
+                          //         child: const Text(
+                          //           'Forgot Password',
+                          //           style: TextStyle(
+                          //               fontSize: 14,
+                          //               fontWeight: FontWeight.w400,
+                          //               decoration: TextDecoration.underline),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //     const Spacer(),
+                          //     Padding(
+                          //       padding: const EdgeInsets.only(right: 8.0),
+                          //       child: TextButton(
+                          //         // onPressed: () {},
+                          //         onPressed: model.navigateToRegister,
+                          //         child: const Text(
+                          //           'Create Account',
+                          //           style: TextStyle(
+                          //               fontSize: 14,
+                          //               fontWeight: FontWeight.w400,
+                          //               decoration: TextDecoration.underline),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ),

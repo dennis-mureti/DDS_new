@@ -37,10 +37,10 @@ class TransactionPopupView extends StatelessWidget {
                     child: Text('Return Stock'),
                     value: 1,
                   ),
-                  PopupMenuItem(
-                    child: Text('Return Crates'),
-                    value: 2,
-                  )
+                  // PopupMenuItem(
+                  //   child: Text('Return Crates'),
+                  //   value: 2,
+                  // )
                 ],
               ),
             ),

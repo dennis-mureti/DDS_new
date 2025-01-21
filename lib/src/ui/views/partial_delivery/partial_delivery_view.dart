@@ -41,13 +41,13 @@ class _PartialDeliveryViewState extends State<PartialDeliveryView> {
               ),
             ),
             body: Container(
-              margin: EdgeInsets.symmetric(horizontal: 8),
+              margin: const EdgeInsets.symmetric(horizontal: 8),
               child: model.isBusy
-                  ? Center(child: BusyWidget())
+                  ? const Center(child: BusyWidget())
                   : Column(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
                           child: Text(
                               'Confirm that these are the number of stock items that you are returning to the warehouse',
                               style: kLeadingBodyText),
@@ -68,8 +68,8 @@ class _PartialDeliveryViewState extends State<PartialDeliveryView> {
                         //           model.updateReason(e);
                         //         }),
                         // ReasonTextView(),
-                        Divider(),
-                        Text('Items'),
+                        const Divider(),
+                        const Text('Items'),
                         //Fetch SKUS
                         Expanded(
                           child: ListView.builder(
@@ -115,7 +115,7 @@ class _PartialDeliveryViewState extends State<PartialDeliveryView> {
                                                     Text(
                                                       salesOrderRequestItem[
                                                           'itemName'],
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
                                                               FontWeight.bold),

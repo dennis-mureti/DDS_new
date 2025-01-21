@@ -254,7 +254,7 @@ class OrderConfirmation extends StatelessWidget {
                             )
                           : model.isBusy
                               ? Column(
-                                  children: <Widget>[
+                                  children: const <Widget>[
                                     BusyWidget(),
                                     SizedBox(
                                       height: 5,

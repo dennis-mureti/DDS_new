@@ -71,14 +71,15 @@ class OrderDetailView extends StatelessWidget {
                     '${salesOrder.customerName}',
                     overflow: TextOverflow.fade,
                   )
-                : Text(''),
+                : const Text(''),
             bottom: TabBar(
               indicatorSize: TabBarIndicatorSize.tab,
               unselectedLabelColor: Colors.white.withOpacity(0.5),
               labelColor: Colors.white,
               indicatorColor: Colors.pink,
-              labelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-              tabs: <Widget>[
+              labelStyle:
+                  const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+              tabs: const <Widget>[
                 Tab(
                   text: 'Summary',
                 ),
@@ -92,7 +93,7 @@ class OrderDetailView extends StatelessWidget {
             ),
           ),
           body: model.isBusy
-              ? Center(
+              ? const Center(
                   child: BusyWidget(),
                 )
               : TabBarView(
@@ -102,7 +103,7 @@ class OrderDetailView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                            margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
+                            margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                             child: Material(
                               type: MaterialType.card,
                               color: Colors.white,
@@ -117,21 +118,21 @@ class OrderDetailView extends StatelessWidget {
                                       children: <Widget>[
                                         Text(
                                           'Order No : ${salesOrder.orderNo}',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w700),
                                         ),
                                         Text(
                                           '${salesOrder.orderStatus}'
                                               .toUpperCase(),
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.purple,
                                               fontWeight: FontWeight.w700),
                                         )
                                       ],
                                     ),
 
-                                    Divider(),
+                                    const Divider(),
 
                                     Container(
                                       child: Text(
@@ -145,7 +146,8 @@ class OrderDetailView extends StatelessWidget {
                                         children: <Widget>[
                                           salesOrder.orderStatus
                                                   .contains('To Bill')
-                                              ? Text('Due Date : Delivered')
+                                              ? const Text(
+                                                  'Due Date : Delivered')
                                               : Text(
                                                   'Due Date: ${Helper.getDay(salesOrder.dueDate)}')
                                         ],
@@ -158,12 +160,12 @@ class OrderDetailView extends StatelessWidget {
                                         : Text(
                                             'Route : ${model.deliveryJourney.route}'),
 
-                                    Divider(),
+                                    const Divider(),
 
-                                    SubheadingText('Remarks'),
+                                    const SubheadingText('Remarks'),
                                     Text('${salesOrder.remarks}'),
 
-                                    Divider(),
+                                    const Divider(),
 
                                     CustomerSummaryWidget(
                                         salesOrder.customerName),
@@ -178,7 +180,7 @@ class OrderDetailView extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
+                      margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                       child: Material(
                         elevation: 3,
                         color: Colors.white,

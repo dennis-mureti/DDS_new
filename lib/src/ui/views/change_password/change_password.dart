@@ -25,29 +25,29 @@ class ChangePasswordView extends StatelessWidget {
         builder: (context, model, child) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Change Password'),
+              title: const Text('Change Password'),
             ),
             body: Container(
-              margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: ListView(
                 children: [
                   Text(
                     model.introTextToDisplay,
                     style: kLeadingBodyText,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 16,
                   ),
                   _oldPassTextFormField(),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   _newPassTextFormField(),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   _confirmPassTextFormField(),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   model.isBusy
@@ -55,7 +55,7 @@ class ChangePasswordView extends StatelessWidget {
                       : ElevatedButton(
                           onPressed:
                               model.enableSubmit ? model.changePassword : null,
-                          child: Text('Change Password'),
+                          child: const Text('Change Password'),
                         )
                 ],
               ),
@@ -107,7 +107,7 @@ class _confirmPassTextFormField
     return TextFormField(
       onChanged: (val) => model.setConfirmPassword(val),
       controller: _controller,
-      decoration: InputDecoration(labelText: 'Confirm password'),
+      decoration: const InputDecoration(labelText: 'Confirm password'),
     );
   }
 }

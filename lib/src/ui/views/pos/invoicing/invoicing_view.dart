@@ -23,7 +23,7 @@ class InvoicingView extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                      child: TabBar(
+                      child: const TabBar(
                         tabs: [
                           Tab(
                             child: Text('Pending'),
@@ -39,13 +39,13 @@ class InvoicingView extends StatelessWidget {
                     ),
                     Expanded(
                         child: model.isBusy
-                            ? Center(child: BusyWidget())
+                            ? const Center(child: BusyWidget())
                             : TabBarView(
                                 children: [
                                   model.pendingInvoices.isNotEmpty
                                       ? Column(
                                           children: [
-                                            Divider(),
+                                            const Divider(),
                                             Container(
                                               height: 40,
                                               color:
@@ -78,7 +78,7 @@ class InvoicingView extends StatelessWidget {
                                                     Row(
                                                       children: [
                                                         IconButton(
-                                                          icon: Icon(
+                                                          icon: const Icon(
                                                             Icons
                                                                 .calendar_month,
                                                             size: 15,
@@ -89,7 +89,7 @@ class InvoicingView extends StatelessWidget {
                                                                     context,
                                                                 firstDate: DateTime
                                                                         .now()
-                                                                    .subtract(Duration(
+                                                                    .subtract(const Duration(
                                                                         days:
                                                                             30)),
                                                                 initialDate:
@@ -108,7 +108,7 @@ class InvoicingView extends StatelessWidget {
                                                           },
                                                         ),
                                                         IconButton(
-                                                          icon: Icon(
+                                                          icon: const Icon(
                                                             Icons.refresh,
                                                             size: 15,
                                                           ),
@@ -121,7 +121,7 @@ class InvoicingView extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
-                                            Divider(),
+                                            const Divider(),
                                             Expanded(
                                               child: _InvoiceTile(
                                                   model.pendingInvoices,
@@ -131,7 +131,7 @@ class InvoicingView extends StatelessWidget {
                                         )
                                       : Column(
                                           children: [
-                                            Divider(),
+                                            const Divider(),
                                             Container(
                                               height: 40,
                                               color:
@@ -164,7 +164,7 @@ class InvoicingView extends StatelessWidget {
                                                     Row(
                                                       children: [
                                                         IconButton(
-                                                          icon: Icon(
+                                                          icon: const Icon(
                                                             Icons
                                                                 .calendar_month,
                                                             size: 15,
@@ -175,7 +175,7 @@ class InvoicingView extends StatelessWidget {
                                                                     context,
                                                                 firstDate: DateTime
                                                                         .now()
-                                                                    .subtract(Duration(
+                                                                    .subtract(const Duration(
                                                                         days:
                                                                             30)),
                                                                 initialDate:
@@ -194,7 +194,7 @@ class InvoicingView extends StatelessWidget {
                                                           },
                                                         ),
                                                         IconButton(
-                                                          icon: Icon(
+                                                          icon: const Icon(
                                                             Icons.refresh,
                                                             size: 15,
                                                           ),
@@ -207,8 +207,8 @@ class InvoicingView extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
-                                            Divider(),
-                                            Expanded(
+                                            const Divider(),
+                                            const Expanded(
                                               child: Center(
                                                 child: EmptyContentContainer(
                                                     label:
@@ -220,7 +220,7 @@ class InvoicingView extends StatelessWidget {
                                   model.finalizedInvoices.isNotEmpty
                                       ? Column(
                                           children: [
-                                            Divider(),
+                                            const Divider(),
                                             Container(
                                               height: 40,
                                               color:
@@ -253,7 +253,7 @@ class InvoicingView extends StatelessWidget {
                                                     Row(
                                                       children: [
                                                         IconButton(
-                                                          icon: Icon(
+                                                          icon: const Icon(
                                                             Icons
                                                                 .calendar_month,
                                                             size: 15,
@@ -264,7 +264,7 @@ class InvoicingView extends StatelessWidget {
                                                                     context,
                                                                 firstDate: DateTime
                                                                         .now()
-                                                                    .subtract(Duration(
+                                                                    .subtract(const Duration(
                                                                         days:
                                                                             30)),
                                                                 initialDate:
@@ -283,7 +283,7 @@ class InvoicingView extends StatelessWidget {
                                                           },
                                                         ),
                                                         IconButton(
-                                                          icon: Icon(
+                                                          icon: const Icon(
                                                             Icons.refresh,
                                                             size: 15,
                                                           ),
@@ -296,7 +296,7 @@ class InvoicingView extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
-                                            Divider(),
+                                            const Divider(),
                                             Expanded(
                                               child: _InvoiceTile(
                                                   model.finalizedInvoices,
@@ -339,7 +339,7 @@ class InvoicingView extends StatelessWidget {
                                                     Row(
                                                       children: [
                                                         IconButton(
-                                                          icon: Icon(
+                                                          icon: const Icon(
                                                             Icons
                                                                 .calendar_month,
                                                             size: 15,
@@ -350,7 +350,7 @@ class InvoicingView extends StatelessWidget {
                                                                     context,
                                                                 firstDate: DateTime
                                                                         .now()
-                                                                    .subtract(Duration(
+                                                                    .subtract(const Duration(
                                                                         days:
                                                                             30)),
                                                                 initialDate:
@@ -369,7 +369,7 @@ class InvoicingView extends StatelessWidget {
                                                           },
                                                         ),
                                                         IconButton(
-                                                          icon: Icon(
+                                                          icon: const Icon(
                                                             Icons.refresh,
                                                             size: 15,
                                                           ),
@@ -382,8 +382,8 @@ class InvoicingView extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
-                                            Divider(),
-                                            Expanded(
+                                            const Divider(),
+                                            const Expanded(
                                               child: Center(
                                                 child: EmptyContentContainer(
                                                     label:
@@ -395,7 +395,7 @@ class InvoicingView extends StatelessWidget {
                                   model.failedInvoices.isNotEmpty
                                       ? Column(
                                           children: [
-                                            Divider(),
+                                            const Divider(),
                                             Container(
                                               height: 40,
                                               color:
@@ -428,7 +428,7 @@ class InvoicingView extends StatelessWidget {
                                                     Row(
                                                       children: [
                                                         IconButton(
-                                                          icon: Icon(
+                                                          icon: const Icon(
                                                             Icons
                                                                 .calendar_month,
                                                             size: 15,
@@ -439,7 +439,7 @@ class InvoicingView extends StatelessWidget {
                                                                     context,
                                                                 firstDate: DateTime
                                                                         .now()
-                                                                    .subtract(Duration(
+                                                                    .subtract(const Duration(
                                                                         days:
                                                                             30)),
                                                                 initialDate:
@@ -458,7 +458,7 @@ class InvoicingView extends StatelessWidget {
                                                           },
                                                         ),
                                                         IconButton(
-                                                          icon: Icon(
+                                                          icon: const Icon(
                                                             Icons.refresh,
                                                             size: 15,
                                                           ),
@@ -514,7 +514,7 @@ class InvoicingView extends StatelessWidget {
                                                     Row(
                                                       children: [
                                                         IconButton(
-                                                          icon: Icon(
+                                                          icon: const Icon(
                                                             Icons
                                                                 .calendar_month,
                                                             size: 15,
@@ -525,7 +525,7 @@ class InvoicingView extends StatelessWidget {
                                                                     context,
                                                                 firstDate: DateTime
                                                                         .now()
-                                                                    .subtract(Duration(
+                                                                    .subtract(const Duration(
                                                                         days:
                                                                             30)),
                                                                 initialDate:
@@ -544,7 +544,7 @@ class InvoicingView extends StatelessWidget {
                                                           },
                                                         ),
                                                         IconButton(
-                                                          icon: Icon(
+                                                          icon: const Icon(
                                                             Icons.refresh,
                                                             size: 15,
                                                           ),
@@ -557,8 +557,8 @@ class InvoicingView extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
-                                            Divider(),
-                                            Expanded(
+                                            const Divider(),
+                                            const Expanded(
                                               child: Center(
                                                 child: EmptyContentContainer(
                                                     label:
@@ -679,6 +679,9 @@ class _InvoiceTile extends HookViewModelWidget<InvoicingViewModel> {
       //             });
       //       });
       //   break;
+      case InvoiceType.pending:
+        // TODO: Handle this case.
+        break;
     }
   }
 }

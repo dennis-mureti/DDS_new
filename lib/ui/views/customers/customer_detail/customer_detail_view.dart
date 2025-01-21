@@ -42,9 +42,9 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
   }
 
   @override
-  initState() {
-    _tabController = TabController(length: 3, initialIndex: 0, vsync: this);
+  void initState() {
     super.initState();
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   _buildAddButton(CustomerDetailViewModel model) {
@@ -55,7 +55,7 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
         break;
       case 1:
         toDisplay = IconButton(
-          icon: Icon(Icons.add_circle_outline_sharp),
+          icon: const Icon(Icons.add_circle_outline_sharp),
           onPressed: model.enablePlaceOrder
               ? () {
                   model.navigateToPlaceOrder();
@@ -76,7 +76,7 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
         break;
       case 2:
         toDisplay = IconButton(
-          icon: Icon(Icons.add_circle_outline_sharp),
+          icon: const Icon(Icons.add_circle_outline_sharp),
           onPressed: model.enableAddIssue
               ? () {
                   model.navigateToAddIssue();
@@ -102,7 +102,7 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
       builder: (context, model, child) => Scaffold(
         backgroundColor: kDarkNeutral,
         appBar: AppBar(
-          actionsIconTheme: IconThemeData(color: Colors.white),
+          actionsIconTheme: const IconThemeData(color: Colors.white),
           title: Text(
             '${widget.customer.name}',
             style: kAppBarTextStyle,
@@ -148,7 +148,7 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
                       //   ),
                       //   value: 'make_adhoc_sale',
                       // ),
-                      PopupMenuDivider(),
+                      const PopupMenuDivider(),
                       // PopupMenuItem(
                       //   child: Text(
                       //     'Add Payment',
@@ -186,12 +186,12 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
             controller: _tabController,
             indicatorColor: kColorDDSPrimaryLight,
             indicatorWeight: 3.0,
-            labelPadding: EdgeInsets.only(bottom: 10.0),
-            labelStyle: TextStyle(
+            labelPadding: const EdgeInsets.only(bottom: 10.0),
+            labelStyle: const TextStyle(
                 fontFamily: kFontThinBody,
                 color: Colors.pink,
                 fontSize: kBodyTextSize),
-            unselectedLabelStyle: TextStyle(fontFamily: kFontThinBody),
+            unselectedLabelStyle: const TextStyle(fontFamily: kFontThinBody),
             labelColor: kMutedYellowDark,
             unselectedLabelColor: Colors.white,
             onTap: (int) {
@@ -201,30 +201,38 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
                 result = true;
                 updateCurrentIndex(int);
               }
+              // if (int == 1) {
+              //   // Does the user have authority to check orders
+              //   if (model.enableOrdersTab) {
+              //     result = true;
+              //     updateCurrentIndex(int);
+              //   }
+              // }
+
               if (int == 1) {
                 // Does the user have authority to check orders
-                if (model.enableOrdersTab) {
+                // if (model.enableOrdersTab) {
+                result = true;
+                updateCurrentIndex(int);
+                // }
+              }
+              if (int == 2) {
+                // Does the user have authority to check accounts
+                if (model.enableAccountsTab) {
                   result = true;
                   updateCurrentIndex(int);
                 }
               }
               // if (int == 2) {
-              //   // Does the user have authority to check accounts
-              //   if (model.enableAccountsTab) {
-              //     result = true;
-              //     updateCurrentIndex(int);
-              //   }
+              //   result = true;
+              //   updateCurrentIndex(int);
               // }
-              if (int == 2) {
-                result = true;
-                updateCurrentIndex(int);
-              }
               if (!result) {
                 //The user cannot view this tab
                 _tabController.animateTo(_tabController.previousIndex);
               }
             },
-            tabs: <Widget>[
+            tabs: const <Widget>[
               Tab(
                 text: 'Info',
               ),
@@ -244,10 +252,16 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
 //          color: Color.fromRGBO(24, 24, 24, 1),
           child: TabBarView(
             controller: _tabController,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             children: <Widget>[
               ContactsTabView(customer: widget.customer),
               OrderHistoryTab(customer: widget.customer),
+              // model.enableOrdersTab
+              //     ? OrderHistoryTab(
+              //         customer: widget.customer,
+              //       )
+              //     : Container(),
+
               // model.enableAccountsTab
               //     ? AccountsTab(
               //         customer: widget.customer,
@@ -258,8 +272,8 @@ class _CustomerDetailViewState extends State<CustomerDetailView>
                       customer: widget.customer,
                     )
                   : Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      child: Center(
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                      child: const Center(
                         child: Text(
                           'You dont have sufficient permissions to view issues',
                           textAlign: TextAlign.center,
@@ -281,7 +295,7 @@ class AccountsTableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
+      children: const <Widget>[
         Expanded(
           flex: 3,
           child: Text(
@@ -432,7 +446,7 @@ class _AccountsTableRowState extends State<AccountsTableRow> {
                             alignment: Alignment.topRight,
                             child: IconButton(
                               splashColor: Colors.pink,
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.close,
                                 color: Colors.indigo,
                               ),
@@ -442,21 +456,21 @@ class _AccountsTableRowState extends State<AccountsTableRow> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text(
+                              const Text(
                                 'DATE',
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
                               Text(
                                 '${Helper.getDay(widget.customerTransaction[currentIndex].entryDate)}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontWeight: FontWeight.w400, fontSize: 14),
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
-                          Text(
+                          const Text(
                             'DESCRIPTION',
                             style: TextStyle(fontWeight: FontWeight.w500),
                           ),
@@ -465,14 +479,14 @@ class _AccountsTableRowState extends State<AccountsTableRow> {
                               Expanded(
                                 child: Text(
                                   '${_customerTransaction.description}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.w400,
                                       fontSize: 14),
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Row(
@@ -481,10 +495,10 @@ class _AccountsTableRowState extends State<AccountsTableRow> {
                                 currentIndex == 0
                                     ? 'Opening Balance'
                                     : 'Previous Balance',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 14, fontStyle: FontStyle.italic),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Text(
                                 currentIndex == 0
                                     ? Helper.formatCurrency(
@@ -499,15 +513,15 @@ class _AccountsTableRowState extends State<AccountsTableRow> {
                           _customerTransaction.creditAmount > 0
                               ? Row(
                                   children: <Widget>[
-                                    Text(
+                                    const Text(
                                       'CREDIT : ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500),
                                     ),
-                                    Spacer(),
+                                    const Spacer(),
                                     Text(
                                       ' - ${Helper.formatCurrency(_customerTransaction.creditAmount)}',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 14,
                                       ),
@@ -519,15 +533,15 @@ class _AccountsTableRowState extends State<AccountsTableRow> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Text(
+                                    const Text(
                                       'DEBIT : ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500),
                                     ),
-                                    Spacer(),
+                                    const Spacer(),
                                     Text(
                                       '${Helper.formatCurrency(_customerTransaction.debitAmount)}',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 14),
                                       textAlign: TextAlign.right,
@@ -538,7 +552,7 @@ class _AccountsTableRowState extends State<AccountsTableRow> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text(
+                              const Text(
                                 'BALANCE',
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
@@ -546,7 +560,7 @@ class _AccountsTableRowState extends State<AccountsTableRow> {
                                   'Kshs ${Helper.formatCurrency(_customerTransaction.balanceAmount)}'),
                             ],
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Container(
                             alignment: Alignment.bottomCenter,
                             child: Column(
@@ -685,7 +699,7 @@ class _CreateOrderButton extends HookViewModelWidget<CustomerDetailViewModel> {
                       content: Container(
                         child: Text(
                           '\u{1F44D} ${model.customer.name}\'s order was placed successfully.',
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontSize: 15,
                               fontWeight: FontWeight.w700),

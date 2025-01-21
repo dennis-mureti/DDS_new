@@ -6,7 +6,6 @@
 
 // ignore_for_file: public_member_api_docs
 
-import 'package:auto_route/auto_route.dart';
 import 'package:auto_route/legacy.dart';
 import 'package:distributor/ui/views/register/register_view.dart';
 import 'package:flutter/material.dart';

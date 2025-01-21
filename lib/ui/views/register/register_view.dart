@@ -88,7 +88,7 @@ class _RegisterViewState extends State<RegisterView> {
               //                 color: Colors.black, fontSize: 16),
               //           ),
               //         )),
-              Spacer(),
+              const Spacer(),
               Form(
                 key: _formKey,
                 child: Column(
