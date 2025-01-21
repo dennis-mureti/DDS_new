@@ -30,7 +30,7 @@ class AppInfoView extends StatelessWidget {
                             ),
                           ),
                           Text(
-                              'DDS Version : ${model.appVersion?.versionCode}'),
+                              'CRM Version : ${model.appVersion?.versionCode}'),
                           Divider(),
                           Text(
                               'Android Version : ${model.androidDeviceInfo.version.release}'),

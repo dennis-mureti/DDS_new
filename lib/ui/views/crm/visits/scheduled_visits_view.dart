@@ -1,5 +1,4 @@
 import 'package:distributor/conf/dds_brand_guide.dart';
-import 'package:distributor/ui/views/crm/custom_list_tile.dart';
 import 'package:distributor/ui/views/crm/Visits/scheduled_view_model.dart';
 import 'package:distributor/ui/views/crm/schedule/schedule_visit_view.dart';
 import 'package:distributor/ui/views/crm/visits/details/details_view.dart';
@@ -29,150 +28,167 @@ class ScheduledView extends StatelessWidget {
           ),
           body: model.isBusy
               ? const Center(child: BusyWidget())
-              : Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: ListView.builder(
-                    itemCount: model.visitList.length,
-                    itemBuilder: (context, index) {
-                      final visit = model.visitList[index];
-                      if (visit.customerVisits == null) {
-                        return const SizedBox(); // Handle empty scheduled visits
-                      }
-                      // Define status color logic
-                      Color statusColor = Colors.grey; // Default color
-                      if (visit.status == 'Approved') {
-                        statusColor = Colors.green;
-                      } else if (visit.status == 'Pending') {
-                        statusColor = Colors.red;
-                      } else if (visit.status == 'Declined') {
-                        statusColor = Colors.black;
-                      }
+              : model.visitList.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "No Scheduled Visits for Today",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      child: ListView.builder(
+                        itemCount: model.visitList.length,
+                        itemBuilder: (context, index) {
+                          final visit = model.visitList[index];
+                          if (visit.customerVisits == null) {
+                            return const SizedBox();
+                          }
+                          // Define status color logic
+                          Color statusColor = Colors.grey; // Default color
+                          if (visit.status == 'Approved') {
+                            statusColor = Colors.green;
+                          } else if (visit.status == 'Pending') {
+                            statusColor = Colors.red;
+                          } else if (visit.status == 'Declined') {
+                            statusColor = Colors.black;
+                          }
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: InkWell(
-                          onTap: visit.status == 'Approved'
-                              ? () async {
-                                  final result = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ScheduleDetailsView(
-                                        onTileTap: (selectedVisit) {
-                                          // Handle tile tap if necessary
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                  if (result is Visits) onTap(result);
-                                }
-                              : null, // Disable onTap for non-Approved statuses
-                          child: Container(
-                            padding: const EdgeInsets.all(16.0),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.2),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                // Top Row: Scheduled Visits and Customer Issues
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Scheduled Visits: ${visit.scheduledVisits ?? 'N/A'}',
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Customer Issues: ${visit.issues ?? 'N/A'}',
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                // Bottom Row: Status and Action Button
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 0.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      // Status
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12.0, vertical: 6.0),
-                                        decoration: BoxDecoration(
-                                          color: statusColor,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Text(
-                                          'Status: ${visit.status ?? 'Unknown'}',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: InkWell(
+                              onTap: visit.status == 'Approved'
+                                  ? () async {
+                                      final result = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ScheduleDetailsView(
+                                            onTileTap: (selectedVisit) {
+                                              // Handle tile tap if necessary
+                                            },
                                           ),
                                         ),
-                                      ),
-                                      // Action Button (Three Dots)
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.more_vert,
-                                          color: Colors.black,
-                                        ),
-                                        onPressed: visit.status == 'Approved'
-                                            ? () async {
-                                                final result =
-                                                    await Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ScheduleDetailsView(
-                                                      onTileTap:
-                                                          (selectedVisit) {
-                                                        // Handle tile tap if necessary
-                                                      },
-                                                    ),
-                                                  ),
-                                                );
-                                                if (result is Visits)
-                                                  onTap(result);
-                                              }
-                                            : null, // Disable button for non-Approved statuses
-                                      ),
-                                    ],
-                                  ),
+                                      );
+                                      if (result is Visits) onTap(result);
+                                    }
+                                  : null, // Disable onTap for non-Approved statuses
+                              child: Container(
+                                padding: const EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade300,
+                                  borderRadius: BorderRadius.circular(8),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    // Top Row: Scheduled Visits and Customer Issues
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Scheduled Visits: ${visit.scheduledVisits ?? 'N/A'}',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Customer Issues: ${visit.issues ?? 'N/A'}',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 20),
+                                    // Bottom Row: Status and Action Button
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 0.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          // Status
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12.0,
+                                                vertical: 6.0),
+                                            decoration: BoxDecoration(
+                                              color: statusColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Text(
+                                              'Status: ${visit.status ?? 'Unknown'}',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ),
+                                          // Action Button (Three Dots)
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.more_vert,
+                                              color: Colors.black,
+                                            ),
+                                            onPressed: visit.status ==
+                                                    'Approved'
+                                                ? () async {
+                                                    final result =
+                                                        await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ScheduleDetailsView(
+                                                          onTileTap:
+                                                              (selectedVisit) {
+                                                            // Handle tile tap if necessary
+                                                          },
+                                                        ),
+                                                      ),
+                                                    );
+                                                    if (result is Visits)
+                                                      onTap(result);
+                                                  }
+                                                : null, // Disable button for non-Approved statuses
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                          );
+                        },
+                      ),
+                    ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               // Navigate to Schedule Visit screen

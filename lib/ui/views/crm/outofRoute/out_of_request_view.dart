@@ -36,7 +36,7 @@ class OutOfRouteView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildDropdownField(
+                        SearchableDropdown(
                           label: 'Customer Name',
                           icon: Icons.person,
                           items: model.listOfCustomers
@@ -68,13 +68,12 @@ class OutOfRouteView extends StatelessWidget {
                               : null,
                         ),
                         const SizedBox(height: 30),
-                        _buildDropdownField(
+                        _buildReasonField(
                           label: 'Reason for Request',
                           icon: Icons.info_outline,
-                          items: model.reasons,
                           controller: model.reasonController,
                           validator: (value) => value == null || value.isEmpty
-                              ? 'Please select a reason'
+                              ? 'Please provide a reason'
                               : null,
                         ),
                         const SizedBox(height: 30),
@@ -148,6 +147,21 @@ class OutOfRouteView extends StatelessWidget {
     );
   }
 
+  Widget _buildReasonField({
+    String label,
+    IconData icon,
+    TextEditingController controller,
+    String Function(String) validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: _buildInputDecoration(label, icon),
+      validator: validator,
+      maxLines: 3,
+      keyboardType: TextInputType.text,
+    );
+  }
+
   Widget _buildDropdownField({
     String label,
     IconData icon,
@@ -201,6 +215,115 @@ class OutOfRouteView extends StatelessWidget {
           controller: controller,
           decoration: _buildInputDecoration(label, icon),
           validator: validator,
+        ),
+      ),
+    );
+  }
+
+  InputDecoration _buildInputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      prefixIcon: Icon(icon, color: Colors.blue.shade900),
+      labelText: label,
+      fillColor: Colors.grey.shade300,
+      filled: true,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        borderSide: BorderSide.none,
+      ),
+    );
+  }
+}
+
+class SearchableDropdown extends StatefulWidget {
+  final String label;
+  final IconData icon;
+  final List<String> items;
+  final TextEditingController controller;
+  final String Function(String) validator;
+
+  const SearchableDropdown({
+    Key key,
+    this.label,
+    this.icon,
+    this.items,
+    this.controller,
+    this.validator,
+  }) : super(key: key);
+
+  @override
+  _SearchableDropdownState createState() => _SearchableDropdownState();
+}
+
+class _SearchableDropdownState extends State<SearchableDropdown> {
+  TextEditingController searchController = TextEditingController();
+  List<String> filteredItems;
+
+  @override
+  void initState() {
+    super.initState();
+    filteredItems = widget.items;
+    searchController.addListener(() {
+      _filterItems();
+    });
+  }
+
+  void _filterItems() {
+    setState(() {
+      filteredItems = widget.items
+          .where((item) =>
+              item.toLowerCase().contains(searchController.text.toLowerCase()))
+          .toList();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        // Show the dropdown inside a modal dialog
+        await showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Search...',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: filteredItems.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(filteredItems[index]),
+                        onTap: () {
+                          widget.controller.text = filteredItems[index];
+                          Navigator.pop(context);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: AbsorbPointer(
+        child: TextFormField(
+          controller: widget.controller,
+          decoration: _buildInputDecoration(widget.label, widget.icon),
+          validator: widget.validator,
         ),
       ),
     );

@@ -20,20 +20,20 @@ class DashboardTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return GestureDetector(
     return GestureDetector(
       onTap: () {
         if (isDayStarted) {
-          onActionPressed();
+          onActionPressed?.call();
         } else {
           _showDayNotStartedDialog(context);
         }
       },
-      // onTap: onActionPressed,
       child: Container(
         padding: const EdgeInsets.all(15.0),
         decoration: BoxDecoration(
-          color: Colors.grey.shade300,
+          color: isDayStarted
+              ? (color ?? Colors.grey.shade200)
+              : Colors.grey.shade300,
           borderRadius: BorderRadius.circular(15.0),
           boxShadow: [
             BoxShadow(
@@ -50,25 +50,25 @@ class DashboardTile extends StatelessWidget {
             Icon(
               icon,
               size: 40,
-              color: Colors.blue.shade900,
+              color: isDayStarted ? Colors.blue.shade900 : Colors.grey,
             ),
             const SizedBox(height: 10),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: isDayStarted ? Colors.black87 : Colors.grey.shade600,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),
             Text(
               number,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.redAccent,
+                color: isDayStarted ? Colors.redAccent : Colors.grey,
               ),
               textAlign: TextAlign.center,
             ),

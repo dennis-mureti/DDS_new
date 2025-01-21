@@ -1,16 +1,11 @@
 import 'package:distributor/ui/views/crm/activities/activities_view.dart';
-import 'package:distributor/ui/views/crm/checkin/checkin_view.dart';
-import 'package:distributor/ui/views/crm/customer_info.dart';
 import 'package:distributor/ui/views/crm/dashboard_tiles.dart';
 import 'package:distributor/ui/views/crm/dashboard_viewmodel.dart';
-import 'package:distributor/ui/views/crm/outofRoute/out_of_request_view.dart';
-import 'package:distributor/ui/views/crm/Visits/scheduled_visits_view.dart';
 import 'package:distributor/ui/views/crm/outofRoute/outofroutes/all_out-of-routes.dart';
 import 'package:distributor/ui/views/crm/planner/planner.dart';
-import 'package:distributor/ui/views/crm/schedule/schedule_visit_view.dart';
 import 'package:distributor/ui/views/crm/visits/completed/completed_view.dart';
+import 'package:distributor/ui/views/crm/visits/details/details_view.dart';
 import 'package:distributor/ui/views/crm/visits/pending/pending_visits_view.dart';
-import 'package:distributor/ui/views/customers/customer_detail/customer_detail_view.dart';
 import 'package:distributor/ui/views/customers/customer_view.dart';
 import 'package:distributor/ui/widgets/dumb_widgets/busy_widget.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +18,11 @@ class CRMDashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CRMDashboardViewModel>.reactive(
-      onModelReady: (model) => model.init(),
+      // onModelReady: (model) => model.init(),
+      onModelReady: (model) async {
+        await model.loadDayState(); // Load the saved day state
+        model.init();
+      },
       builder: (context, model, child) => model.isBusy
           ? const Center(child: BusyWidget())
           : Container(
@@ -88,6 +87,7 @@ class CRMDashboardView extends StatelessWidget {
                                         await _onTilePressed(context, title);
                                       }
                                     : null,
+                                isDayStarted: model.isDayStarted,
                                 color:
                                     isTileEnabled ? null : Colors.grey.shade200,
                               ),
@@ -161,7 +161,11 @@ class CRMDashboardView extends StatelessWidget {
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ScheduledView(),
+          builder: (context) => ScheduleDetailsView(
+            onTileTap: (selectedVisit) {
+              // Handle tile tap if necessary
+            },
+          ),
         ),
       );
     } else if (title == 'Completed Visits') {

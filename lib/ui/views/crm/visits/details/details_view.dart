@@ -1,10 +1,12 @@
-import 'package:distributor/conf/dds_brand_guide.dart';
-import 'package:distributor/ui/views/crm/activities/activities_view.dart';
 import 'package:distributor/ui/views/crm/visits/details/details_view_model.dart';
-import 'package:distributor/ui/widgets/dumb_widgets/busy_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Import the intl package
+import 'package:distributor/ui/views/crm/checkin/checkin_view.dart';
+import 'package:distributor/ui/views/crm/checkin/gt_checkin_view.dart';
+import 'package:distributor/ui/widgets/dumb_widgets/busy_widget.dart';
 import 'package:stacked/stacked.dart';
-import 'package:tripletriocore/tripletriocore.dart';
+import 'package:distributor/conf/dds_brand_guide.dart';
+import 'package:tripletriocore/tripletriocore.dart'; // Assuming the brand color is defined here
 
 class ScheduleDetailsView extends StatelessWidget {
   final List<ScheduleDetails> detailsList;
@@ -15,6 +17,29 @@ class ScheduleDetailsView extends StatelessWidget {
     this.detailsList,
     this.onTileTap,
   }) : super(key: key);
+
+  // Helper method to check if any visit has the "Started" status
+  bool hasStartedVisit(List<ScheduledVisit> visits) {
+    return visits.any((visit) => visit.visitStatus?.toLowerCase() == "started");
+  }
+
+  void _showPopup(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Action Not Allowed"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,157 +53,241 @@ class ScheduleDetailsView extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Schedule Details'),
-            backgroundColor: kColDDSPrimaryDark,
+            backgroundColor:
+                kColDDSPrimaryDark, // Assuming this is a predefined color
           ),
           body: model.isBusy
               ? const Center(child: BusyWidget())
-              : Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: ListView.builder(
-                    itemCount: model.scheduleDetailsList.length ?? 0,
-                    itemBuilder: (context, index) {
-                      final schedule = model.scheduleDetailsList[index];
+              : model.scheduleDetailsList.isEmpty
+                  ? const Center(
+                      child: Text("No Schedule details Available for Today"),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: ListView.builder(
+                        itemCount: model.scheduleDetailsList.length,
+                        itemBuilder: (context, index) {
+                          final schedule = model.scheduleDetailsList[index];
+                          final visits = schedule.payload.scheduledVisits ?? [];
 
-                      // Check if the schedule has any scheduledVisits
-                      if (schedule.payload.scheduledVisits == null ||
-                          schedule.payload.scheduledVisits.isEmpty) {
-                        return const SizedBox(
-                          child: Center(
-                            child: Text("No Schedule details Available"),
-                          ),
-                        );
-                      }
+                          // Check if there's any "Started" visit
+                          bool anyStartedVisit = hasStartedVisit(visits);
 
-                      // Return a ListView for scheduledVisits within the current schedule
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Column(
-                          children: [
-                            // Iterate through each scheduledVisit
-                            for (var visit in schedule.payload.scheduledVisits)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 12.0),
-                                child: InkWell(
-                                  onTap: () async {
-                                    final result = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ActivitiesView(
-                                            visitId: visit.visitId.toInt()),
+                          return visits.isEmpty
+                              ? const Center(
+                                  child: Text("No Schedule details "),
+                                )
+                              : Column(
+                                  children: [
+                                    for (var visit in visits)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 16.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            // Check if any visit is in "Started" status
+                                            if (visit.visitStatus
+                                                    ?.toLowerCase() ==
+                                                "started") {
+                                              // Proceed to Check-in screen for "Started" status visits
+                                              final route = visit
+                                                          .customerType ==
+                                                      "MT"
+                                                  ? MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          CheckInView(
+                                                        visitId:
+                                                            visit.id.toInt(),
+                                                        customerName:
+                                                            visit.name,
+                                                      ),
+                                                    )
+                                                  : visit.customerType == "GT"
+                                                      ? MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              GTCheckInView(
+                                                            visitId: visit.id
+                                                                .toInt(),
+                                                            customerName:
+                                                                visit.name,
+                                                          ),
+                                                        )
+                                                      : null;
+
+                                              if (route != null) {
+                                                Navigator.push(
+                                                  context,
+                                                  route,
+                                                );
+                                              }
+                                            } else if (visit.visitStatus
+                                                    ?.toLowerCase() ==
+                                                "scheduled") {
+                                              // If the visit is "Scheduled" but there's another "Started" visit
+                                              if (anyStartedVisit) {
+                                                _showPopup(
+                                                  context,
+                                                  "Not allowed to proceed with this visit because you have another visit started.",
+                                                );
+                                              } else {
+                                                // Allow rerouting to the next visit if no "Started" visit exists
+                                                final route = visit
+                                                            .customerType ==
+                                                        "MT"
+                                                    ? MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            CheckInView(
+                                                          visitId:
+                                                              visit.id.toInt(),
+                                                          customerName:
+                                                              visit.name,
+                                                        ),
+                                                      )
+                                                    : visit.customerType == "GT"
+                                                        ? MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                GTCheckInView(
+                                                              visitId: visit.id
+                                                                  .toInt(),
+                                                              customerName:
+                                                                  visit.name,
+                                                            ),
+                                                          )
+                                                        : null;
+
+                                                if (route != null) {
+                                                  Navigator.push(
+                                                    context,
+                                                    route,
+                                                  );
+                                                }
+                                              }
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(16.0),
+                                            decoration: BoxDecoration(
+                                              color: Colors.green.shade50,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.1),
+                                                  spreadRadius: 2,
+                                                  blurRadius: 8,
+                                                  offset: const Offset(0, 4),
+                                                ),
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.05),
+                                                  spreadRadius: 1,
+                                                  blurRadius: 6,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.stretch,
+                                              children: [
+                                                // Customer Name
+                                                Text(
+                                                  visit.name ?? "N/A",
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                // Customer Code
+                                                Text(
+                                                  'Customer Code: ${visit.code}',
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  'Customer type: ${visit.customerType}',
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                // Visit Date
+                                                Text(
+                                                  'Visit Date: ${visit.scheduleDate != null ? DateFormat('yyyy/MM/dd').format(visit.scheduleDate) : "N/A"}',
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 16),
+                                                // Status
+                                                Text(
+                                                  visit.visitStatus ?? "N/A",
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: _getStatusColor(
+                                                        visit.visitStatus ??
+                                                            "N/A"),
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                // Action Message
+                                                Text(
+                                                  visit.visitStatus
+                                                              ?.toLowerCase() ==
+                                                          "completed"
+                                                      ? "Check-in not allowed for completed visits"
+                                                      : visit.visitStatus
+                                                                  ?.toLowerCase() ==
+                                                              "started"
+                                                          ? "Continue to Check-in"
+                                                          : "Scheduled Visit",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontStyle: FontStyle.italic,
+                                                    color: visit.visitStatus
+                                                                ?.toLowerCase() ==
+                                                            "completed"
+                                                        ? Colors.red
+                                                        : Colors.green,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    );
-                                    if (result is ScheduleDetails) {
-                                      onTileTap(result);
-                                    }
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(16.0),
-                                    decoration: BoxDecoration(
-                                      color: Colors
-                                          .green.shade50, // Background color
-                                      borderRadius: BorderRadius.circular(
-                                          8), // Rounded corners
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(
-                                              0.1), // Soft shadow color
-                                          spreadRadius:
-                                              2, // How far the shadow spreads
-                                          blurRadius:
-                                              8, // How soft the shadow looks
-                                          offset: const Offset(0,
-                                              4), // Downward and horizontal offset
-                                        ),
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(
-                                              0.05), // Lighter shadow for layering
-                                          spreadRadius: 1,
-                                          blurRadius: 6,
-                                          offset: const Offset(
-                                              0, 2), // Subtle offset for depth
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        // Top Row: Customer Code (left) and Customer Name (right)
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                'Cust Code: ${visit.code}',
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Flexible(
-                                              child: Text(
-                                                'Cust Name: ${visit.name}',
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.right,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 8),
-                                        // Bottom Row: Route (left) and Visit Date (right)
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                'Route: ${visit.route ?? "N/A"}',
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.normal,
-                                                  color: Colors.black,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Flexible(
-                                              child: Text(
-                                                'Visit Date: ${visit.scheduleDate ?? "N/A"}',
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.normal,
-                                                  color: Colors.black,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.right,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      );
-                    },
-                  )),
+                                  ],
+                                );
+                        },
+                      ),
+                    ),
         );
       },
     );
+  }
+
+  // Returns a color based on the status
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case "approved":
+        return Colors.green;
+      case "scheduled":
+        return Colors.black;
+      case "started":
+        return Colors.orange;
+      case "completed":
+        return Colors.blue;
+      default:
+        return Colors.grey;
+    }
   }
 }

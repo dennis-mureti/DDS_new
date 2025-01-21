@@ -7,18 +7,29 @@ import 'package:intl/intl.dart';
 
 class ActivitiesView extends StatefulWidget {
   final int visitId;
-  const ActivitiesView({Key key, this.visitId}) : super(key: key);
+  final String customerName;
+
+  const ActivitiesView({Key key, this.visitId, this.customerName})
+      : super(key: key);
 
   @override
   _ActivitiesViewState createState() => _ActivitiesViewState();
 }
 
 class _ActivitiesViewState extends State<ActivitiesView> {
+  final TextEditingController _feedbackController = TextEditingController();
+
+  @override
+  void dispose() {
+    _feedbackController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ActivitiesViewModel>.reactive(
-      onModelReady: (model) async {
-        // You can call async methods in initState or onModelReady but avoid blocking the UI thread
+      onModelReady: (model) {
+        // Initialize or fetch data if needed.
       },
       builder: (context, model, child) {
         final screenHeight = MediaQuery.of(context).size.height;
@@ -66,18 +77,14 @@ class _ActivitiesViewState extends State<ActivitiesView> {
                             children: [
                               _buildCheckInDetails(model),
                               const SizedBox(height: 8),
-
-                              // Divider below check-in details
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                                child: Divider(
-                                  color: Colors.black,
-                                  thickness: 0.5,
-                                ),
+                              const Divider(
+                                color: Colors.black,
+                                thickness: 0.5,
+                                indent: 20.0,
+                                endIndent: 20.0,
                               ),
-
                               const SizedBox(height: 20),
-                              _buildActivityButtons(context),
+                              _buildActivityButtons(context, model),
                               const SizedBox(height: 20),
                               _buildActionButtons(context, model),
                             ],
@@ -88,13 +95,6 @@ class _ActivitiesViewState extends State<ActivitiesView> {
                   ],
                 ),
               ),
-
-              // Overlay BusyWidget when loading
-              // if (model.isBusy)
-              //   Container(
-              //     color: Colors.black.withOpacity(0.5),
-              //     child: const Center(child: BusyWidget()),
-              //   ),
             ],
           ),
         );
@@ -103,58 +103,50 @@ class _ActivitiesViewState extends State<ActivitiesView> {
     );
   }
 
-  // Widget for the check-in details
   Widget _buildCheckInDetails(ActivitiesViewModel model) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Check In',
-                style: TextStyle(color: Colors.black, fontSize: 16),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                model.isCheckedIn && model.checkInTime != null
-                    ? DateFormat('hh:mm a').format(model.checkInTime)
-                    : 'Start',
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          _buildInfoColumn(
+            title: 'Check In',
+            value: model.isCheckedIn && model.checkInTime != null
+                ? DateFormat('hh:mm a').format(model.checkInTime)
+                : 'Start',
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const Text(
-                'Duration',
-                style: TextStyle(color: Colors.black, fontSize: 16),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                model.duration,
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          _buildInfoColumn(
+            title: 'Duration',
+            value: model.duration,
           ),
         ],
       ),
     );
   }
 
-  // Widget for the activity buttons
-  Widget _buildActivityButtons(BuildContext context) {
+  Widget _buildInfoColumn({@required String title, @required String value}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(color: Colors.black, fontSize: 16),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.grey,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActivityButtons(
+      BuildContext context, ActivitiesViewModel model) {
     const activities = [
       ['Unavailable', Icons.block],
       ['In Stock', Icons.check_circle],
@@ -166,114 +158,139 @@ class _ActivitiesViewState extends State<ActivitiesView> {
       ['Schedule', Icons.calendar_today],
     ];
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 2.5,
-      ),
-      itemCount: activities.length,
-      itemBuilder: (context, index) {
-        final activity = activities[index];
-        return ElevatedButton.icon(
-          onPressed: () async {
-            if (activity[0] == 'In Stock') {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CheckInView(),
-                ),
-              );
-            } else {
-              print("Action pressed for ${activity[0]}");
-            }
-          },
-          icon: Icon(activity[1], size: 20),
-          label: Text(activity[0]),
-          style: ElevatedButton.styleFrom(
-            primary: Colors.blue[100],
-            onPrimary: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.customerName != null) // Check if customerName is provided
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: Text(
+              widget.customerName,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
           ),
-        );
-      },
+        SizedBox(height: 10),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            childAspectRatio: 2.5,
+          ),
+          itemCount: activities.length,
+          itemBuilder: (context, index) {
+            final activity = activities[index];
+            return ElevatedButton.icon(
+              onPressed: () {
+                if (activity[0] == 'Feedback') {
+                  _showFeedbackDialog(context, model);
+                } else if (activity[0] == 'In Stock') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CheckInView(
+                        customerName: widget.customerName,
+                      ),
+                    ),
+                  );
+                } else {
+                  print("Action pressed for ${activity[0]}");
+                }
+              },
+              icon: Icon(activity[1], size: 20),
+              label: Text(activity[0]),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue[100],
+                onPrimary: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 
-  // Widget for the action buttons
   Widget _buildActionButtons(BuildContext context, ActivitiesViewModel model) {
-    return Column(
-      children: [
-        ElevatedButton.icon(
-          onPressed: () {},
-          icon: const Icon(Icons.add_a_photo, color: Colors.white),
-          label: const Text('Add shelf image'),
-          style: ElevatedButton.styleFrom(
-            primary: Colors.blue.shade700,
-            padding: const EdgeInsets.symmetric(vertical: 15.0),
-            minimumSize: const Size(double.infinity, 50),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+    return ElevatedButton.icon(
+      onPressed: () => model.toggleCheckin(
+        context,
+        widget.visitId,
+      ),
+      icon: Icon(
+        model.isCheckedIn ? Icons.logout : Icons.login,
+        color: Colors.black,
+      ),
+      label: Text(
+        model.isCheckedIn ? 'Check Out' : 'Check In',
+        style: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        primary: model.isCheckedIn ? Colors.red : Colors.green,
+        padding: const EdgeInsets.symmetric(vertical: 15.0),
+        minimumSize: const Size(double.infinity, 50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
+    );
+  }
+
+  void _showFeedbackDialog(BuildContext context, ActivitiesViewModel model) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Submit Feedback'),
+          content: TextField(
+            controller: _feedbackController,
+            maxLines: 5,
+            decoration: const InputDecoration(
+              hintText: 'Enter your feedback here...',
+              border: OutlineInputBorder(),
             ),
           ),
-        ),
-        const SizedBox(height: 10),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Divider(
-            color: Colors.black,
-            thickness: 0.5,
-          ),
-        ),
-        const SizedBox(height: 10),
-        // ElevatedButton.icon(
-        //   // onPressed: model.toggleCheckin(),
-        //   onPressed: () =>
-        //       model.toggleCheckin(context, visit.visitId.toString()),
-        //   icon: Icon(
-        //     model.isCheckedIn ? Icons.logout : Icons.login,
-        //     color: Colors.black,
-        //   ),
-        //   label: Text(
-        //     model.isCheckedIn ? 'Check Out' : 'Check In',
-        //     style: const TextStyle(
-        //         color: Colors.black, fontWeight: FontWeight.bold),
-        //   ),
-        //   style: ElevatedButton.styleFrom(
-        //     primary: model.isCheckedIn ? Colors.red : Colors.green,
-        //     padding: const EdgeInsets.symmetric(vertical: 15.0),
-        //     minimumSize: const Size(double.infinity, 50),
-        //     shape: RoundedRectangleBorder(
-        //       borderRadius: BorderRadius.circular(10.0),
-        //     ),
-        //   ),
-        // ),
-        ElevatedButton.icon(
-          onPressed: () => model.toggleCheckin(context, widget.visitId),
-          icon: Icon(
-            model.isCheckedIn ? Icons.logout : Icons.login,
-            color: Colors.black,
-          ),
-          label: Text(
-            model.isCheckedIn ? 'Check Out' : 'Check In',
-            style: const TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-          style: ElevatedButton.styleFrom(
-            primary: model.isCheckedIn ? Colors.red : Colors.green,
-            padding: const EdgeInsets.symmetric(vertical: 15.0),
-            minimumSize: const Size(double.infinity, 50),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
             ),
-          ),
-        ),
-      ],
+            ElevatedButton(
+              onPressed: () {
+                if (_feedbackController.text.isNotEmpty) {
+                  model.saveFeedback(_feedbackController.text);
+                  _feedbackController.clear();
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Feedback saved successfully!')),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                primary: kColDDSPrimaryDark,
+                // padding: const EdgeInsets.symmetric(vertical: 15.0),
+                // minimumSize: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

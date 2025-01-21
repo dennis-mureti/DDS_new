@@ -230,7 +230,7 @@ class LoginViewModel extends BaseViewModel {
 
       // Update the activity Service
       _activityService.addActivity(Activity(
-          activityTitle: 'Login in', activityDesc: 'Logged In successfully'));
+          activityTitle: 'Loging in', activityDesc: 'Logged In successfully'));
       // Start listening to location stream updates
       if (result.status != 1) {
         _navigationService.pushNamedAndRemoveUntil(Routes.changePasswordView,

@@ -32,7 +32,9 @@ void main() async {
       name: 'Mini-Mombasa',
       flavorValues: FlavorValues(
           // baseUrl: 'https://dds.ddsolutions.tech/dds-backend/api/v1',
-          baseUrl: 'https://demo.ddsolutions.tech/spvdev-backend/api/v1',
+          // baseUrl: 'https://demo.ddsolutions.tech/spvdev-backend/api/v1',
+          // baseUrl: 'http://165.227.255.167:9087/spvdev-backend/api/v1',
+          baseUrl: 'http://137.184.60.57:8585/spvdev-backend/api/v1',
           applicationParameter: appParam),
     ),
   ]);

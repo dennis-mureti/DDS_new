@@ -1,9 +1,9 @@
+import 'package:distributor/ui/views/crm/outofRoute/outofroutes/out_of_route_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:distributor/conf/dds_brand_guide.dart';
 import 'package:distributor/ui/widgets/dumb_widgets/busy_widget.dart';
 import 'package:distributor/ui/views/crm/outofRoute/feedback.dart';
-import 'package:distributor/ui/views/crm/outofRoute/outofroutes/out_of_route_view_model.dart';
 import 'package:distributor/ui/views/crm/outofRoute/out_of_request_view.dart';
 import 'package:tripletriocore/tripletriocore.dart';
 
@@ -41,7 +41,7 @@ class OutOfRoutesView extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final route = model.outOfRoutesList[index];
 
-                      // Determine the status color
+                      // Determine the status color for approvedStatus
                       Color statusColor;
                       if (route.approvedStatus == "PENDING") {
                         statusColor = Colors.red;
@@ -51,15 +51,61 @@ class OutOfRoutesView extends StatelessWidget {
                         statusColor = Colors.green;
                       }
 
+                      // Determine the color for visitStatus
+                      Color visitStatusColor;
+                      switch (route.visitStatus) {
+                        case "SCHEDULED":
+                          visitStatusColor = Colors.black;
+                          break;
+                        case "COMPLETED":
+                          visitStatusColor = Colors.blue;
+                          break;
+                        case "STARTED":
+                          visitStatusColor = Colors.orange;
+                          break;
+                        case "APPROVED":
+                          visitStatusColor = Colors.green;
+                          break;
+                        default:
+                          visitStatusColor = Colors.grey; // Default color
+                          break;
+                      }
+
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12.0, top: 10),
                         child: InkWell(
                           onTap: () async {
+                            // Prevent navigating to FeedbackView when visitStatus is COMPLETED
+                            if (route.visitStatus == "COMPLETED") {
+                              // Show a dialog or snack bar instead of navigation
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text("Check-in not allowed"),
+                                    content: const Text(
+                                        "Check-in is not allowed for completed visits."),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text("OK"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              return; // Early return, do not navigate
+                            }
+
                             // Navigate to FeedbackView and pass the route
                             final result = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => FeedbackView(),
+                                builder: (context) => FeedbackView(
+                                  visitId: route.requestId,
+                                ),
                               ),
                             );
                             if (result is AllOutofRoute) {
@@ -140,6 +186,35 @@ class OutOfRoutesView extends StatelessWidget {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(height: 8),
+                                // New Row: Visit Status
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    route.visitStatus ?? "No Status",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          visitStatusColor, // Set dynamic color
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  route.visitStatus?.toLowerCase() ==
+                                          "completed"
+                                      ? "Check-in not allowed for completed visits"
+                                      : "Proceed to Check-in",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontStyle: FontStyle.italic,
+                                    color: route.visitStatus?.toLowerCase() ==
+                                            "completed"
+                                        ? Colors.red
+                                        : Colors.green,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -170,21 +245,3 @@ class OutOfRoutesView extends StatelessWidget {
     );
   }
 }
-
-// class FeedbackView extends StatelessWidget {
-//   final AllOutofRoute route;
-
-//   const FeedbackView({Key key, this.route}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Feedback View'),
-//       ),
-//       body: Center(
-//         child: Text('Feedback for route: ${route.customerCode}'),
-//       ),
-//     );
-//   }
-// }

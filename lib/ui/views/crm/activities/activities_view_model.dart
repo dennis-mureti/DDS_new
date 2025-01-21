@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:distributor/app/locator.dart';
 import 'package:distributor/services/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:tripletriocore/tripletriocore.dart';
 import 'package:distributor/services/api_service.dart';
 
 class ActivitiesViewModel extends MultipleFutureViewModel {
+  String _feedback;
+
   final _apiService = locator<ApiService>();
 
   UserService _userService = locator<UserService>();
@@ -26,73 +27,13 @@ class ActivitiesViewModel extends MultipleFutureViewModel {
   String currentLatitude;
   String currentLongitude;
 
-  // void toggleCheckin() {
-  //   isCheckedIn = !isCheckedIn;
-  //   notifyListeners();
+  String get feedback => _feedback;
 
-  //   if (isCheckedIn) {
-  //     // User checks in
-  //     checkInTime = DateTime.now();
-  //     _startTimer();
-  //   } else {
-  //     // User checks out
-  //     _stopTimer();
-  //     if (checkInTime != null) {
-  //       final timeDiff = DateTime.now().difference(checkInTime);
-  //       duration = _formatDuration(timeDiff);
-  //     }
-  //     checkInTime = null; // Reset check-in time
-  //   }
+  void saveFeedback(String feedback) {
+    _feedback = feedback;
+    notifyListeners();
+  }
 
-  //   notifyListeners(); // Refresh UI
-  // }
-
-  // void toggleCheckin(BuildContext context) {
-  //   isCheckedIn = !isCheckedIn;
-  //   notifyListeners();
-
-  //   if (isCheckedIn) {
-  //     // User checks in
-  //     checkInTime = DateTime.now();
-  //     _startTimer();
-  //   } else {
-  //     // User checks out
-  //     _stopTimer();
-  //     if (checkInTime != null) {
-  //       final timeDiff = DateTime.now().difference(checkInTime);
-  //       duration = _formatDuration(timeDiff);
-  //     }
-  //     checkInTime = null; // Reset check-in time
-  //   }
-
-  //   notifyListeners(); // Refresh UI
-
-  //   // Call the checkInRequest method
-  //   checkInRequest(context);
-  // }
-
-  // void toggleCheckin(BuildContext context) {
-  //   isCheckedIn = !isCheckedIn;
-  //   notifyListeners();
-
-  //   if (isCheckedIn) {
-  //     checkInTime = DateTime.now();
-  //     _startTimer();
-  //     checkInRequest(context); // Initiates the check-in process
-  //   } else {
-  //     _stopTimer();
-
-  //     if (checkInTime != null) {
-  //       final timeDiff = DateTime.now().difference(checkInTime);
-  //       duration = _formatDuration(timeDiff);
-  //     }
-  //     checkInTime = null;
-
-  //     checkOutProcess(context); // Initiates the check-out process
-  //   }
-
-  //   notifyListeners();
-  // }
   void toggleCheckin(BuildContext context, int visitId) {
     isCheckedIn = !isCheckedIn;
     notifyListeners();
@@ -111,7 +52,8 @@ class ActivitiesViewModel extends MultipleFutureViewModel {
       }
       checkInTime = null;
 
-      checkOutProcess(context); // Initiates the check-out process
+      checkOutProcess(context,
+          visitId: visitId); // Initiates the check-out process
     }
 
     notifyListeners();
@@ -122,7 +64,7 @@ class ActivitiesViewModel extends MultipleFutureViewModel {
       if (checkInTime != null && isCheckedIn) {
         final timeDiff = DateTime.now().difference(checkInTime);
         duration = _formatDuration(timeDiff);
-        notifyListeners(); // Update UI with new duration
+        notifyListeners();
       }
     });
   }
@@ -171,15 +113,11 @@ class ActivitiesViewModel extends MultipleFutureViewModel {
           );
           isCheckedIn = true;
         } else if (response is CustomException) {
-          // var errorMessage = response['payload'] ?? response['errorMessage'];
           await _dialogService.showDialog(
             title: 'Checkin Failed',
             // description: 'There was an issue checking in.\n$errorMessage',
             description:
                 'There was an issue checkin in.\nError: ${response.code}\nDescription: ${response.description}',
-
-            // title: 'Success',
-            // description: 'Checkout successfull.',
           );
         }
       }
@@ -187,22 +125,17 @@ class ActivitiesViewModel extends MultipleFutureViewModel {
       await _dialogService.showDialog(
         title: 'Error',
         description: 'An unexpected error occurred: ${e.toString()}',
-        // title: 'Success',
-        // description: 'Checkout successfull.',
       );
     } finally {
       setBusy(false);
-      notifyListeners(); // Ensure the UI rebuilds and reflects the new state
+      notifyListeners();
     }
   }
 
   Future<void> checkOutProcess(
     BuildContext context, {
-    String startDayId, // Start Day ID from the check-in process
-    String generalFeedback,
-    String premisesPhotoUrl,
-    double checkOutLat,
-    double checkOutLon,
+    String checkinId,
+    int visitId,
   }) async {
     try {
       // Show a confirmation dialog before checking out
@@ -216,18 +149,18 @@ class ActivitiesViewModel extends MultipleFutureViewModel {
       // Proceed only if the user confirms
       if (dialogResponse.confirmed) {
         Map<String, dynamic> payload = {
-          "plannedVisitId": startDayId,
-          "checkOutTime": DateTime.now().toIso8601String(),
-          "checkOutLat": checkOutLat,
-          "checkOutLon": checkOutLon,
-          "generalFeedback": generalFeedback,
-          "premisesPhotoUrl": premisesPhotoUrl,
+          "plannedVisitId": visitId,
+          "checkOutTime": DateTime.now().toUtc().toIso8601String(),
+          "checkOutLat": -1.26777778,
+          "checkOutLon": 36.90222222,
+          "generalFeedback": _feedback,
+          "premisesPhotoUrl": "/volume/photos/premises/premises.png"
         };
 
         setBusy(true); // Show a loading spinner
 
         // Call the API to process the checkout
-        var result = await api.checkOut(id: startDayId, data: payload);
+        var result = await api.checkOut(id: visitId, data: payload);
 
         setBusy(false); // Hide the loading spinner
 

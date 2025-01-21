@@ -43,7 +43,6 @@ class ScheduleVisitViewModel extends FutureViewModel<List<Customer>> {
   }
 
   List<String> salesReps = ['Rep 1', 'Rep 2', 'Rep 3'];
-  // List<String> visitReasons = ['Routine Check', 'Urgent Issue', 'Follow-Up'];
   List<String> visitReasons = [
     'Audit',
     'Couching',
@@ -126,79 +125,6 @@ class ScheduleVisitViewModel extends FutureViewModel<List<Customer>> {
     _customer = c;
     notifyListeners();
   }
-
-  // Confirm visit and show message
-  // Future<void> confirmVisitAndShowMessage(BuildContext context) async {
-  //   try {
-  //     await confirmVisit();
-
-  //     // Show success message in SnackBar
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: const Text('Visit scheduled successfully Submitted!'),
-  //         backgroundColor: Colors.green,
-  //       ),
-  //     );
-  //   } catch (error) {
-  //     // Show error message in SnackBar
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text(
-  //           'An error occurred: ${error.toString()}',
-  //           style: const TextStyle(fontSize: 16),
-  //         ),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-  //   }
-  // }
-
-  // Confirm visit method
-  // Future<void> confirmVisit() async {
-  //   if (selectedReason == null ||
-  //       selectedDate == null ||
-  //       selectedTime == null) {
-  //     showErrorMessage("Please fill all required fields.");
-  //     return;
-  //   }
-
-  //   setBusy(true);
-
-  //   try {
-  //     // Combine the selected date and time into a single DateTime object
-  //     final DateTime visitDateTime = DateTime(
-  //       selectedDate.year,
-  //       selectedDate.month,
-  //       selectedDate.day,
-  //       selectedTime.hour,
-  //       selectedTime.minute,
-  //     );
-
-  //     final ScheduleVisit scheduleVisitRequest = ScheduleVisit(
-  //       customer: 1, // Replace with the actual customer ID
-  //       visitSchedule: 3, // Replace with actual schedule info
-  //       plannedVisitTime: DateFormat('HH:mm:ss').format(visitDateTime),
-  //       reasonForVisit: selectedReason,
-  //       createdBy: "${user.firstName} ${user.lastName}",
-  //     );
-
-  //     final result = await api.scheduleVisit(
-  //       token: user.token, // Pass the actual user token
-  //       scheduleVisit: scheduleVisitRequest,
-  //     );
-
-  //     if (result is bool && result) {
-  //       showSuccessMessage("Visit scheduled successfully submitted.");
-  //       resetForm();
-  //     } else {
-  //       showErrorMessage("Failed to schedule the visit. Please try again.");
-  //     }
-  //   } catch (e) {
-  //     showErrorMessage("An error occurred: ${e.toString()}");
-  //   } finally {
-  //     setBusy(false);
-  //   }
-  // }
 
   Future<void> confirmVisit(BuildContext context) async {
     try {

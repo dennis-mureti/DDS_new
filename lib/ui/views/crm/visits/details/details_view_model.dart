@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:distributor/app/locator.dart';
 import 'package:distributor/services/api_service.dart';
 import 'package:distributor/services/user_service.dart';
@@ -76,4 +74,3 @@ class ScheduleDetailsViewModel extends FutureViewModel<List<ScheduleDetails>> {
   @override
   Future<List<ScheduleDetails>> futureToRun() => fetchScheduleDetails();
 }
-// Your code goes here

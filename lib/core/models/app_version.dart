@@ -19,14 +19,15 @@ class AppVersion {
 
   get versionCode => _versionCode;
 
-  AppVersion(this.buildNumber,
-      {this.versionName,
-      String versionCode,
-      this.remoteUrl,
-      this.packageName,
-      this.tenantId,
-      this.appName})
-      : _versionCode = versionCode;
+  AppVersion(
+    this.buildNumber, {
+    this.versionName,
+    String versionCode,
+    this.remoteUrl,
+    this.packageName,
+    this.tenantId,
+    this.appName,
+  }) : _versionCode = versionCode;
 
   factory AppVersion.fromMap(Map<String, dynamic> data) {
     return AppVersion(
