@@ -75,16 +75,20 @@ class OutOfRoutesView extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 12.0, top: 10),
                         child: InkWell(
                           onTap: () async {
-                            // Prevent navigating to FeedbackView when visitStatus is COMPLETED
-                            if (route.visitStatus == "COMPLETED") {
-                              // Show a dialog or snack bar instead of navigation
+                            // Check if there is any started visit
+                            bool hasStartedVisit = model.outOfRoutesList
+                                .any((r) => r.visitStatus == "STARTED");
+
+                            if (route.visitStatus == "SCHEDULED" &&
+                                hasStartedVisit) {
+                              // Show dialog if a visit is already started
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: const Text("Check-in not allowed"),
                                     content: const Text(
-                                        "Check-in is not allowed for completed visits."),
+                                        "Not allowed to proceed with this visit because you have another visit started."),
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
@@ -99,17 +103,35 @@ class OutOfRoutesView extends StatelessWidget {
                               return; // Early return, do not navigate
                             }
 
-                            // Navigate to FeedbackView and pass the route
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FeedbackView(
-                                  visitId: route.requestId,
+                            // Allow navigation for "STARTED" visits
+                            if (route.visitStatus == "STARTED") {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FeedbackView(
+                                    visitId: route.requestId,
+                                  ),
                                 ),
-                              ),
-                            );
-                            if (result is AllOutofRoute) {
-                              onTileTap(result); // Handle tile tap callback
+                              );
+                              if (result is AllOutofRoute) {
+                                onTileTap(result); // Handle tile tap callback
+                              }
+                            }
+
+                            // Allow navigation for "SCHEDULED" visits if no started visits exist
+                            if (route.visitStatus == "SCHEDULED" &&
+                                !hasStartedVisit) {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FeedbackView(
+                                    visitId: route.requestId,
+                                  ),
+                                ),
+                              );
+                              if (result is AllOutofRoute) {
+                                onTileTap(result); // Handle tile tap callback
+                              }
                             }
                           },
                           child: Container(

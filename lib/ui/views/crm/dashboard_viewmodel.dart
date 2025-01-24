@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:distributor/app/locator.dart';
 import 'package:distributor/app/router.gr.dart';
-import 'package:distributor/services/access_controller_service.dart';
 import 'package:distributor/services/logistics_service.dart';
 import 'package:distributor/services/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:distributor/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,8 +17,8 @@ import 'package:tripletriocore/tripletriocore.dart';
 class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
   String activeScheduleId;
   String territoryId;
-  String currentLatitude;
-  String currentLongitude;
+  // String currentLatitude;
+  // String currentLongitude;
   final _apiService = locator<ApiService>();
   bool isDayStarted = false;
 
@@ -25,8 +26,8 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
   LogisticsService _logisticsService = locator<LogisticsService>();
   UserService _userService = locator<UserService>();
   DialogService _dialogService = locator<DialogService>();
-  AccessControlService _accessControlService = locator<AccessControlService>();
   NavigationService _navigationService = locator<NavigationService>();
+  SnackbarService snackBarService = locator<SnackbarService>();
 
   Api get api => _apiService.api;
 
@@ -55,11 +56,16 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
   List<AllOutofRoute> _outOfRouteRequests = [];
   List<AllOutofRoute> get outOfRouteRequests => _outOfRouteRequests;
 
-  final List<String> scheduledVisits = ['Visit 1', 'Visit 2', 'Visit 3'];
-  final List<String> completedVisits = ['Visit 1'];
-  final List<String> pendingVisits = ['Visit 1', 'Visit 2'];
-  final List<String> plannerItems = ['Task 1'];
-  final List<String> cuustomeritems = ['Task 1'];
+  // List<CRMDashboardStats> _dashboardStats = [];
+  // List<CRMDashboardStats> get dashboardStats => _dashboardStats;
+
+  PayloadDetail crmStats;
+
+  // final List<String> scheduledVisits = ['Visit 1', 'Visit 2', 'Visit 3'];
+  // final List<String> completedVisits = ['Visit 1'];
+  // final List<String> pendingVisits = ['Visit 1', 'Visit 2'];
+  // final List<String> plannerItems = ['Task 1'];
+  // final List<String> cuustomeritems = ['Task 1'];
   // List<Customer> _customerListing;
   // List<Customer> get customerListing => _customerListing;
 
@@ -68,29 +74,13 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
   //   notifyListeners();
   // }
 
-  void loadOutOfRouteRequests() async {
-    try {
-      var response = await api.fetchAllOutofRoute(user.token);
-      if (response != null && response is List) {
-        _outOfRouteRequests = response;
-        print(
-            'Out of route requests: ${_outOfRouteRequests.length}'); // Debugging
-      } else {
-        print('No out of route requests found');
-      }
-      notifyListeners();
-    } catch (e) {
-      print('Error fetching out-of-route requests: $e');
-    }
-  }
-
   // Methods to get the count of items for each card
-  int getOutOfRouteCount() => outOfRouteRequests.length;
-  int getScheduledVisitsCount() => scheduledVisits.length;
-  int getCompletedVisitsCount() => completedVisits.length;
-  int getPendingVisitsCount() => pendingVisits.length;
-  int getPlannerCount() => plannerItems.length;
-  int getCustomerCount() => cuustomeritems.length;
+  // int getOutOfRouteCount() => outOfRouteRequests.length;
+  // int getScheduledVisitsCount() => scheduledVisits.length;
+  // int getCompletedVisitsCount() => completedVisits.length;
+  // int getPendingVisitsCount() => pendingVisits.length;
+  // int getPlannerCount() => plannerItems.length;
+  // int getCustomerCount() => cuustomeritems.length;
 
   // void toggleDay(BuildContext context) {
   //   isDayStarted = !isDayStarted;
@@ -115,12 +105,95 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
   //       notifyListeners();
   //     }
   //   }
+  int scheduledVisits = 0;
+  int completedVisits = 0;
+  int pendingVisits = 0;
+  int cuustomeritems = 0;
+
+  // loadcrmDashboardTiles() async {
+  //   try {
+  //     var response = await api.fetchDashboardStats(user.token);
+  //     if (response != null) {
+  //       List<dynamic> Payloadlist = response['payload'];
+  //       crmStats = PayloadDetail.fromJson(jsonDecode(Payloadlist.first));
+  //       completedVisits = crmStats.completedVisits;
+  //       scheduledVisits = crmStats.scheduledVisits;
+  //       pendingVisits = crmStats.pendingVisits;
+  //       notifyListeners();
+  //     } else {
+  //       print('No crmDashboardTiles requests found');
+  //     }
+  //     return crmStats;
+  //     notifyListeners();
+  //   } catch (e) {
+  //     print('Error fetching crmDashboardTiles requests: $e');
+  //   }
   // }
+  loadcrmDashboardTiles() async {
+    try {
+      var response = await api.fetchDashboardStats(user.token);
+      if (response != null) {
+        List<dynamic> Payloadlist = response['payload'];
+        crmStats = PayloadDetail.fromJson(jsonDecode(Payloadlist.first));
+        completedVisits = crmStats.completedVisits;
+        scheduledVisits = crmStats.scheduledVisits;
+        pendingVisits = crmStats.pendingVisits;
+        notifyListeners(); // Call this once after updating the data
+      } else {
+        print('No crmDashboardTiles requests found');
+      }
+      return crmStats;
+    } catch (e) {
+      print('Error fetching crmDashboardTiles requests: $e');
+    }
+  }
+
+  int getOutOfRouteCount() => outOfRouteRequests.length;
+  int getScheduledVisitsCount() => scheduledVisits;
+  int getCompletedVisitsCount() => completedVisits;
+  int getPendingVisitsCount() => pendingVisits;
+  // int getPlannerCount() => plannerItems;
+  int getCustomerCount() => cuustomeritems;
 
   Future<void> loadDayState() async {
     final prefs = await SharedPreferences.getInstance();
     isDayStarted = prefs.getBool('isDayStarted') ?? false;
-    notifyListeners(); // Ensure UI updates
+    notifyListeners();
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //     content: Text('Location services are disabled. Please enable the services')));
+      snackBarService.showSnackbar(
+          message:
+              'Location services are disabled. Please enable the services');
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        snackBarService.showSnackbar(
+            message: 'Location permissions are denied');
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      snackBarService.showSnackbar(
+          message:
+              'Location permissions are permanently denied, we cannot request permissions.');
+      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //     content: Text('Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
   }
 
   // Save the day state to shared preferences
@@ -129,9 +202,22 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
     prefs.setBool('isDayStarted', isDayStarted);
   }
 
+  Position _currentPosition;
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      _currentPosition = position;
+      notifyListeners();
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
   void toggleDay(BuildContext context) async {
     if (!isDayStarted) {
-      // Show the confirmation dialog before starting the day
       var dialogResponse = await _dialogService.showConfirmationDialog(
         title: 'Start Your Day',
         description: 'Are you sure you want to start your day?',
@@ -142,8 +228,8 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
       if (dialogResponse.confirmed) {
         // If confirmed, proceed to start the day
         isDayStarted = true;
-        await _saveDayState(); // Save state
-        notifyListeners(); // Ensure UI updates
+        await _saveDayState();
+        notifyListeners();
         startDayRequest(context);
       }
     } else {
@@ -165,38 +251,14 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
     }
   }
 
-  Future<bool> _showStartDayConfirmationDialog(BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Start Day"),
-          content: const Text("Are you sure you want to start the day?"),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("No"),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-            TextButton(
-              child: const Text("Yes"),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Future<void> startDayRequest(BuildContext context) async {
     try {
       // Build the payload
       var payload = {
         "salesRepUser": user.id,
         "territory": 4,
+        // "firstLoginLat": _currentPosition.latitude.toString(),
+        // "firstLoginLon": _currentPosition.longitude.toString(),
         "firstLoginLat": -1.26777778,
         "firstLoginLon": 36.90222222
       };
@@ -237,6 +299,8 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
       Map<String, dynamic> data = {
         "salesRepUser": user.id,
         "territory": 4,
+        // "lastLoginLat": _currentPosition.latitude.toString(),
+        // "lastLoginLon": _currentPosition.longitude.toString(),
         "lastLoginLat": -1.26777778,
         "lastLoginLon": 36.90222222
       };
@@ -270,76 +334,9 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
     }
   }
 
-// Example method to dynamically fetch the started day ID
-  // String getStartedDayLogId() {
-  //   return "7";
-  //   // return dayLogId;
-  // }
-
-// --------------------------------------------------------------------------------
-
-  // navigateToPendingStockTransactions() async {
-  //   _navigationService.navigateTo(Routes.stockTransactionListView);
-  // }
-
-  // navigateToReturnStock() async {
-  //   _navigationService.navigateTo(Routes.stockTransferView);
-  // }
-
-  // navigateToNewContractSale() async {
-  //   await _navigationService.navigateTo(Routes.adhocSalesView,
-  //       arguments: AdhocSalesViewArguments(saleType: CustomerType.Contract));
-  // }
-
-  // navigateToWalkInSale() async {
-  //   await _navigationService.navigateTo(Routes.adhocSalesView,
-  //       arguments: AdhocSalesViewArguments(saleType: CustomerType.Walk_In));
-  // }
-
   User get user => _userService.user;
   bool get hasJourney => _logisticsService.hasJourney;
   final String formattedDate = DateFormat('dd-MMM-yyyy').format(DateTime.now());
-
-  //Check if user can list journeys
-  // bool get canListJourneys => _accessControlService.enableJourneyTab;
-
-  // bool get isMiniShop {
-  //   if (user.hasSalesChannel) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
-  // bool get isMiniShop => _accessControlService.isOutlet;
-
-  // Future fetchUserJourneys() async {
-  //   //Check if this is a minishop
-  //   if (!user.hasSalesChannel) {
-  //     var result = await _logisticsService.fetchJourneys();
-  //     return result;
-  //   }
-  // }
-
-  // @override
-  // Future<List<DeliveryJourney>> futureToRun() async {
-  //   List<DeliveryJourney> result = await fetchUserJourneys();
-
-  //   return result;
-  // }
-
-  // @override
-  // void onData(List<DeliveryJourney> data) {
-  //   // SystemNavigator.pop();
-  //   super.onData(data);
-  // }
-
-  // @override
-  // void onError(error) async {
-  //   await _dialogService.showDialog(
-  //       title: 'Error', description: error.toString());
-  //   super.onError(error);
-  // }
 
   void init() async {
     // This is not a minishop
@@ -347,22 +344,13 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
     if (!user.hasSalesChannel) {
       await _logisticsService.fetchJourneys();
     }
-    loadOutOfRouteRequests();
+    loadcrmDashboardTiles();
+    _handleLocationPermission();
+    _getCurrentPosition();
 
     setBusy(true);
     // await _fetchCustomerDetails();
     setBusy(false);
-
-    //  try {
-    //   // Fetch customers from the backend or other sources
-    //   customers = await fetchCustomers();
-    // } catch (e) {
-    //   customers = []; // Ensure it's still a list if fetch fails
-    //   print('Error fetching customers: $e');
-    // } finally {
-    //   setBusy(false);
-    //   notifyListeners();
-    // }
   }
 
   navigateToInvoicingView() async {
@@ -374,7 +362,6 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
 
   @override
   Future<List<Customer>> futureToRun() {
-    // TODO: implement futureToRun
     throw UnimplementedError();
   }
 }

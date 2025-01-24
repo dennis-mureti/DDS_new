@@ -14,6 +14,11 @@ class FeedbackView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<OutOfRouteViewModel>.reactive(
+      onModelReady: (model) async {
+        model.setBusy(true);
+        await model.fetchOutofRouteCheckInState();
+        model.setBusy(false);
+      },
       builder: (context, model, child) {
         return Scaffold(
           appBar: AppBar(
@@ -30,7 +35,7 @@ class FeedbackView extends StatelessWidget {
                       // Check-in details at the top
                       _buildCheckInDetails(model),
                       const SizedBox(height: 16),
-                      if (model.isCheckedIn) ...[
+                      if (model.isOutOfRouteCheckedIn) ...[
                         const Text(
                           'Out of Route Feedback',
                           style: TextStyle(
@@ -65,7 +70,7 @@ class FeedbackView extends StatelessWidget {
                       // Check-in/Check-out button
                       ElevatedButton(
                         onPressed: () {
-                          if (model.isCheckedIn) {
+                          if (model.isOutOfRouteCheckedIn) {
                             // Enforce feedback before checkout
                             if (model.feedbackController.text.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -85,8 +90,9 @@ class FeedbackView extends StatelessWidget {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          primary:
-                              model.isCheckedIn ? Colors.red : Colors.green,
+                          primary: model.isOutOfRouteCheckedIn
+                              ? Colors.red
+                              : Colors.green,
                           padding: const EdgeInsets.symmetric(vertical: 15.0),
                           minimumSize: const Size(double.infinity, 50),
                           shape: RoundedRectangleBorder(
@@ -101,7 +107,7 @@ class FeedbackView extends StatelessWidget {
                                   Icon(Icons.check_circle, color: Colors.white),
                                   const SizedBox(width: 8),
                                   Text(
-                                    model.isCheckedIn
+                                    model.isOutOfRouteCheckedIn
                                         ? 'Check Out'
                                         : 'Check In',
                                     style: const TextStyle(
@@ -163,28 +169,84 @@ class FeedbackView extends StatelessWidget {
   //   );
   // }
 
+  // Widget _buildCheckInDetails(OutOfRouteViewModel model) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 20.0),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         _buildDetailColumn(
+  //             'Check In',
+  //             model.isOutOfRouteCheckedIn
+  //                 ? 'Check-In in Progress'
+  //                 : (model.checkInTime != null
+  //                     ? DateFormat('hh:mm a').format(model.checkInTime)
+  //                     : 'Start')),
+  //         _buildDetailColumn(
+  //           'Duration',
+  //           model.isOutOfRouteCheckedIn
+  //               ? 'Check-In in Progress'
+  //               : model.duration ?? '0 min',
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget _buildCheckInDetails(OutOfRouteViewModel model) {
+    // Get the persisted check-in time (if any)
+    Future<DateTime> storedCheckInTime = model.getOutOfRouteCheckInTime();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildDetailColumn(
-              'Check In',
-              model.isCheckedIn
-                  ? 'Check-In in Progress'
-                  : (model.checkInTime != null
-                      ? DateFormat('hh:mm a').format(model.checkInTime)
-                      : 'Start')),
-          _buildDetailColumn(
-            'Duration',
-            model.isCheckedIn
-                ? 'Check-In in Progress'
-                : model.duration ?? '0 min',
+          FutureBuilder<DateTime>(
+            future: storedCheckInTime,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                // Calculate the duration only if checkInTime is available
+                Duration duration = DateTime.now().difference(snapshot.data);
+
+                String formattedDuration = _formatDuration(duration);
+
+                return _buildDetailColumn(
+                  'Check In Time',
+                  DateFormat('hh:mm a').format(snapshot.data),
+                );
+              } else {
+                return _buildDetailColumn('Check In', 'Start');
+              }
+            },
+          ),
+          FutureBuilder<DateTime>(
+            future: storedCheckInTime,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                // Calculate the duration only if checkInTime is available
+                Duration duration = DateTime.now().difference(snapshot.data);
+
+                String formattedDuration = _formatDuration(duration);
+
+                return _buildDetailColumn(
+                  'Duration',
+                  formattedDuration,
+                );
+              } else {
+                return _buildDetailColumn('Duration', 'N/A');
+              }
+            },
           ),
         ],
       ),
     );
+  }
+
+  String _formatDuration(Duration duration) {
+    // Format the duration as hours and minutes
+    int hours = duration.inHours;
+    int minutes = duration.inMinutes % 60;
+    return '$hours hours $minutes minutes';
   }
 
   Column _buildDetailColumn(String label, String value) {

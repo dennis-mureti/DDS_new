@@ -40,6 +40,8 @@ dependencies:
   google_maps_flutter: ^0.5.26+4
   flutter_polyline_points: ^0.2.2
   geolocator:
+  # firebase_storage: ^11.0.14
+  # firebase_app_check: ^0.1.1+6
   geocoding:
   #  flutter_localizations:
   #    sdk: flutter
@@ -50,7 +52,7 @@ dependencies:
   #  feitan_phone:
   #    path: '../feitan_phone'
   #    git: 'https://github.com/AlbertKamau/tripletrio_core'
-  firebase_core: "^0.7.0"
+  firebase_core:
   #  firebase_crashlytics: "^0.4.0+1"
   #  firebase_performance: "^0.5.0+1"
 
