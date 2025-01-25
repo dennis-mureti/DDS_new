@@ -124,7 +124,7 @@ class CheckInView extends StatelessWidget {
         (model.selectedProducts?.isNotEmpty ?? false) &&
         model.selectedProduct != null &&
         (model.shareOfShelf?.isNotEmpty ?? false) &&
-        model.shelfAvailability != null;
+        model.shelfAvailability == null;
     // model.shelfPhotoUrl != null;
 
     // debugPrint('Shelf Photo URL: ${model.shelfPhotoUrl}');
@@ -321,52 +321,147 @@ class CheckInView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildProductsHeader(),
+        // Headers for the columns
+        Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: const Text(
+                'Product',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: const Text(
+                'Shelf Availability',
+                textAlign: TextAlign.left,
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(width: 10),
+
+            const Icon(
+              Icons.delete,
+              color: Colors.transparent,
+            ), // Placeholder to align with remove button
+          ],
+        ),
+        const SizedBox(height: 8),
+        // The existing ListView
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: model.selectedProducts.length,
           itemBuilder: (context, index) {
             final product = model.selectedProducts[index];
-            return _buildProductItem(context, model, product);
+            // final priceCompliance = model.getPriceCompliance(product.id);
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                children: [
+                  Flexible(
+                    flex: 3,
+                    child: Text(
+                      product.itemName,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    flex: 2,
+                    child: Container(
+                      width: double.infinity,
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (availability) {
+                          model.setShelfAvailabilityForProductById(
+                              product.id, availability);
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Levels',
+                          filled: true,
+                          fillColor: Colors.grey.shade300,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: model.isCheckedIn
+                        ? () {
+                            model.removeProductFromList(product);
+                          }
+                        : null,
+                  ),
+                ],
+              ),
+            );
           },
         ),
       ],
     );
   }
 
-  Padding _buildProductsHeader() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
-          Expanded(
-            child: Text(
-              'Product Name',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-            ),
-          ),
-          SizedBox(width: 5),
-          Expanded(
-            child: Text(
-              'Shelf Availability',
-              textAlign: TextAlign.start,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-            ),
-          ),
-          // SizedBox(width: 5),
-          // Expanded(
-          //   child: Text(
-          //     'Brand Availability',
-          //     textAlign: TextAlign.center,
-          //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-          //   ),
-          // ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildAddedProductsList(CheckInViewModel model) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       _buildProductsHeader(),
+  //       ListView.builder(
+  //         shrinkWrap: true,
+  //         physics: const NeverScrollableScrollPhysics(),
+  //         itemCount: model.selectedProducts.length,
+  //         itemBuilder: (context, index) {
+  //           final product = model.selectedProducts[index];
+  //           return _buildProductItem(context, model, product);
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  // Padding _buildProductsHeader() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: const [
+  //         Expanded(
+  //           child: Text(
+  //             'Product Name',
+  //             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+  //           ),
+  //         ),
+  //         SizedBox(width: 5),
+  //         Expanded(
+  //           child: Text(
+  //             'Shelf Availability',
+  //             textAlign: TextAlign.start,
+  //             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+  //           ),
+  //         ),
+  //         // SizedBox(width: 5),
+  //         // Expanded(
+  //         //   child: Text(
+  //         //     'Brand Availability',
+  //         //     textAlign: TextAlign.center,
+  //         //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+  //         //   ),
+  //         // ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Padding _buildProductItem(
       BuildContext context, CheckInViewModel model, dynamic product) {
@@ -384,13 +479,17 @@ class CheckInView extends StatelessWidget {
             child: Container(
               width: double.infinity,
               child: TextField(
-                keyboardType: TextInputType.number, // Use number keyboard
+                keyboardType: TextInputType.number,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly
                 ], // Only allow digits
+                // onChanged: (availability) {
+                //   // Passing the availability value as a string
+                //   model.setShelfAvailability(availability);
+                // },
                 onChanged: (availability) {
-                  // Passing the availability value as a string
-                  model.setShelfAvailability(availability);
+                  model.setShelfAvailabilityForProductById(
+                      product.id, availability);
                 },
                 decoration: InputDecoration(
                   hintText: 'Levels',

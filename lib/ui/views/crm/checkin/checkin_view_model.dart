@@ -57,6 +57,16 @@ class CheckInViewModel extends BaseViewModel {
   // String _brandingRequest;
   // String _generalFeedback;
 
+  Map<String, String> _shelfAvailabilityMap = {};
+  Map<String, String> _priceComplianceMap = {};
+  Map<String, double> _retailPriceMap = {};
+
+  String getShelfAvailability(String productId) =>
+      _shelfAvailabilityMap[productId] ?? '';
+  String getPriceCompliance(String productId) =>
+      _priceComplianceMap[productId] ?? '';
+  double getRetailPrice(String productId) => _retailPriceMap[productId] ?? 0.0;
+
   String _shelfAvailability;
   String get shelfAvailability => _shelfAvailability;
 
@@ -175,6 +185,22 @@ class CheckInViewModel extends BaseViewModel {
   }
 
   List<Product> addedProducts = [];
+
+  void setShelfAvailabilityForProductById(
+      String productId, String availability) {
+    _shelfAvailabilityMap[productId] = availability;
+    notifyListeners();
+  }
+
+  void setPriceComplianceForProductById(String productId, String compliance) {
+    _priceComplianceMap[productId] = compliance;
+    notifyListeners();
+  }
+
+  void setRetailPriceForProductById(String productId, double price) {
+    _retailPriceMap[productId] = price;
+    notifyListeners();
+  }
 
   void updateShelfAvailability(Product product, String availability) {
     if (availability != null) {
@@ -951,9 +977,12 @@ class CheckInViewModel extends BaseViewModel {
         "submittedData": selectedProducts.map((product) {
           return {
             "sku": product.id,
-            "shelfAvailability": shelfAvailability,
-            "priceCompliance": priceCompliance,
-            "retailPrice": retailPrice,
+            // "shelfAvailability": shelfAvailability,
+            // "priceCompliance": priceCompliance,
+            // "retailPrice": retailPrice,
+            "shelfAvailability": _shelfAvailabilityMap[product.id] ?? '',
+            "priceCompliance": _priceComplianceMap[product.id] ?? '',
+            "retailPrice": _retailPriceMap[product.id] ?? "N/A",
           };
         }).toList(),
         "shareOfShelf": shareOfShelf,

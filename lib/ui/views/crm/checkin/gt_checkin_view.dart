@@ -344,6 +344,178 @@ class GTCheckInView extends StatelessWidget {
   //   );
   // }
 
+  // Widget _buildAddedProductsList(CheckInViewModel model) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       // Headers for the columns
+  //       Row(
+  //         children: [
+  //           Expanded(
+  //             flex: 3,
+  //             child: const Text(
+  //               'Product',
+  //               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+  //             ),
+  //           ),
+  //           Expanded(
+  //             flex: 2,
+  //             child: const Text(
+  //               'Shelf Availability',
+  //               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+  //             ),
+  //           ),
+  //           const SizedBox(width: 10),
+  //           Expanded(
+  //             flex: 2,
+  //             child: const Text(
+  //               'Price Compliance',
+  //               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+  //             ),
+  //           ),
+  //           const SizedBox(width: 10),
+  //           Expanded(
+  //             flex: 2,
+  //             child: const Text(
+  //               'Price',
+  //               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+  //             ),
+  //           ),
+  //           const SizedBox(width: 10),
+  //           const Icon(
+  //             Icons.delete,
+  //             color: Colors.transparent,
+  //           ), // Placeholder to align with remove button
+  //         ],
+  //       ),
+  //       const SizedBox(height: 8),
+  //       // The existing ListView
+  //       ListView.builder(
+  //         shrinkWrap: true,
+  //         physics: const NeverScrollableScrollPhysics(),
+  //         itemCount: model.selectedProducts.length,
+  //         itemBuilder: (context, index) {
+  //           final product = model.selectedProducts[index];
+  //           return Padding(
+  //             padding: const EdgeInsets.symmetric(vertical: 8.0),
+  //             child: Row(
+  //               children: [
+  //                 Flexible(
+  //                   flex: 3,
+  //                   child: Text(
+  //                     product.itemName,
+  //                     style: const TextStyle(fontSize: 14),
+  //                     // overflow: TextOverflow.ellipsis, // Prevent text overflow
+  //                   ),
+  //                 ),
+  //                 const SizedBox(width: 10),
+  //                 Flexible(
+  //                   flex: 2,
+  //                   child: Container(
+  //                     width: double.infinity,
+  //                     child: TextField(
+  //                       keyboardType:
+  //                           TextInputType.number, // Use number keyboard
+  //                       inputFormatters: [
+  //                         FilteringTextInputFormatter.digitsOnly
+  //                       ], // Only allow digits
+  //                       onChanged: (availability) {
+  //                         // Passing the availability value as a string
+  //                         model.setShelfAvailability(availability);
+  //                       },
+  //                       decoration: InputDecoration(
+  //                         hintText: 'Levels',
+  //                         filled: true,
+  //                         fillColor: Colors.grey.shade300,
+  //                         border: OutlineInputBorder(
+  //                           borderRadius: BorderRadius.circular(8),
+  //                           borderSide: BorderSide.none,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(width: 10),
+  //                 Flexible(
+  //                   flex: 2,
+  //                   child: Container(
+  //                     width: double.infinity,
+  //                     child: DropdownButtonFormField<String>(
+  //                       isExpanded:
+  //                           true, // Make the dropdown expand to fill available space
+  //                       onChanged: (value) {
+  //                         model.setPriceCompliance(value);
+  //                         if (value == 'Available') {
+  //                           // Show price input when "Yes" is selected
+  //                         }
+  //                       },
+  //                       items: const [
+  //                         'Yes',
+  //                         'No',
+  //                       ].map((String item) {
+  //                         return DropdownMenuItem<String>(
+  //                           value: item,
+  //                           child: Text(item),
+  //                         );
+  //                       }).toList(),
+  //                       decoration: InputDecoration(
+  //                         filled: true,
+  //                         fillColor: Colors.grey.shade300,
+  //                         border: OutlineInputBorder(
+  //                           borderRadius: BorderRadius.circular(8),
+  //                           borderSide: BorderSide.none,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(width: 10),
+  //                 Flexible(
+  //                   flex: 2,
+  //                   child: Container(
+  //                     width: double.infinity,
+  //                     child: TextField(
+  //                       keyboardType: TextInputType.numberWithOptions(
+  //                           decimal:
+  //                               true), // Allow number input including decimal
+  //                       inputFormatters: [
+  //                         FilteringTextInputFormatter.allow(RegExp(
+  //                             r'^\d*\.?\d*$')), // Allows only digits and one decimal point
+  //                       ],
+  //                       onChanged: (price) {
+  //                         final parsedPrice = double.tryParse(price);
+  //                         if (parsedPrice != null) {
+  //                           // model.setProductPrice(product.itemName, parsedPrice);
+  //                         }
+  //                       },
+  //                       decoration: InputDecoration(
+  //                         hintText: 'Enter price',
+  //                         filled: true,
+  //                         fillColor: Colors.grey.shade300,
+  //                         border: OutlineInputBorder(
+  //                           borderRadius: BorderRadius.circular(8),
+  //                           borderSide: BorderSide.none,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 IconButton(
+  //                   icon: const Icon(Icons.delete),
+  //                   onPressed: model.isCheckedIn
+  //                       ? () {
+  //                           model.removeProductFromList(product);
+  //                         }
+  //                       : null,
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
   Widget _buildAddedProductsList(CheckInViewModel model) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,6 +568,8 @@ class GTCheckInView extends StatelessWidget {
           itemCount: model.selectedProducts.length,
           itemBuilder: (context, index) {
             final product = model.selectedProducts[index];
+            final priceCompliance = model.getPriceCompliance(product.id);
+
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
@@ -405,7 +579,6 @@ class GTCheckInView extends StatelessWidget {
                     child: Text(
                       product.itemName,
                       style: const TextStyle(fontSize: 14),
-                      // overflow: TextOverflow.ellipsis, // Prevent text overflow
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -414,14 +587,13 @@ class GTCheckInView extends StatelessWidget {
                     child: Container(
                       width: double.infinity,
                       child: TextField(
-                        keyboardType:
-                            TextInputType.number, // Use number keyboard
+                        keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
-                        ], // Only allow digits
+                        ],
                         onChanged: (availability) {
-                          // Passing the availability value as a string
-                          model.setShelfAvailability(availability);
+                          model.setShelfAvailabilityForProductById(
+                              product.id, availability);
                         },
                         decoration: InputDecoration(
                           hintText: 'Levels',
@@ -443,12 +615,11 @@ class GTCheckInView extends StatelessWidget {
                       child: DropdownButtonFormField<String>(
                         isExpanded:
                             true, // Make the dropdown expand to fill available space
-                        onChanged: (value) {
-                          model.setPriceCompliance(value);
-                          if (value == 'Available') {
-                            // Show price input when "Yes" is selected
-                          }
+                        onChanged: (compliance) {
+                          model.setPriceComplianceForProductById(
+                              product.id, compliance);
                         },
+                        value: priceCompliance.isEmpty ? null : priceCompliance,
                         items: const [
                           'Yes',
                           'No',
@@ -475,17 +646,22 @@ class GTCheckInView extends StatelessWidget {
                     child: Container(
                       width: double.infinity,
                       child: TextField(
-                        keyboardType: TextInputType.numberWithOptions(
-                            decimal:
-                                true), // Allow number input including decimal
+                        enabled: priceCompliance ==
+                            'No', // Disable if 'Yes' is selected
+                        keyboardType:
+                            TextInputType.numberWithOptions(decimal: true),
+                        // inputFormatters: [
+                        //   FilteringTextInputFormatter.allow(
+                        //       RegExp(r'^\d*\.?\d*$')),
+                        // ],
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(
-                              r'^\d*\.?\d*$')), // Allows only digits and one decimal point
+                          FilteringTextInputFormatter.digitsOnly
                         ],
                         onChanged: (price) {
                           final parsedPrice = double.tryParse(price);
                           if (parsedPrice != null) {
-                            // model.setProductPrice(product.itemName, parsedPrice);
+                            model.setRetailPriceForProductById(
+                                product.id, parsedPrice);
                           }
                         },
                         decoration: InputDecoration(
