@@ -2,7 +2,6 @@ import 'package:distributor/app/locator.dart';
 import 'package:distributor/services/customer_service.dart';
 import 'package:distributor/services/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 // import 'package:stacked_services/stacked_services.dart';
 import 'package:tripletriocore/tripletriocore.dart';

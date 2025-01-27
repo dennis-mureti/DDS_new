@@ -243,31 +243,6 @@ class OutOfRouteViewModel extends ReactiveViewModel {
     }
   }
 
-  // void toggleCheckin(BuildContext context, int visitId) {
-  //   isCheckedIn = !isCheckedIn;
-  //   notifyListeners();
-
-  //   if (isCheckedIn) {
-  //     checkInTime = DateTime.now();
-  //     _startTimer();
-  //     checkInRequest(
-  //         context, visitId); // Pass visitId when calling checkInRequest
-  //   } else {
-  //     _stopTimer();
-
-  //     if (checkInTime != null) {
-  //       final timeDiff = DateTime.now().difference(checkInTime);
-  //       duration = _formatDuration(timeDiff);
-  //     }
-  //     checkInTime = null;
-
-  //     checkOutProcess(context,
-  //         visitId: visitId); // Initiates the check-out process
-  //   }
-
-  //   notifyListeners();
-  // }
-
   void _calculateDuration() {
     if (checkInTime != null) {
       final timeDiff = DateTime.now().difference(checkInTime);
@@ -276,28 +251,6 @@ class OutOfRouteViewModel extends ReactiveViewModel {
     }
   }
 
-  // void toggleCheckin(BuildContext context, int visitId) {
-  //   isCheckedIn = !isCheckedIn;
-  //   notifyListeners();
-
-  //   if (isCheckedIn) {
-  //     checkInTime = DateTime.now();
-  //     _startTimer();
-  //     checkInRequest(context, visitId);
-  //   } else {
-  //     _stopTimer();
-  //     _calculateDuration();
-  //     checkOutProcess(context, requestId: visitId).then((_) {
-  //       // After checkout, navigate to the ScheduleDetailsView
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => OutOfRoutesView(),
-  //         ),
-  //       );
-  //     });
-  //   }
-  // }
   void toggleCheckin(BuildContext context, int visitId) async {
     if (!isOutOfRouteCheckedIn) {
       checkInTime = DateTime.now();
@@ -335,13 +288,6 @@ class OutOfRouteViewModel extends ReactiveViewModel {
         _stopTimer();
         _calculateDuration();
         checkOutProcess(context, requestId: visitId).then((_) {
-          // After checkout, navigate to the ScheduleDetailsView
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => OutOfRoutesView(),
-          //   ),
-          // );
           Navigator.pop(context);
           Navigator.pushReplacement(
             context,
@@ -353,12 +299,6 @@ class OutOfRouteViewModel extends ReactiveViewModel {
       }
     }
   }
-
-  // Future<void> _saveCheckInState() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   prefs.setBool('isCheckedIn', isCheckedIn);
-  //   prefs.setString('checkInTime', checkInTime?.toIso8601String() ?? "");
-  // }
 
   Future<void> _saveOutofRouteCheckInState(
       bool checkedIn, DateTime time) async {

@@ -317,172 +317,6 @@ class CheckInViewModel extends BaseViewModel {
         .toList(); // Return the IDs
   }
 
-  // void toggleCheckin(BuildContext context, int visitId) {
-  //   isCheckedIn = !isCheckedIn;
-  //   // notifyListeners();
-
-  //   if (isCheckedIn) {
-  //     checkInTime = DateTime.now();
-  //     _startTimer();
-  //     checkInRequest(context, visitId);
-  //   } else {
-  //     _stopTimer();
-  //     _calculateDuration();
-  //     checkOutProcess(context, visitId: visitId).then((_) {
-  //       // After checkout, navigate to the ScheduleDetailsView
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => ScheduleDetailsView(),
-  //         ),
-  //       );
-  //     });
-  //   }
-  //   _saveCheckInState();
-  //   notifyListeners();
-  // }
-
-  // void toggleCheckin(BuildContext context, int visitId) async {
-  //   if (!isCheckedIn) {
-  //     checkInTime = DateTime.now();
-
-  //     // Show the confirmation dialog before starting the day
-  //     var dialogResponse = await _dialogService.showConfirmationDialog(
-  //       title: 'Check  In',
-  //       description: 'Are you sure you want to check In?',
-  //       cancelTitle: 'No',
-  //       confirmationTitle: 'Yes',
-  //     );
-
-  //     if (dialogResponse.confirmed) {
-  //       // If confirmed, proceed to start the day
-  //       isCheckedIn = true;
-  //       await _saveCheckInState(); // Save state
-  //       notifyListeners(); // Ensure UI updates
-  //       _startTimer();
-  //       checkInRequest(context, visitId);
-  //     }
-  //   } else {
-  //     // Show the confirmation dialog before ending the day
-  //     var dialogResponse = await _dialogService.showConfirmationDialog(
-  //       title: 'Check Out',
-  //       description: 'Are you sure you want to check Out?',
-  //       cancelTitle: 'No',
-  //       confirmationTitle: 'Yes',
-  //     );
-
-  //     if (dialogResponse.confirmed) {
-  //       // If confirmed, proceed to end the day
-  //       isCheckedIn = false;
-  //       await _saveCheckInState(); // Save state
-  //       notifyListeners(); // Ensure UI updates
-  //       _stopTimer();
-  //       _calculateDuration();
-  //       checkOutProcess(context, visitId: visitId).then((_) {
-  //         // After checkout, navigate to the ScheduleDetailsView
-  //         Navigator.pushReplacement(
-  //           context,
-  //           MaterialPageRoute(
-  //             builder: (context) => ScheduleDetailsView(),
-  //           ),
-  //         );
-  //       });
-  //     }
-  //   }
-  // }
-
-  // void toggleCheckin(BuildContext context, int visitId) async {
-  //   if (!isCheckedIn) {
-  //     // Check-In Logic
-  //     checkInTime = DateTime.now();
-  //     var dialogResponse = await _dialogService.showConfirmationDialog(
-  //       title: 'Check In',
-  //       description: 'Are you sure you want to check in?',
-  //       confirmationTitle: 'Yes',
-  //       cancelTitle: 'No',
-  //     );
-
-  //     if (dialogResponse.confirmed) {
-  //       isCheckedIn = true;
-  //       await setCheckedInState(true, checkInTime); // Save state
-  //       _startTimer();
-  //       checkInRequest(context, visitId);
-  //     }
-  //   } else {
-  //     // Check-Out Logic
-  //     var dialogResponse = await _dialogService.showConfirmationDialog(
-  //       title: 'Check Out',
-  //       description: 'Are you sure you want to check out?',
-  //       confirmationTitle: 'Yes',
-  //       cancelTitle: 'No',
-  //     );
-
-  //     if (dialogResponse.confirmed) {
-  //       isCheckedIn = false;
-  //       await setCheckedInState(false, null); // Clear state
-  //       _stopTimer();
-  //       _calculateDuration();
-  //       checkOutProcess(context, visitId: visitId);
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => ScheduleDetailsView(),
-  //         ),
-  //       );
-  //     }
-  //   }
-  // }
-
-  // void toggleCheckin(BuildContext context, int visitId) async {
-  //   if (!isCheckedIn) {
-  //     // Check-In Logic
-  //     checkInTime = DateTime.now();
-  //     var dialogResponse = await _dialogService.showConfirmationDialog(
-  //       title: 'Check In',
-  //       description: 'Are you sure you want to check in?',
-  //       confirmationTitle: 'Yes',
-  //       cancelTitle: 'No',
-  //     );
-
-  //     if (dialogResponse.confirmed) {
-  //       isCheckedIn = true;
-  //       await setCheckedInState(true, checkInTime); // Save state
-  //       _startTimer();
-  //       checkInRequest(context, visitId);
-  //     }
-  //   } else {
-  //     // Before Check-Out, call createVisitData (or similar process)
-  //     await createVisitData(context, visitId);
-
-  //     // Check-Out Logic
-  //     var dialogResponse = await _dialogService.showConfirmationDialog(
-  //       title: 'Check Orut',
-  //       description: 'Are you sure you want to check out?',
-  //       confirmationTitle: 'Yes',
-  //       cancelTitle: 'No',
-  //     );
-
-  //     if (dialogResponse.confirmed) {
-  //       isCheckedIn = false;
-  //       await setCheckedInState(false, null); // Clear state
-  //       _stopTimer();
-  //       _calculateDuration();
-
-  //       // Call checkOutProcess after confirmation
-  //       checkOutProcess(context, visitId: visitId);
-
-  //       // Optionally navigate after check-out
-  //       Navigator.pop(context);
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => ScheduleDetailsView(),
-  //         ),
-  //       );
-  //     }
-  //   }
-  // }
-
   void toggleCheckin(BuildContext context, int visitId) async {
     if (!isCheckedIn) {
       // Check-In Logic
@@ -496,14 +330,13 @@ class CheckInViewModel extends BaseViewModel {
 
       if (dialogResponse.confirmed) {
         isCheckedIn = true;
-        await setCheckedInState(true, checkInTime); // Save state
+        await setCheckedInState(true, checkInTime);
         _startTimer();
         checkInRequest(context, visitId);
       }
     } else {
       // Before Check-Out, call createVisitData (or similar process)
-      bool checklistResponse = await createVisitData(
-          context, visitId); // This should now return a bool
+      bool checklistResponse = await createVisitData(context, visitId);
 
       if (checklistResponse) {
         // Proceed with Check-Out Logic
@@ -516,14 +349,13 @@ class CheckInViewModel extends BaseViewModel {
 
         if (dialogResponse.confirmed) {
           isCheckedIn = false;
-          await setCheckedInState(false, null); // Clear state
+          await setCheckedInState(false, null);
           _stopTimer();
           _calculateDuration();
 
           // Await checkOutProcess before navigating
           await checkOutProcess(context, visitId: visitId);
 
-          // Navigate to the next page after check-out process is complete
           Navigator.pop(context);
           Navigator.pushReplacement(
             context,
@@ -531,13 +363,6 @@ class CheckInViewModel extends BaseViewModel {
               builder: (context) => ScheduleDetailsView(),
             ),
           );
-          // Navigator.pushAndRemoveUntil(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => ScheduleDetailsView(),
-          //   ),
-          //   (Route<dynamic> route) => false,
-          // );
         }
       } else {
         // If user cancels the checklist submission, do not proceed with checkout
@@ -550,53 +375,6 @@ class CheckInViewModel extends BaseViewModel {
     }
   }
 
-  // void toggleCheckin(BuildContext context, int visitId) async {
-  //   isCheckedIn = !isCheckedIn;
-
-  //   final prefs = await SharedPreferences.getInstance();
-
-  //   if (isCheckedIn) {
-  //     // When checking in, store the current check-in time
-  //     checkInTime = DateTime.now();
-  //     await prefs.setString('checkInTime', checkInTime.toString());
-  //     _startTimer(); // Start the timer for tracking duration
-  //     checkInRequest(context, visitId);
-  //   } else {
-  //     // When checking out, stop the timer, calculate the duration, and store the check-out details
-  //     _stopTimer();
-  //     _calculateDuration();
-
-  //     final checkOutTime = DateTime.now();
-  //     final duration = checkOutTime.difference(checkInTime);
-  //     await prefs.setString('checkOutTime', checkOutTime.toString());
-  //     await prefs.setInt(
-  //         'duration', duration.inSeconds); // Store duration in seconds
-
-  //     checkOutProcess(context, visitId: visitId).then((_) {
-  //       // Navigate to ScheduleDetailsView after checkout
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => ScheduleDetailsView(),
-  //         ),
-  //       );
-  //     });
-  //   }
-
-  //   // Save the check-in state
-  //   await prefs.setBool('isCheckedIn', isCheckedIn);
-  //   notifyListeners();
-  // }
-
-  // Future<void> loadCheckInState(int visitId) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   isCheckedIn = prefs.getBool('isCheckedIn_$visitId') ?? false;
-  //   final checkInTimeString = prefs.getString('checkInTime');
-  //   if (checkInTimeString != null) {
-  //     checkInTime = DateTime.parse(checkInTimeString);
-  //   }
-  //   notifyListeners();
-  // }
   Future<void> loadCheckInState() async {
     final prefs = await SharedPreferences.getInstance();
     isCheckedIn = prefs.getBool('isCheckedIn') ?? false;
@@ -622,84 +400,6 @@ class CheckInViewModel extends BaseViewModel {
     checkInTime = time;
     notifyListeners();
   }
-
-  // Future<void> checkInRequest(BuildContext context, int visitId) async {
-  //   try {
-  //     // Request permission to access location (for Android and iOS)
-  //     bool isLocationServiceEnabled =
-  //         await Geolocator.isLocationServiceEnabled();
-  //     if (!isLocationServiceEnabled) {
-  //       await _dialogService.showDialog(
-  //         title: 'Location Error',
-  //         description:
-  //             'Location services are disabled. Please enable them to proceed.',
-  //       );
-  //       return;
-  //     }
-
-  //     LocationPermission permission = await Geolocator.checkPermission();
-  //     if (permission == LocationPermission.deniedForever) {
-  //       await _dialogService.showDialog(
-  //         title: 'Location Permission Denied',
-  //         description:
-  //             'Location permissions are permanently denied. Please enable them in settings.',
-  //       );
-  //       return;
-  //     }
-
-  //     if (permission == LocationPermission.denied) {
-  //       permission = await Geolocator.requestPermission();
-  //       if (permission != LocationPermission.whileInUse &&
-  //           permission != LocationPermission.always) {
-  //         await _dialogService.showDialog(
-  //           title: 'Location Permission Denied',
-  //           description:
-  //               'You need to allow location permission to proceed with check-in.',
-  //         );
-  //         return;
-  //       }
-  //     }
-
-  //     // Get current position (latitude and longitude)
-  //     Position position = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.high,
-  //     );
-
-  //     var payload = {
-  //       "plannedVisitId": visitId,
-  //       "checkInTime":
-  //           DateTime.now().toUtc().add(Duration(hours: 3)).toIso8601String(),
-  //       "lat": position.latitude,
-  //       "lon": position.longitude,
-  //     };
-
-  //     setBusy(true);
-
-  //     var response = await _api.checkIn(user.token, payload);
-
-  //     if (response == 'Check-in successful') {
-  //       await _dialogService.showDialog(
-  //         title: 'Success',
-  //         description: 'Checkin successfully started.',
-  //       );
-  //       isCheckedIn = true;
-  //     } else if (response is CustomException) {
-  //       await _dialogService.showDialog(
-  //         title: 'Warning',
-  //         description:
-  //             'There was an issue checking in because this check in is in progress.',
-  //       );
-  //     }
-  //   } catch (e) {
-  //     await _dialogService.showDialog(
-  //       title: 'Error',
-  //       description: 'An unexpected error occurred: ${e.toString()}',
-  //     );
-  //   } finally {
-  //     setBusy(false);
-  //     notifyListeners();
-  //   }
-  // }
 
   Future<void> checkInRequest(BuildContext context, int visitId) async {
     try {
@@ -829,121 +529,14 @@ class CheckInViewModel extends BaseViewModel {
 
   Future<String> _pickImage() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.getImage(
-        source: ImageSource.camera); // Or ImageSource.gallery
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
-      return pickedFile.path; // Return the path to the picked image
+      return pickedFile.path;
     } else {
       throw Exception("No image selected.");
     }
   }
-
-  // Future<void> createVisitData(BuildContext context, int visitId) async {
-  //   try {
-  //     print("visitId: $visitId");
-  //     print(
-  //         "selectedProducts: ${selectedProducts.map((product) => product.id).toList()}");
-  //     print("user.full_name: ${user.full_name}");
-
-  //     if (selectedProducts == null || selectedProducts.isEmpty) {
-  //       print("Error: selectedProducts is null or empty.");
-  //       await _dialogService.showDialog(
-  //         title: 'Error',
-  //         description:
-  //             'No products selected. Please select products and try again.',
-  //       );
-  //       return;
-  //     }
-
-  //     // Ensure each product has an id
-  //     if (selectedProducts.any((product) => product.id == null)) {
-  //       print("Error: One or more selected products have null ids.");
-  //       await _dialogService.showDialog(
-  //         title: 'Error',
-  //         description: 'One or more selected products do not have valid IDs.',
-  //       );
-  //       return;
-  //     }
-
-  //     final payload = {
-  //       "plannedCustomerVisit": visitId,
-  //       "submittedData": selectedProducts.map((product) {
-  //         return {
-  //           "sku": product.id,
-  //           "shelfAvailability": shelfAvailability,
-  //         };
-  //       }).toList(),
-  //       "shareOfShelf": shareOfShelf,
-  //       // "activations": "Yes, three umbrellas",
-  //       // "priceCompliance": "Yes",
-  //       // "retailPrice": "N/A",
-  //       // "brandAvailability": "Yes",
-  //       // "marketingRequest": "Yes",
-  //       // "brandingRequest": "blablabla",
-  //       // "generalFeedback": "Test",
-  //       // "shelfPhotoUrl": "/volume/photos/premises/premises.png",
-  //       "activations": activations,
-  //       "priceCompliance": priceCompliance,
-  //       "retailPrice": retailPrice,
-  //       "brandAvailability": brandAvailability,
-  //       "marketingRequest": marketingRequest,
-  //       "brandingRequest": brandingRequest,
-  //       "generalFeedback": generalFeedback,
-  //       "shelfPhotoUrl": "/volume/photos/premises/premises.png",
-  //       "createdBy": user.full_name ?? "Unknown User",
-  //     };
-
-  //     String payloadJson;
-  //     try {
-  //       payloadJson = jsonEncode(payload);
-  //       print("Payload JSON: $payloadJson");
-  //     } catch (e) {
-  //       print("Error encoding payload to JSON: $e");
-  //       await _dialogService.showDialog(
-  //         title: 'Error',
-  //         description: 'Failed to process the data. Please try again.',
-  //       );
-  //       return;
-  //     }
-
-  //     final dialogResponse = await _dialogService.showConfirmationDialog(
-  //       title: 'Check-in Data',
-  //       description: 'Are you sure you want to submit the checklist?',
-  //       cancelTitle: 'No',
-  //       confirmationTitle: 'Yes',
-  //     );
-
-  //     if (dialogResponse.confirmed) {
-  //       setBusy(true);
-
-  //       final response = await _api.createVisitData(user.token, payload);
-
-  //       // Assuming the API returns a success status regardless of the response content
-  //       if (response != null) {
-  //         await _dialogService.showDialog(
-  //           title: 'Success',
-  //           description: 'Checklist successfully submitted.',
-  //         );
-  //       } else {
-  //         await _dialogService.showDialog(
-  //           title: 'Error',
-  //           description: 'Submission failed. Please try again.',
-  //         );
-  //       }
-  //     }
-  //   } catch (e) {
-  //     print("Exception: $e");
-  //     await _dialogService.showDialog(
-  //       // title: 'Error',
-  //       // description: 'An unexpected error occurred: ${e.toString()}',
-  //       title: 'Success',
-  //       description: 'Checklist successfully submitted.',
-  //     );
-  //   } finally {
-  //     setBusy(false);
-  //   }
-  // }
 
   Future<bool> createVisitData(BuildContext context, int visitId) async {
     try {
@@ -1026,16 +619,16 @@ class CheckInViewModel extends BaseViewModel {
             title: 'Success',
             description: 'Checklist successfully submitted.',
           );
-          return true; // Return true to indicate success
+          return true;
         } else {
           await _dialogService.showDialog(
             title: 'Error',
             description: 'Submission failed. Please try again.',
           );
-          return false; // Return false to indicate failure
+          return false;
         }
       } else {
-        return false; // Return false if the user cancels the submission
+        return false;
       }
     } catch (e) {
       print("Exception: $e");
@@ -1051,22 +644,12 @@ class CheckInViewModel extends BaseViewModel {
 
   /// Helper method to submit visit data
 
-  // void _startTimer() {
-  //   _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-  //     if (checkInTime != null && isCheckedIn) {
-  //       final timeDiff = DateTime.now().difference(checkInTime);
-  //       duration = _formatDuration(timeDiff);
-  //       notifyListeners();
-  //     }
-  //   });
-  // }
-
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (checkInTime != null) {
         final timeDiff = DateTime.now().difference(checkInTime);
         duration = _formatDuration(timeDiff);
-        notifyListeners(); // Update the UI with the current duration
+        notifyListeners();
       }
     });
   }
@@ -1085,12 +668,6 @@ class CheckInViewModel extends BaseViewModel {
         '${minutes.toString().padLeft(2, '0')}min '
         '${seconds.toString().padLeft(2, '0')}sec';
   }
-
-  // Stop the timer when checking out
-  // void _stopTimer() {
-  //   _timer?.cancel();
-  //   _timer = null;
-  // }
 
   Future<List<Product>> futureToRun() => fetchProducts();
 }

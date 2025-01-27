@@ -217,8 +217,7 @@ class OutOfRoutesView extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
-                                      color:
-                                          visitStatusColor, // Set dynamic color
+                                      color: visitStatusColor,
                                     ),
                                   ),
                                 ),
@@ -251,16 +250,15 @@ class OutOfRoutesView extends StatelessWidget {
               final result = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      OutOfRouteView(), // Replace with your desired screen
+                  builder: (context) => OutOfRouteView(),
                 ),
               );
               if (result != null) {
                 // Handle result if needed
               }
             },
-            backgroundColor: kColDDSPrimaryDark, // Adjust the color as needed
-            child: const Icon(Icons.add), // You can customize the icon here
+            backgroundColor: kColDDSPrimaryDark,
+            child: const Icon(Icons.add),
           ),
         );
       },

@@ -66,12 +66,6 @@ class CheckInView extends StatelessWidget {
           const SizedBox(height: 16),
           if (model.selectedProducts.isNotEmpty) _buildAddedProductsList(model),
           const SizedBox(height: 16),
-          // _buildTextField(
-          //   label: 'Share of Shelf',
-          //   hintText: 'Enter percentage',
-          //   onChanged: model.isCheckedIn ? model.setShareOfShelf : null,
-          //   icon: Icons.percent_outlined,
-          // ),
           _buildTextField(
             label: 'Share of Shelf',
             hintText: 'Enter percentage (0-100)',
@@ -125,7 +119,6 @@ class CheckInView extends StatelessWidget {
         model.selectedProduct != null &&
         (model.shareOfShelf?.isNotEmpty ?? false) &&
         model.shelfAvailability == null;
-    // model.shelfPhotoUrl != null;
 
     // debugPrint('Shelf Photo URL: ${model.shelfPhotoUrl}');
 
@@ -164,43 +157,6 @@ class CheckInView extends StatelessWidget {
     );
   }
 
-  // Widget _buildCheckInButton(BuildContext context, CheckInViewModel model) {
-  //   final isCheckoutFormValid = model.isCheckedIn &&
-  //       (model.selectedProducts?.isNotEmpty ?? false) &&
-  //       model.selectedProduct != null &&
-  //       (model.shareOfShelf?.isNotEmpty ?? false) &&
-  //       model.shelfAvailability != null;
-
-  //   return ElevatedButton.icon(
-  //     onPressed: model.isCheckedIn
-  //         ? (isCheckoutFormValid
-  //             ? () {
-  //                 model.toggleCheckin(context, visitId);
-  //                 model.checkOutTime = DateTime.now(); // Update check-out time
-  //               }
-  //             : () => _showValidationError(context))
-  //         : () => model.toggleCheckin(context, visitId),
-  //     icon: Icon(
-  //       model.isCheckedIn ? Icons.logout : Icons.login,
-  //       color: Colors.black,
-  //     ),
-  //     label: Text(
-  //       model.isCheckedIn ? 'Check Out' : 'Check In',
-  //       style: const TextStyle(
-  //         color: Colors.black,
-  //       ),
-  //     ),
-  //     style: ElevatedButton.styleFrom(
-  //       primary: model.isCheckedIn ? Colors.red : Colors.green,
-  //       padding: const EdgeInsets.symmetric(vertical: 15.0),
-  //       minimumSize: const Size(double.infinity, 50),
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(10.0),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   void _showValidationError(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -224,35 +180,6 @@ class CheckInView extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _buildSelectProductSection(CheckInViewModel model) {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     children: [
-  //       Expanded(
-  //         child: _buildDropdown(
-  //           label: 'Select Product',
-  //           value: model.selectedProduct?.itemName,
-  //           items: model.listOfProducts
-  //               .map((product) => product.itemName)
-  //               .toList(),
-  //           onChanged: model.isCheckedIn
-  //               ? (value) => model.setSelectedSku(
-  //                     model.listOfProducts
-  //                         .firstWhere((product) => product.itemName == value),
-  //                   )
-  //               : null,
-  //           icon: Icons.line_style_rounded,
-  //         ),
-  //       ),
-  //       const SizedBox(width: 10),
-  //       IconButton(
-  //         icon: const Icon(Icons.add_circle_outline_outlined),
-  //         onPressed: model.isCheckedIn ? model.addProductToList : null,
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildSelectProductSection(
       CheckInViewModel model, BuildContext context) {
@@ -412,57 +339,6 @@ class CheckInView extends StatelessWidget {
     );
   }
 
-  // Widget _buildAddedProductsList(CheckInViewModel model) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       _buildProductsHeader(),
-  //       ListView.builder(
-  //         shrinkWrap: true,
-  //         physics: const NeverScrollableScrollPhysics(),
-  //         itemCount: model.selectedProducts.length,
-  //         itemBuilder: (context, index) {
-  //           final product = model.selectedProducts[index];
-  //           return _buildProductItem(context, model, product);
-  //         },
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Padding _buildProductsHeader() {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: const [
-  //         Expanded(
-  //           child: Text(
-  //             'Product Name',
-  //             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-  //           ),
-  //         ),
-  //         SizedBox(width: 5),
-  //         Expanded(
-  //           child: Text(
-  //             'Shelf Availability',
-  //             textAlign: TextAlign.start,
-  //             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-  //           ),
-  //         ),
-  //         // SizedBox(width: 5),
-  //         // Expanded(
-  //         //   child: Text(
-  //         //     'Brand Availability',
-  //         //     textAlign: TextAlign.center,
-  //         //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-  //         //   ),
-  //         // ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Padding _buildProductItem(
       BuildContext context, CheckInViewModel model, dynamic product) {
     return Padding(
@@ -526,49 +402,6 @@ class CheckInView extends StatelessWidget {
     );
   }
 
-  // List<Widget> _buildDropdownSections(CheckInViewModel model) {
-  //   return [
-  //     _buildTextField(
-  //         label: 'Marketing Request',
-  //         hintText: 'Enter Details on Marketing request',
-  //         onChanged: model.isCheckedIn ? model.setMarketingRequest : null,
-  //         icon: Icons.shuffle_on_outlined,
-  //         keyboardType: TextInputType.text),
-  //     const SizedBox(height: 16),
-  //     _buildTextField(
-  //         label: 'Branding Request',
-  //         hintText: 'Enter Details on Branding request',
-  //         onChanged: model.isCheckedIn ? model.setBrandingRequest : null,
-  //         icon: Icons.request_page,
-  //         keyboardType: TextInputType.text),
-  //     const SizedBox(height: 16),
-  //     _buildTextField(
-  //         label: 'Activations',
-  //         hintText: 'Enter Details on Activations',
-  //         onChanged: model.isCheckedIn ? model.setActivations : null,
-  //         icon: Icons.local_activity_outlined,
-  //         keyboardType: TextInputType.text),
-  //     const SizedBox(height: 16),
-  //     _buildTextField(
-  //       label: 'Feedback',
-  //       hintText: 'Enter feedback here',
-  //       onChanged: model.isCheckedIn ? model.setGeneralFeedback : null,
-  //       icon: Icons.feed_rounded,
-  //       maxLines: 3,
-  //     ),
-  //     const SizedBox(height: 16),
-  //     _buildBrandAvailabilityCheckboxes(model),
-  //     // _buildBrandAvailabilityDropdown(model),
-  //     // // _buildTextField(
-  //     // //   label: 'Brand Availability',
-  //     // //   hintText: 'Enter Details on Brand Availability',
-  //     // //   onChanged: model.isCheckedIn ? model.setShelfAvailability : null,
-  //     // //   icon: Icons.branding_watermark_outlined,
-  //     // // ),
-  //     // const SizedBox(height: 16),
-  //   ];
-  // }
-
   List<Widget> _buildDropdownSections(CheckInViewModel model) {
     return [
       _buildTextField(
@@ -617,138 +450,6 @@ class CheckInView extends StatelessWidget {
     ];
   }
 
-  // Widget _buildBrandAvailabilityDropdown(CheckInViewModel model) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       const Text(
-  //         'Brand Availability',
-  //         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-  //       ),
-  //       const SizedBox(height: 8),
-  //       DropdownButtonFormField<String>(
-  //         value: model
-  //             .brandAvailability, // Assuming model.shelfAvailability holds this value
-  //         onChanged: model.isCheckedIn ? model.setBrandAvailability : null,
-  //         items: const ['Super Loaf', 'Butter Toast', 'Super Nutri']
-  //             .map((String item) =>
-  //                 DropdownMenuItem<String>(value: item, child: Text(item)))
-  //             .toList(),
-  //         decoration: _dropdownDecoration(),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildTextField({
-  //   String label,
-  //   String hintText,
-  //   ValueChanged<String> onChanged,
-  //   int maxLines = 1,
-  //   IconData icon,
-  // }) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text(label,
-  //           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-  //       const SizedBox(height: 8),
-  //       TextField(
-  //         onChanged: onChanged,
-  //         maxLines: maxLines,
-  //         decoration: InputDecoration(
-  //           hintText: hintText,
-  //           filled: true,
-  //           fillColor: Colors.grey.shade300,
-  //           prefixIcon: Icon(icon),
-  //           border: OutlineInputBorder(
-  //             borderRadius: BorderRadius.circular(8),
-  //             borderSide: BorderSide.none,
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildTextField({
-  //   String label,
-  //   String hintText,
-  //   Function(String) onChanged,
-  //   IconData icon,
-  //   int maxLines = 1,
-  //   List<TextInputFormatter>
-  //       inputFormatters, // Added parameter for input formatters
-  //   String Function(String) validator, // Added parameter for validation
-  // }) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text(label,
-  //           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-  //       const SizedBox(height: 8),
-  //       TextFormField(
-  //         onChanged: onChanged,
-  //         maxLines: maxLines,
-  //         inputFormatters: inputFormatters,
-  //         validator: validator,
-  //         decoration: InputDecoration(
-  //           hintText: hintText,
-  //           filled: true,
-  //           fillColor: Colors.grey.shade300,
-  //           prefixIcon: Icon(icon),
-  //           border: OutlineInputBorder(
-  //             borderRadius: BorderRadius.circular(8),
-  //             borderSide: BorderSide.none,
-  //           ),
-  //         ),
-  //         keyboardType: TextInputType.numberWithOptions(
-  //             decimal: true), // Restrict to number input
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildTextField({
-  //   String label,
-  //   String hintText,
-  //   ValueChanged<String> onChanged,
-  //   IconData icon,
-  //   int maxLines = 1,
-  //   List<TextInputFormatter> inputFormatters,
-  //   String Function(String) validator,
-  //   TextInputType keyboardType =
-  //       TextInputType.text, // Customizable keyboard type
-  // }) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text(
-  //         label,
-  //         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-  //       ),
-  //       const SizedBox(height: 8),
-  //       TextFormField(
-  //         onChanged: onChanged,
-  //         maxLines: maxLines,
-  //         inputFormatters: inputFormatters,
-  //         validator: validator,
-  //         keyboardType: keyboardType,
-  //         decoration: InputDecoration(
-  //           hintText: hintText,
-  //           filled: true,
-  //           fillColor: Colors.grey.shade300,
-  //           prefixIcon: icon != null ? Icon(icon) : null,
-  //           border: OutlineInputBorder(
-  //             borderRadius: BorderRadius.circular(8),
-  //             borderSide: BorderSide.none,
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
   Widget _buildTextField({
     String label,
     String hintText,
@@ -769,11 +470,9 @@ class CheckInView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Opacity(
-          opacity: enabled
-              ? 1.0
-              : 0.5, // Adjust opacity based on whether it's enabled
+          opacity: enabled ? 1.0 : 0.5,
           child: AbsorbPointer(
-            absorbing: !enabled, // Prevent user interaction when disabled
+            absorbing: !enabled,
             child: TextFormField(
               onChanged: onChanged,
               maxLines: maxLines,
@@ -840,57 +539,6 @@ class CheckInView extends StatelessWidget {
     );
   }
 
-  // Widget _buildBrandAvailabilityDropdown({
-  //   bool isEnabled,
-  //   void Function(String) onChanged,
-  // }) {
-  //   return DropdownButtonFormField<String>(
-  //     onChanged: isEnabled ? onChanged : null,
-  //     items: const ['Available', 'Not Available', 'Out of Stock']
-  //         .map((String item) => DropdownMenuItem<String>(
-  //               value: item,
-  //               child: Text(
-  //                 item,
-  //                 overflow: TextOverflow.clip, // Avoid text overflow
-  //                 maxLines: 1, // Limit to a single line
-  //                 style:
-  //                     TextStyle(fontSize: 14), // Adjust font size if necessary
-  //               ),
-  //             ))
-  //         .toList(),
-  //     decoration: _dropdownDecoration(),
-  //   );
-  // }
-
-  // Widget _buildBrandAvailabilityDropdown({
-  //   bool isEnabled,
-  //   void Function(String) onChanged,
-  // }) {
-  //   return DropdownButtonFormField<String>(
-  //     onChanged: isEnabled ? onChanged : null,
-  //     items: const [
-  //       'Supa Loaf',
-  //       'Butter Toast',
-  //       'Supa Nutri',
-  //       'Supa Tam',
-  //     ]
-  //         .map((String item) => DropdownMenuItem<String>(
-  //               value: item,
-  //               child: Container(
-  //                 width: double.infinity, // Ensures full-width for the dropdown
-  //                 child: Text(
-  //                   item,
-  //                   overflow: TextOverflow.ellipsis, // Avoid text overflow
-  //                   maxLines: 1, // Limit text to one line
-  //                 ),
-  //               ),
-  //             ))
-  //         .toList(),
-  //     decoration: _dropdownDecoration(),
-  //     isExpanded: true, // Ensures the dropdown expands to fill available space
-  //   );
-  // }
-
   Widget _buildBrandAvailabilityCheckboxes(CheckInViewModel model) {
     final List<String> brandOptions = [
       'Supa Loaf',
@@ -916,13 +564,12 @@ class CheckInView extends StatelessWidget {
                     if (isChecked == true) {
                       model.addBrand(brand);
                     } else {
-                      model.removeBrand(
-                          brand); // Remove brand from the selection
+                      model.removeBrand(brand);
                     }
                     // Update brand availability after each change
                     model.setBrandAvailability(model.selectedBrands.join(', '));
                   }
-                : null, // Disable if `isCheckedIn` is false
+                : null,
           );
         }).toList(),
       ],
@@ -941,50 +588,6 @@ class CheckInView extends StatelessWidget {
     );
   }
 
-  // Widget _buildCheckInDetails(CheckInViewModel model) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         _buildDetailColumn(
-  //             'Check In',
-  //             model.isCheckedIn && model.checkInTime != null
-  //                 ? DateFormat('hh:mm a').format(model.checkInTime)
-  //                 : 'Start'),
-  //         _buildDetailColumn('Duration', model.duration),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildCheckInDetails(CheckInViewModel model) {
-  //   // Get the persisted check-in time (if any)
-  //   Future<DateTime> storedCheckInTime = model.getCheckInTime();
-
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         FutureBuilder<DateTime>(
-  //           future: storedCheckInTime,
-  //           builder: (context, snapshot) {
-  //             if (snapshot.hasData) {
-  //               return _buildDetailColumn(
-  //                 'Check In Time',
-  //                 DateFormat('hh:mm a').format(snapshot.data),
-  //               );
-  //             } else {
-  //               return _buildDetailColumn('Check In', 'Start');
-  //             }
-  //           },
-  //         ),
-  //         _buildDetailColumn('Duration', model.duration),
-  //       ],
-  //     ),
-  //   );
-  // }
   Widget _buildCheckInDetails(CheckInViewModel model) {
     // Get the persisted check-in time (if any)
     Future<DateTime> storedCheckInTime = model.getCheckInTime();
@@ -1042,30 +645,6 @@ class CheckInView extends StatelessWidget {
     return '$hours hours $minutes minutes';
   }
 
-  // Widget _buildCheckInDetails(CheckInViewModel model) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         _buildDetailColumn(
-  //             'Check In',
-  //             model.isCheckedIn
-  //                 ? 'Check-In in Progress'
-  //                 : (model.checkInTime != null
-  //                     ? DateFormat('hh:mm a').format(model.checkInTime)
-  //                     : 'Start')),
-  //         _buildDetailColumn(
-  //           'Duration',
-  //           model.isCheckedIn
-  //               ? 'Check-In in Progress'
-  //               : model.duration ?? '0 min',
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Column _buildDetailColumn(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1078,42 +657,6 @@ class CheckInView extends StatelessWidget {
       ],
     );
   }
-
-  // Widget _buildTakePhotoButton(BuildContext context, CheckInViewModel model) {
-  //   return ElevatedButton(
-  //     onPressed: () async {
-  //       final PickedFile photo =
-  //           await _picker.getImage(source: ImageSource.camera);
-  //       if (photo != null) {
-  //         // Update the photo path when a photo is taken
-  //         _photoPath = photo.path;
-  //         // Refresh the UI to show the photo
-  //         (context as Element).reassemble();
-  //       } else {
-  //         // Handle case where the user cancels the photo
-  //         print('No photo taken');
-  //       }
-  //     },
-  //     style: ElevatedButton.styleFrom(
-  //       padding: const EdgeInsets.symmetric(vertical: 15.0),
-  //       primary: Colors.blue,
-  //       minimumSize: const Size(double.infinity, 50),
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(10.0),
-  //       ),
-  //     ),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       children: const [
-  //         Icon(Icons.camera, color: Colors.white),
-  //         SizedBox(width: 10),
-  //         Text('Take Photo',
-  //             style:
-  //                 TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget _buildTakePhotoButton(BuildContext context, CheckInViewModel model) {
     return ElevatedButton(
@@ -1130,11 +673,10 @@ class CheckInView extends StatelessWidget {
                 // Refresh the UI to show the photo
                 (context as Element).reassemble();
               } else {
-                // Handle case where the user cancels the photo
                 print('No photo taken');
               }
             }
-          : null, // Disable the button if not checked in
+          : null,
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 15.0),
         primary: model.isCheckedIn
