@@ -29,7 +29,7 @@ class CRMDashboardView extends StatelessWidget {
 
         return RefreshIndicator(
           onRefresh: () async {
-            await _onRefresh(model); // Trigger the refresh logic
+            await _onRefresh(model);
           },
           child: Container(
             decoration: const BoxDecoration(

@@ -120,7 +120,7 @@ class OutOfRouteViewModel extends ReactiveViewModel {
         "currentSchedule": 3,
         "customer": selectedCustomer.id,
         "territory": 1,
-        // "reason": selectedReason, // Using the text directly as the reason
+        // "reason": selectedReason,
         "reason": selectedReason,
         "plannedVisitDate": formattedDate,
         "plannedVisitTime": formattedTime,
@@ -186,7 +186,7 @@ class OutOfRouteViewModel extends ReactiveViewModel {
       // Construct the payload dynamically
       var payload = {
         "performedVisit": visitId,
-        "generalFeedback": 'feedback',
+        "generalFeedback": feedback,
         "createdBy": user.firstName,
       };
 
@@ -267,7 +267,7 @@ class OutOfRouteViewModel extends ReactiveViewModel {
         // If confirmed, proceed to start the day
         isOutOfRouteCheckedIn = true;
         await _saveOutofRouteCheckInState(true, checkInTime); // Save state
-        notifyListeners(); // Ensure UI updates
+        notifyListeners();
         _startTimer();
         checkInRequest(context, visitId);
       }
@@ -387,7 +387,7 @@ class OutOfRouteViewModel extends ReactiveViewModel {
       );
     } finally {
       setBusy(false);
-      notifyListeners(); // Ensure the UI rebuilds and reflects the new state
+      notifyListeners();
     }
   }
 
@@ -411,11 +411,11 @@ class OutOfRouteViewModel extends ReactiveViewModel {
         "outOfRouteVisitId": requestId,
         "checkOutLat": -1.26877778,
         "checkOutLon": 36.90322222,
-        "generalFeedback": _feedback,
-        "activations": "Yes, three umbrellas",
-        "marketingRequest": "Yes",
-        "brandingRequest": "Yes",
-        "premisesPhotoUrl": "/volume/photos/premises/premises.png"
+        "generalFeedback": feedbackController.text,
+        // "activations": "Yes, three umbrellas",
+        // "marketingRequest": "Yes",
+        // "brandingRequest": "Yes",
+        // "premisesPhotoUrl": "/volume/photos/premises/premises.png"
       };
 
       setBusy(true); // Show a loading spinner

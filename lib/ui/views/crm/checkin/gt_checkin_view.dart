@@ -76,17 +76,19 @@ class GTCheckInView extends StatelessWidget {
                             if (model.selectedProducts.isNotEmpty)
                               _buildAddedProductsList(model),
                             const SizedBox(height: 16),
-                            _buildTextField(
-                              label: 'Feedback',
-                              hintText: 'Enter feedback here',
-                              onChanged: model.isCheckedIn
-                                  ? model.setGeneralFeedback
-                                  : null,
-                              icon: Icons.feed_rounded,
-                              enabled: model.isCheckedIn,
-                              maxLines: 3,
-                            ),
+                            _buildBrandAvailabilityCheckboxes(model),
                             const SizedBox(height: 16),
+                            // _buildTextField(
+                            //   label: 'Customer Feedback',
+                            //   hintText: 'Enter feedback here',
+                            //   onChanged: model.isCheckedIn
+                            //       ? model.setGeneralFeedback
+                            //       : null,
+                            //   icon: Icons.feed_rounded,
+                            //   enabled: model.isCheckedIn,
+                            //   maxLines: 3,
+                            // ),
+                            // const SizedBox(height: 16),
                             ..._buildDropdownSections(model),
                             // if (model.priceCompliance == 'No')
                             //   const SizedBox(height: 16),
@@ -416,9 +418,15 @@ class GTCheckInView extends StatelessWidget {
         enabled: model.isCheckedIn, // Pass enabled flag
       ),
       const SizedBox(height: 16),
-      _buildBrandAvailabilityCheckboxes(
-        model,
-      ), // Pass enabled flag
+      _buildTextField(
+        label: 'Customer Feedback',
+        hintText: 'Enter feedback here',
+        onChanged: model.isCheckedIn ? model.setGeneralFeedback : null,
+        icon: Icons.feed_rounded,
+        enabled: model.isCheckedIn,
+        maxLines: 3,
+      ),
+      // _buildBrandAvailabilityCheckboxes(model),
       const SizedBox(height: 16),
       ...selectedProducts.map((product) {
         return Row(

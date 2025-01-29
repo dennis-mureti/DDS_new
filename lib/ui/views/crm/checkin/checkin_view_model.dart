@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:distributor/app/locator.dart';
+import 'package:distributor/core/helper.dart';
 import 'package:distributor/core/models/product_service.dart';
 import 'package:distributor/services/api_service.dart';
 import 'package:distributor/services/user_service.dart';
 import 'package:distributor/ui/views/crm/visits/details/details_view.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,6 +28,8 @@ class CheckInViewModel extends BaseViewModel {
   String visitId;
 
   String gtSelectedProduct;
+
+  String shelfPhotoUrlfinal;
 
   bool isCheckedIn = false;
   DateTime checkInTime;
@@ -180,6 +185,31 @@ class CheckInViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  // Function to upload image to Firebase Storage
+  uploadImage() async {
+    if (_shelfPhotoUrl == null) {
+      return;
+    }
+    try {
+      await Firebase.initializeApp();
+      // await FirebaseAuth.instance.signInAnonymously();
+      final storageRef = FirebaseStorage.instance.ref();
+      final fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      final fileRef = storageRef.child('images/$fileName.jpg');
+      await fileRef.putFile(_shelfPhotoUrl);
+      String mainurlmain = await fileRef.getDownloadURL();
+      shelfPhotoUrlfinal = mainurlmain;
+      // rebuildUi();
+      notifyListeners();
+      return shelfPhotoUrlfinal;
+    } catch (e) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text("Error uploading image: $e")),
+      // );
+      print("data here------ error --- $e ");
+    }
+  }
+
   List<Product> get listOfProducts {
     return productList;
   }
@@ -292,7 +322,7 @@ class CheckInViewModel extends BaseViewModel {
   void removeProductFromList(Product product) {
     // addedProducts.remove(product);
     selectedProducts.remove(product);
-    notifyListeners(); // Notify listeners to update the UI
+    notifyListeners();
   }
 
   void updateShelfAvailabilityWithDetails(
@@ -312,9 +342,7 @@ class CheckInViewModel extends BaseViewModel {
   }
 
   List<int> getSelectedProductIds() {
-    return selectedProducts
-        .map((product) => product.id)
-        .toList(); // Return the IDs
+    return selectedProducts.map((product) => product.id).toList();
   }
 
   void toggleCheckin(BuildContext context, int visitId) async {
@@ -331,6 +359,7 @@ class CheckInViewModel extends BaseViewModel {
       if (dialogResponse.confirmed) {
         isCheckedIn = true;
         await setCheckedInState(true, checkInTime);
+        notifyListeners();
         _startTimer();
         checkInRequest(context, visitId);
       }
@@ -425,7 +454,7 @@ class CheckInViewModel extends BaseViewModel {
       var response = await _api.checkIn(user.token, payload);
 
       // if (response is bool && response) {
-      if (response == 'Check-in successful') {
+      if (response == 'Check-in ') {
         await _dialogService.showDialog(
           title: 'Success',
           description: 'Checkin successfully started.',
@@ -455,6 +484,72 @@ class CheckInViewModel extends BaseViewModel {
     }
   }
 
+  // Position _currentPosition;
+  // Future<void> checkInRequest(BuildContext context, int visitId) async {
+  //   final hasPermission = await Helper().handleLocationPermission(context);
+  //   if (!hasPermission) return;
+  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+  //       .then((Position position) async {
+  //     _currentPosition = position;
+  //     try {
+  //       var payload = {
+  //         "plannedVisitId": visitId,
+  //         // "checkInTime": DateTime.now().toIso8601String(),
+  //         "checkInTime":
+  //             DateTime.now().toUtc().add(Duration(hours: 3)).toIso8601String(),
+  //         // "lat": _currentPosition.latitude.toString(),
+  //         // "lon": _currentPosition.longitude.toString(),
+  //         "lat": -1.26777778,
+  //         "lon": 36.90222222
+  //       };
+
+  //       // var dialogResponse = await _dialogService.showConfirmationDialog(
+  //       //   title: 'Check-in',
+  //       //   description: 'Are you sure you want to check in?',
+  //       //   cancelTitle: 'No',
+  //       //   confirmationTitle: 'Yes',
+  //       // );
+
+  //       // if (dialogResponse.confirmed) {
+  //       setBusy(true);
+
+  //       var response = await _api.checkIn(user.token, payload);
+
+  //       // if (response is bool && response) {
+  //       if (response == 'Check-in successful') {
+  //         await _dialogService.showDialog(
+  //           title: 'Success',
+  //           description: 'Checkin successfully started.',
+  //         );
+  //         isCheckedIn = true;
+  //       } else if (response is CustomException) {
+  //         // var errorMessage = response['payload'] ?? response['errorMessage'];
+  //         await _dialogService.showDialog(
+  //           title: 'Checkin Failed ',
+  //           // description: 'There was an issue checking in.\n$errorMessage',
+  //           description:
+  //               'There was an issue checkin in.\nError: ${response.code}\nDescription: ${response.description}',
+  //           // title: 'Warning',
+  //           // description:
+  //           //     'There was an issue checkin in because this check in is in progress.',
+  //         );
+  //       }
+  //       // }
+  //     } catch (e) {
+  //       await _dialogService.showDialog(
+  //         title: 'Error',
+  //         description: 'An unexpected error occurred: ${e.toString()}',
+  //       );
+  //     } finally {
+  //       setBusy(false);
+  //       notifyListeners();
+  //     }
+  //   }).catchError((e) {
+  //     setBusy(false);
+  //     notifyListeners();
+  //   });
+  // }
+
   Future<void> checkOutProcess(
     BuildContext context, {
     String checkinId,
@@ -476,7 +571,7 @@ class CheckInViewModel extends BaseViewModel {
         "plannedVisitId": visitId,
         "checkOutTime": DateTime.now().toIso8601String(),
         "checkOutLat": -1.26877778,
-        "checkOutLon": 36.90322222, // Replace with actual coordinates
+        "checkOutLon": 36.90322222,
         "activations": _activations ?? '',
         "marketingRequest": _marketingRequest ?? '',
         "brandingRequest": _brandingRequest ?? '',
@@ -527,6 +622,89 @@ class CheckInViewModel extends BaseViewModel {
     }
   }
 
+  // Future<void> checkOutProcess(
+  //   BuildContext context, {
+  //   String checkinId,
+  //   int visitId,
+  // }) async {
+  //   final hasPermission = await Helper().handleLocationPermission(context);
+  //   if (!hasPermission) return;
+  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+  //       .then((Position position) async {
+  //     _currentPosition = position;
+  //     try {
+  //       // Show a confirmation dialog before checking out
+  //       // var dialogResponse = await _dialogService.showConfirmationDialog(
+  //       //   title: 'Check Out',
+  //       //   description: 'Are you sure you want to check out?',
+  //       //   cancelTitle: 'No',
+  //       //   confirmationTitle: 'Yes',
+  //       // );
+
+  //       // // Proceed only if the user confirms
+  //       // if (dialogResponse.confirmed) {
+  //       // Prepare the payload for the checkout process
+  //       Map<String, dynamic> payload = {
+  //         "plannedVisitId": visitId,
+  //         "checkOutTime": DateTime.now().toIso8601String(),
+  //         // "checkOutLat": _currentPosition.latitude.toString(),
+  //         // "checkOutLon": _currentPosition.longitude.toString(),
+  //         "checkOutLat": -1.26877778,
+  //         "checkOutLon": 36.90322222,
+  //         "activations": _activations ?? '',
+  //         "marketingRequest": _marketingRequest ?? '',
+  //         "brandingRequest": _brandingRequest ?? '',
+  //         "generalFeedback": _generalFeedback ?? '',
+  //         // Add any additional data as necessary
+  //       };
+
+  //       // Show the loading spinner
+  //       setBusy(true);
+
+  //       // Call the API to process the checkout
+  //       var result = await _api.checkOut(
+  //         token: user.token,
+  //         id: visitId,
+  //         data: payload,
+  //       );
+
+  //       // Hide the loading spinner
+  //       setBusy(false);
+
+  //       if (result == true) {
+  //         // After successful checkout, create the visit data
+  //         // await createVisitData(context, visitId);
+
+  //         // Show success message
+  //         await _dialogService.showDialog(
+  //           title: 'Success',
+  //           description: 'You have successfully checked out.',
+  //         );
+  //         print("Checkout successful");
+  //       } else {
+  //         // Show error dialog
+  //         CustomException error = result as CustomException;
+  //         await _dialogService.showDialog(
+  //           title: 'Check Out Failed',
+  //           description: 'Error: ${error.title} - ${error.description}',
+  //         );
+  //         print("Error: ${error.title} - ${error.description}");
+  //       }
+  //       // }
+  //     } catch (e) {
+  //       setBusy(false);
+  //       await _dialogService.showDialog(
+  //         title: 'Error',
+  //         description: 'An unexpected error occurred: ${e.toString()}',
+  //       );
+  //       print("Unexpected error: $e");
+  //     }
+  //   }).catchError((e) {
+  //     setBusy(false);
+  //     notifyListeners();
+  //   });
+  // }
+
   Future<String> _pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.getImage(source: ImageSource.camera);
@@ -540,10 +718,10 @@ class CheckInViewModel extends BaseViewModel {
 
   Future<bool> createVisitData(BuildContext context, int visitId) async {
     try {
-      print("visitId: $visitId");
-      print(
-          "selectedProducts: ${selectedProducts.map((product) => product.id).toList()}");
-      print("user.full_name: ${user.full_name}");
+      // print("visitId: $visitId");
+      // print(
+      //     "selectedProducts: ${selectedProducts.map((product) => product.id).toList()}");
+      // print("user.full_name: ${user.full_name}");
 
       if (selectedProducts == null || selectedProducts.isEmpty) {
         print("Error: selectedProducts is null or empty.");
@@ -565,6 +743,8 @@ class CheckInViewModel extends BaseViewModel {
         return false; // Return false to indicate failure
       }
 
+      shelfPhotoUrlfinal = await uploadImage();
+
       final payload = {
         "plannedCustomerVisit": visitId,
         "submittedData": selectedProducts.map((product) {
@@ -584,7 +764,7 @@ class CheckInViewModel extends BaseViewModel {
         "marketingRequest": marketingRequest,
         "brandingRequest": brandingRequest,
         "generalFeedback": generalFeedback,
-        "shelfPhotoUrl": shelfPhotoUrl,
+        "shelfPhotoUrl": shelfPhotoUrlfinal,
         "createdBy": user.full_name ?? "Unknown User",
       };
 

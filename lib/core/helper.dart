@@ -1,4 +1,11 @@
+import 'package:distributor/app/locator.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:stacked_services/stacked_services.dart';
+
+DialogService _dialogService = locator<DialogService>();
 
 class Helper {
   static String formatDateTime(var valToFormat) {
@@ -86,5 +93,85 @@ class Helper {
       formattedString = f.format(valToFormat);
     }
     return formattedString;
+  }
+
+  Future<bool> handleLocationPermission(BuildContext context) async {
+    final permissions = Permission.location;
+
+    final result = await permissions.request();
+
+    debugPrint("the loc permission $result");
+
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //     content: Text('Location services are disabled. Please enable the services')));
+
+      final response = await _dialogService.showDialog(
+          title: "Could not complete request",
+          description:
+              'Location services are disabled. Please enable the services');
+      if (response.confirmed) {
+        await Geolocator.openLocationSettings();
+      }
+      return false;
+    }
+// Requesting location permission
+    PermissionStatus status = await Permission.location.request();
+
+    // If permission is denied
+    if (status == PermissionStatus.denied) {
+      // Asking again after denying once
+      status = await Permission.location.request();
+      if (status == PermissionStatus.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Location permissions are denied'),
+            duration: Duration(seconds: 3),
+            action: SnackBarAction(
+              label: 'Settings',
+              onPressed: () {
+                // Navigate to location settings, if needed
+              },
+            ),
+          ),
+        );
+        return false;
+      }
+    }
+
+    // If permission is denied forever
+    if (status == PermissionStatus.permanentlyDenied) {
+      final response = await _dialogService.showDialog(
+        title: "Could not complete request",
+        description:
+            'Location permissions are permanently denied. Please go to settings to enable permissions.',
+      );
+      if (response.confirmed) {
+        await Geolocator.openAppSettings();
+      }
+      return false;
+    }
+
+    // If permission is granted
+    return true;
+  }
+
+  Position currentPosition;
+  getCurrentPosition(BuildContext context) async {
+    final hasPermission = await handleLocationPermission(context);
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      currentPosition = position;
+      // notifyListeners();
+      // print("data here -- error 0 " + currentPosition.longitude.toString());
+      return currentPosition;
+    }).catchError((e) {
+      // print("data here -- error 0 " + e);
+    });
   }
 }

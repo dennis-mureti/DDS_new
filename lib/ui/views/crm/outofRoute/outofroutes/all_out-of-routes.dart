@@ -33,217 +33,228 @@ class OutOfRoutesView extends StatelessWidget {
           ),
           body: model.isBusy
               ? const Center(child: BusyWidget())
-              : Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: ListView.builder(
-                    itemCount: model.outOfRoutesList.length,
-                    itemBuilder: (context, index) {
-                      final route = model.outOfRoutesList[index];
+              : model.outOfRoutesList.isEmpty
+                  ? const Center(
+                      child: Text("No Out of Routes Available for Today"),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      child: ListView.builder(
+                        itemCount: model.outOfRoutesList.length,
+                        itemBuilder: (context, index) {
+                          final route = model.outOfRoutesList[index];
 
-                      // Determine the status color for approvedStatus
-                      Color statusColor;
-                      if (route.approvedStatus == "PENDING") {
-                        statusColor = Colors.red;
-                      } else if (route.approvedStatus == "APPROVED") {
-                        statusColor = Colors.green;
-                      } else {
-                        statusColor = Colors.green;
-                      }
+                          // Determine the status color for approvedStatus
+                          Color statusColor;
+                          if (route.approvedStatus == "PENDING") {
+                            statusColor = Colors.red;
+                          } else if (route.approvedStatus == "APPROVED") {
+                            statusColor = Colors.green;
+                          } else {
+                            statusColor = Colors.green;
+                          }
 
-                      // Determine the color for visitStatus
-                      Color visitStatusColor;
-                      switch (route.visitStatus) {
-                        case "SCHEDULED":
-                          visitStatusColor = Colors.black;
-                          break;
-                        case "COMPLETED":
-                          visitStatusColor = Colors.blue;
-                          break;
-                        case "STARTED":
-                          visitStatusColor = Colors.orange;
-                          break;
-                        case "APPROVED":
-                          visitStatusColor = Colors.green;
-                          break;
-                        default:
-                          visitStatusColor = Colors.grey; // Default color
-                          break;
-                      }
+                          // Determine the color for visitStatus
+                          Color visitStatusColor;
+                          switch (route.visitStatus) {
+                            case "SCHEDULED":
+                              visitStatusColor = Colors.black;
+                              break;
+                            case "COMPLETED":
+                              visitStatusColor = Colors.blue;
+                              break;
+                            case "STARTED":
+                              visitStatusColor = Colors.orange;
+                              break;
+                            case "APPROVED":
+                              visitStatusColor = Colors.green;
+                              break;
+                            default:
+                              visitStatusColor = Colors.grey; // Default color
+                              break;
+                          }
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0, top: 10),
-                        child: InkWell(
-                          onTap: () async {
-                            // Check if there is any started visit
-                            bool hasStartedVisit = model.outOfRoutesList
-                                .any((r) => r.visitStatus == "STARTED");
+                          return Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 12.0, top: 10),
+                            child: InkWell(
+                              onTap: () async {
+                                // Check if there is any started visit
+                                bool hasStartedVisit = model.outOfRoutesList
+                                    .any((r) => r.visitStatus == "STARTED");
 
-                            if (route.visitStatus == "SCHEDULED" &&
-                                hasStartedVisit) {
-                              // Show dialog if a visit is already started
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text("Check-in not allowed"),
-                                    content: const Text(
-                                        "Not allowed to proceed with this visit because you have another visit started."),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text("OK"),
-                                      ),
-                                    ],
+                                if (route.visitStatus == "SCHEDULED" &&
+                                    hasStartedVisit) {
+                                  // Show dialog if a visit is already started
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title:
+                                            const Text("Check-in not allowed"),
+                                        content: const Text(
+                                            "Not allowed to proceed with this visit because you have another visit started."),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text("OK"),
+                                          ),
+                                        ],
+                                      );
+                                    },
                                   );
-                                },
-                              );
-                              return; // Early return, do not navigate
-                            }
+                                  return; // Early return, do not navigate
+                                }
 
-                            // Allow navigation for "STARTED" visits
-                            if (route.visitStatus == "STARTED") {
-                              final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FeedbackView(
-                                    visitId: route.requestId,
-                                  ),
-                                ),
-                              );
-                              if (result is AllOutofRoute) {
-                                onTileTap(result); // Handle tile tap callback
-                              }
-                            }
+                                // Allow navigation for "STARTED" visits
+                                if (route.visitStatus == "STARTED") {
+                                  final result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FeedbackView(
+                                        visitId: route.requestId,
+                                      ),
+                                    ),
+                                  );
+                                  if (result is AllOutofRoute) {
+                                    onTileTap(
+                                        result); // Handle tile tap callback
+                                  }
+                                }
 
-                            // Allow navigation for "SCHEDULED" visits if no started visits exist
-                            if (route.visitStatus == "SCHEDULED" &&
-                                !hasStartedVisit) {
-                              final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FeedbackView(
-                                    visitId: route.requestId,
-                                  ),
+                                // Allow navigation for "SCHEDULED" visits if no started visits exist
+                                if (route.visitStatus == "SCHEDULED" &&
+                                    !hasStartedVisit) {
+                                  final result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FeedbackView(
+                                        visitId: route.requestId,
+                                      ),
+                                    ),
+                                  );
+                                  if (result is AllOutofRoute) {
+                                    onTileTap(
+                                        result); // Handle tile tap callback
+                                  }
+                                }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade300,
+                                  borderRadius: BorderRadius.circular(8),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
                                 ),
-                              );
-                              if (result is AllOutofRoute) {
-                                onTileTap(result); // Handle tile tap callback
-                              }
-                            }
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(16.0),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.2),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                // Top Row: Customer Name and Requested Date
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
-                                    Expanded(
+                                    // Top Row: Customer Name and Requested Date
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            route.customerName ??
+                                                "No Name", // Customer name
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          route.dateRequested ??
+                                              "N/A", // Requested date
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    // Bottom Row: Sales Rep Name and Status
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Sales Rep: ${route.salesRepFirstName} ${route.salesRepLastName}',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 6),
+                                          decoration: BoxDecoration(
+                                            color: statusColor,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Text(
+                                            route.approvedStatus ?? "Unknown",
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    // New Row: Visit Status
+                                    Align(
+                                      alignment: Alignment.bottomLeft,
                                       child: Text(
-                                        route.customerName ??
-                                            "No Name", // Customer name
-                                        style: const TextStyle(
-                                          fontSize: 14,
+                                        route.visitStatus ?? "No Status",
+                                        style: TextStyle(
+                                          fontSize: 12,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.black,
+                                          color: visitStatusColor,
                                         ),
                                       ),
                                     ),
+                                    const SizedBox(height: 8),
                                     Text(
-                                      route.dateRequested ??
-                                          "N/A", // Requested date
-                                      style: const TextStyle(
+                                      route.visitStatus?.toLowerCase() ==
+                                              "completed"
+                                          ? "Check-in not allowed for completed visits"
+                                          : "Proceed to Check-in",
+                                      style: TextStyle(
                                         fontSize: 12,
-                                        color: Colors.black,
+                                        fontStyle: FontStyle.italic,
+                                        color:
+                                            route.visitStatus?.toLowerCase() ==
+                                                    "completed"
+                                                ? Colors.red
+                                                : Colors.green,
                                       ),
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 8),
-                                // Bottom Row: Sales Rep Name and Status
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Sales Rep: ${route.salesRepFirstName} ${route.salesRepLastName}',
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        color: statusColor,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        route.approvedStatus ?? "Unknown",
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                // New Row: Visit Status
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text(
-                                    route.visitStatus ?? "No Status",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: visitStatusColor,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  route.visitStatus?.toLowerCase() ==
-                                          "completed"
-                                      ? "Check-in not allowed for completed visits"
-                                      : "Proceed to Check-in",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontStyle: FontStyle.italic,
-                                    color: route.visitStatus?.toLowerCase() ==
-                                            "completed"
-                                        ? Colors.red
-                                        : Colors.green,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                          );
+                        },
+                      ),
+                    ),
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
               // Navigate to the new screen when the FAB is pressed

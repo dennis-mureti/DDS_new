@@ -66,6 +66,8 @@ class CheckInView extends StatelessWidget {
           const SizedBox(height: 16),
           if (model.selectedProducts.isNotEmpty) _buildAddedProductsList(model),
           const SizedBox(height: 16),
+          _buildBrandAvailabilityCheckboxes(model),
+          const SizedBox(height: 16),
           _buildTextField(
             label: 'Share of Shelf',
             hintText: 'Enter percentage (0-100)',
@@ -122,19 +124,72 @@ class CheckInView extends StatelessWidget {
 
     // debugPrint('Shelf Photo URL: ${model.shelfPhotoUrl}');
 
+    // return ElevatedButton.icon(
+    //   onPressed: model.isCheckedIn
+    //       ? (isCheckoutFormValid
+    //           ? () {
+    //               model.toggleCheckin(context, visitId);
+    //             }
+    //           : () {
+    //               // Show validation error if the form is not valid
+    //               _showValidationError(context);
+    //             })
+    //       : () {
+    //           model.toggleCheckin(context, visitId);
+    //         },
+    //   icon: Icon(
+    //     model.isCheckedIn ? Icons.logout : Icons.login,
+    //     color: Colors.black,
+    //   ),
+    //   label: Text(
+    //     model.isCheckedIn ? 'Check Out' : 'Check In',
+    //     style: const TextStyle(
+    //       color: Colors.black,
+    //       fontWeight: FontWeight.bold,
+    //     ),
+    //   ),
+    //   style: ElevatedButton.styleFrom(
+    //     primary: model.isCheckedIn ? Colors.red : Colors.green,
+    //     padding: const EdgeInsets.symmetric(vertical: 15.0),
+    //     minimumSize: const Size(double.infinity, 50),
+    //     shape: RoundedRectangleBorder(
+    //       borderRadius: BorderRadius.circular(10.0),
+    //     ),
+    //   ),
+    // );
+
     return ElevatedButton.icon(
-      onPressed: model.isCheckedIn
-          ? (isCheckoutFormValid
-              ? () {
-                  model.toggleCheckin(context, visitId);
-                }
-              : () {
-                  // Show validation error if the form is not valid
-                  _showValidationError(context);
-                })
-          : () {
-              model.toggleCheckin(context, visitId);
-            },
+      onPressed: () async {
+        if (model.isCheckedIn) {
+          if (isCheckoutFormValid) {
+            // Show the progress indicator immediately
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => Center(
+                child: BusyWidget(),
+              ),
+            );
+
+            try {
+              // Add a delay to simulate loading (if necessary)
+              await Future.delayed(const Duration(seconds: 4));
+
+              // Perform the checkout operation
+              await model.toggleCheckin(context, visitId);
+            } finally {
+              // Ensure the dialog is dismissed no matter what happens
+              Navigator.of(context).pop();
+            }
+          } else {
+            // Show validation error
+            _showValidationError(context);
+          }
+        } else {
+          // Perform check-in without delay
+          model.toggleCheckin(context, visitId);
+        }
+      },
       icon: Icon(
         model.isCheckedIn ? Icons.logout : Icons.login,
         color: Colors.black,
@@ -262,12 +317,26 @@ class CheckInView extends StatelessWidget {
               flex: 2,
               child: const Text(
                 'Shelf Availability',
-                textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(width: 10),
-
+            Expanded(
+              flex: 2,
+              child: const Text(
+                'Price Compliance',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              flex: 2,
+              child: const Text(
+                'Price',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(width: 10),
             const Icon(
               Icons.delete,
               color: Colors.transparent,
@@ -282,7 +351,7 @@ class CheckInView extends StatelessWidget {
           itemCount: model.selectedProducts.length,
           itemBuilder: (context, index) {
             final product = model.selectedProducts[index];
-            // final priceCompliance = model.getPriceCompliance(product.id);
+            final priceCompliance = model.getPriceCompliance(product.id);
 
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -322,6 +391,74 @@ class CheckInView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
+                  Flexible(
+                    flex: 2,
+                    child: Container(
+                      width: double.infinity,
+                      child: DropdownButtonFormField<String>(
+                        isExpanded:
+                            true, // Make the dropdown expand to fill available space
+                        onChanged: (compliance) {
+                          model.setPriceComplianceForProductById(
+                              product.id, compliance);
+                        },
+                        value: priceCompliance.isEmpty ? null : priceCompliance,
+                        items: const [
+                          'Yes',
+                          'No',
+                        ].map((String item) {
+                          return DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(item),
+                          );
+                        }).toList(),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.grey.shade300,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    flex: 2,
+                    child: Container(
+                      width: double.infinity,
+                      child: TextField(
+                        enabled: priceCompliance ==
+                            'No', // Disable if 'Yes' is selected
+                        keyboardType:
+                            TextInputType.numberWithOptions(decimal: true),
+                        // inputFormatters: [
+                        //   FilteringTextInputFormatter.allow(
+                        //       RegExp(r'^\d*\.?\d*$')),
+                        // ],
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (price) {
+                          final parsedPrice = double.tryParse(price);
+                          if (parsedPrice != null) {
+                            model.setRetailPriceForProductById(
+                                product.id, parsedPrice);
+                          }
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Enter price',
+                          filled: true,
+                          fillColor: Colors.grey.shade300,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: model.isCheckedIn
@@ -430,15 +567,15 @@ class CheckInView extends StatelessWidget {
           enabled: model.isCheckedIn),
       const SizedBox(height: 16),
       _buildTextField(
-        label: 'Feedback',
+        label: 'Customer Feedback',
         hintText: 'Enter feedback here',
         onChanged: model.isCheckedIn ? model.setGeneralFeedback : null,
         icon: Icons.feed_rounded,
         maxLines: 3,
         enabled: model.isCheckedIn,
       ),
-      const SizedBox(height: 16),
-      _buildBrandAvailabilityCheckboxes(model),
+      // const SizedBox(height: 16),
+      // _buildBrandAvailabilityCheckboxes(model),
       // _buildBrandAvailabilityDropdown(model),
       // // _buildTextField(
       // //   label: 'Brand Availability',
@@ -667,16 +804,18 @@ class CheckInView extends StatelessWidget {
               if (photo != null) {
                 // Update the photo path when a photo is taken
                 _photoPath = photo.path;
-                // File filemain = File(photo.path);
-                // model
-                //     .updateShelfPhotoUrl(filemain)
-                // Refresh the UI to show the photo
-                (context as Element).reassemble();
+                File filemain = File(photo.path);
+                model
+                    .updateShelfPhotoUrl(filemain)
+                    // Refresh the UI to show the photo
+                    (context as Element)
+                    .reassemble();
               } else {
+                // Handle case where the user cancels the photo
                 print('No photo taken');
               }
             }
-          : null,
+          : null, // Disable the button if not checked in
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 15.0),
         primary: model.isCheckedIn
