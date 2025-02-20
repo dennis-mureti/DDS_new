@@ -100,40 +100,40 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
     notifyListeners();
   }
 
-  // Future<bool> _handleLocationPermission() async {
-  //   bool serviceEnabled;
-  //   LocationPermission permission;
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  //   if (!serviceEnabled) {
-  //     // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //     //     content: Text('Location services are disabled. Please enable the services')));
-  //     snackBarService.showSnackbar(
-  //         message:
-  //             'Location services are disabled. Please enable the services');
-  //     return false;
-  //   }
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       snackBarService.showSnackbar(
-  //           message: 'Location permissions are denied');
-  //       // ScaffoldMessenger.of(context).showSnackBar(
-  //       //     const SnackBar(content: Text('Location permissions are denied')));
-  //       return false;
-  //     }
-  //   }
-  //   if (permission == LocationPermission.deniedForever) {
-  //     snackBarService.showSnackbar(
-  //         message:
-  //             'Location permissions are permanently denied, we cannot request permissions.');
-  //     // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //     //     content: Text('Location permissions are permanently denied, we cannot request permissions.')));
-  //     return false;
-  //   }
-  //   return true;
-  // }
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //     content: Text('Location services are disabled. Please enable the services')));
+      snackBarService.showSnackbar(
+          message:
+              'Location services are disabled. Please enable the services');
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        snackBarService.showSnackbar(
+            message: 'Location permissions are denied');
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      snackBarService.showSnackbar(
+          message:
+              'Location permissions are permanently denied, we cannot request permissions.');
+      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //     content: Text('Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
+  }
 
   // Save the day state to shared preferences
   Future<void> _saveDayState() async {
@@ -142,18 +142,17 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
   }
 
   Position _currentPosition;
-
-  // Future<void> _getCurrentPosition() async {
-  //   final hasPermission = await _handleLocationPermission();
-  //   if (!hasPermission) return;
-  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-  //       .then((Position position) {
-  //     _currentPosition = position;
-  //     notifyListeners();
-  //   }).catchError((e) {
-  //     debugPrint(e);
-  //   });
-  // }
+  Future<void> _getCurrentPosition(BuildContext context) async {
+    final hasPermission = await Helper().handleLocationPermission(context);
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      _currentPosition = position;
+      notifyListeners();
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
 
   void toggleDay(BuildContext context) async {
     if (!isDayStarted) {
@@ -190,207 +189,203 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
     }
   }
 
-  Future<void> startDayRequest(BuildContext context) async {
-    try {
-      // Build the payload
-      var payload = {
-        "salesRepUser": user.id,
-        "territory": 4,
-        // "firstLoginLat": _currentPosition.latitude.toString(),
-        // "firstLoginLon": _currentPosition.longitude.toString(),
-        "firstLoginLat": -1.26777778,
-        "firstLoginLon": 36.90222222
-      };
-
-      setBusy(true);
-
-      // Call the API
-      var response = await api.startDay(user.token, payload);
-
-      // Check if the response is the success message or another return type
-      if (response == 'Day started successfully') {
-        await _dialogService.showDialog(
-          title: 'Success',
-          description: 'Your day has been successfully started.',
-        );
-      } else if (response is CustomException) {
-        // Handle errors by displaying the error code and description
-        await _dialogService.showDialog(
-          title: 'Warning',
-          description:
-              'There was an issue starting your day because it had started earlier.',
-        );
-      }
-    } catch (e) {
-      // Show a general error dialog for unexpected exceptions
-      await _dialogService.showDialog(
-        title: 'Error',
-        description: 'An unexpected error occurred: ${e.toString()}',
-      );
-    } finally {
-      setBusy(false);
-    }
-  }
-
   // Future<void> startDayRequest(BuildContext context) async {
-  //   final hasPermission = await Helper().handleLocationPermission(context);
-  //   if (!hasPermission) return;
-  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-  //       .then((Position position) async {
-  //     _currentPosition = position;
-  //     try {
-  //       // Build the payload
-  //       var payload = {
-  //         "salesRepUser": user.id,
-  //         "territory": 4,
-  //         // "firstLoginLat": _currentPosition.latitude.toString(),
-  //         // "firstLoginLon": _currentPosition.longitude.toString(),
-  //         "firstLoginLat": -1.26777778,
-  //         "firstLoginLon": 36.90222222
-  //       };
-  //       setBusy(true);
+  //   try {
+  //     // Build the payload
+  //     var payload = {
+  //       "salesRepUser": user.id,
+  //       "territory": 4,
+  //       // "firstLoginLat": _currentPosition.latitude.toString(),
+  //       // "firstLoginLon": _currentPosition.longitude.toString(),
+  //       "firstLoginLat": -1.26777778,
+  //       "firstLoginLon": 36.90222222
+  //     };
 
-  //       // Call the API
-  //       var response = await api.startDay(user.token, payload);
+  //     setBusy(true);
 
-  //       // Check if the response is the success message or another return type
-  //       if (response == 'Day started successfully') {
-  //         await _dialogService.showDialog(
-  //           title: 'Success',
-  //           description: 'Your day has been successfully started.',
-  //         );
-  //         loadingStates = false;
-  //         isDayStarted = true;
-  //         await _saveDayState();
-  //         notifyListeners();
-  //       } else if (response is CustomException) {
-  //         // Handle errors by displaying the error code and description
-  //         await _dialogService.showDialog(
-  //           title: 'Warning',
-  //           description:
-  //               'There was an issue starting your day because it had started earlier.',
-  //         );
-  //         loadingStates = false;
-  //         notifyListeners();
-  //       }
-  //     } catch (e) {
-  //       // Show a general error dialog for unexpected exceptions
+  //     // Call the API
+  //     var response = await api.startDay(user.token, payload);
+
+  //     // Check if the response is the success message or another return type
+  //     if (response == 'Day started successfully') {
   //       await _dialogService.showDialog(
-  //         title: 'Error',
-  //         description: 'An unexpected error occurred: ${e.toString()}',
+  //         title: 'Success',
+  //         description: 'Your day has been successfully started.',
   //       );
-  //       loadingStates = false;
-  //       notifyListeners();
-  //     } finally {
-  //       setBusy(false);
-  //       loadingStates = false;
-  //       notifyListeners();
+  //     } else if (response is CustomException) {
+  //       // Handle errors by displaying the error code and description
+  //       await _dialogService.showDialog(
+  //         title: 'Warning',
+  //         description:
+  //             'There was an issue starting your day because it had started earlier.',
+  //       );
   //     }
-  //   }).catchError((e) {
-  //     // print("data here -- error 0 " + e);
-  //     loadingStates = false;
-  //     notifyListeners();
-  //   });
+  //   } catch (e) {
+  //     // Show a general error dialog for unexpected exceptions
+  //     await _dialogService.showDialog(
+  //       title: 'Error',
+  //       description: 'An unexpected error occurred: ${e.toString()}',
+  //     );
+  //   } finally {
+  //     setBusy(false);
+  //   }
   // }
 
-  Future<void> endDayProcess(BuildContext context) async {
-    try {
-      // Prepare the payload for ending the day
-      Map<String, dynamic> data = {
-        "salesRepUser": user.id,
-        "territory": 4,
-        // "lastLoginLat": _currentPosition.latitude.toString(),
-        // "lastLoginLon": _currentPosition.longitude.toString(),
-        "lastLoginLat": -1.26777778,
-        "lastLoginLon": 36.90222222
-      };
+  Future<void> startDayRequest(BuildContext context) async {
+    final hasPermission = await Helper().handleLocationPermission(context);
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) async {
+      _currentPosition = position;
+      try {
+        // Build the payload
+        var payload = {
+          "salesRepUser": user.id,
+          "territory": 4,
+          "firstLoginLat": _currentPosition.latitude.toString(),
+          "firstLoginLon": _currentPosition.longitude.toString(),
+        };
+        setBusy(true);
 
-      setBusy(true);
-      var result = await api.endDay(token: user.token, data: data);
-      setBusy(false);
+        // Call the API
+        var response = await api.startDay(user.token, payload);
 
-      if (result == true) {
-        // Show success message
+        // Check if the response is the success message or another return type
+        if (response == 'Day started successfully') {
+          await _dialogService.showDialog(
+            title: 'Success',
+            description: 'Your day has been successfully started.',
+          );
+          loadingStates = false;
+          isDayStarted = true;
+          await _saveDayState();
+          notifyListeners();
+        } else if (response is CustomException) {
+          // Handle errors by displaying the error code and description
+          await _dialogService.showDialog(
+            title: 'Warning',
+            description:
+                'There was an issue starting your day because it had started earlier.',
+          );
+          loadingStates = false;
+          notifyListeners();
+        }
+      } catch (e) {
+        // Show a general error dialog for unexpected exceptions
         await _dialogService.showDialog(
-          title: 'Success',
-          description: 'Your day has been successfully ended.',
+          title: 'Error',
+          description: 'An unexpected error occurred: ${e.toString()}',
         );
-        print("Day successfully ended");
-      } else {
-        // Handle the error response
-        CustomException error = result as CustomException;
-        await _dialogService.showDialog(
-          title: 'End Day Failed',
-          description: 'Error: ${error.title} - ${error.description}',
-        );
-        print("Error: ${error.title} - ${error.description}");
+        loadingStates = false;
+        notifyListeners();
+      } finally {
+        setBusy(false);
+        loadingStates = false;
+        notifyListeners();
       }
-    } catch (e) {
-      // Handle unexpected exceptions
-      await _dialogService.showDialog(
-        title: 'Error',
-        description: 'An unexpected error occurred: ${e.toString()}',
-      );
-    }
+    }).catchError((e) {
+      // print("data here -- error 0 " + e);
+      loadingStates = false;
+      notifyListeners();
+    });
   }
 
   // Future<void> endDayProcess(BuildContext context) async {
-  //   final hasPermission = await Helper().handleLocationPermission(context);
-  //   if (!hasPermission) return;
-  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-  //       .then((Position position) async {
-  //     _currentPosition = position;
-  //     try {
-  //       // Prepare the payload for ending the day
-  //       Map<String, dynamic> data = {
-  //         "salesRepUser": user.id,
-  //         "territory": 4,
-  //         // "lastLoginLat": currentPosition.latitude.toString(),
-  //         // "lastLoginLon": currentPosition.longitude.toString(),
-  //         "lastLoginLat": -1.26777778,
-  //         "lastLoginLon": 36.90222222
-  //       };
-  //       setBusy(true);
-  //       var result = await api.endDay(token: user.token, data: data);
-  //       setBusy(false);
+  //   try {
+  //     // Prepare the payload for ending the day
+  //     Map<String, dynamic> data = {
+  //       "salesRepUser": user.id,
+  //       "territory": 4,
+  //       // "lastLoginLat": _currentPosition.latitude.toString(),
+  //       // "lastLoginLon": _currentPosition.longitude.toString(),
+  //       "lastLoginLat": -1.26777778,
+  //       "lastLoginLon": 36.90222222
+  //     };
 
-  //       if (result == true) {
-  //         // Show success message
-  //         await _dialogService.showDialog(
-  //           title: 'Success',
-  //           description: 'Your day has been successfully ended.',
-  //         );
-  //         loadingStates = false;
-  //         isDayStarted = false;
-  //         await _saveDayState();
-  //         notifyListeners();
-  //         print("Day successfully ended");
-  //       } else {
-  //         // Handle the error response
-  //         CustomException error = result as CustomException;
-  //         await _dialogService.showDialog(
-  //           title: 'End Day Failed',
-  //           description: 'Error: ${error.title} - ${error.description}',
-  //         );
-  //         loadingStates = false;
-  //         notifyListeners();
-  //         print("Error: ${error.title} - ${error.description}");
-  //       }
-  //     } catch (e) {
-  //       // Handle unexpected exceptions
+  //     setBusy(true);
+  //     var result = await api.endDay(token: user.token, data: data);
+  //     setBusy(false);
+
+  //     if (result == true) {
+  //       // Show success message
   //       await _dialogService.showDialog(
-  //         title: 'Error',
-  //         description: 'An unexpected error occurred: ${e.toString()}',
+  //         title: 'Success',
+  //         description: 'Your day has been successfully ended.',
   //       );
-  //       loadingStates = false;
-  //       notifyListeners();
+  //       print("Day successfully ended");
+  //     } else {
+  //       // Handle the error response
+  //       CustomException error = result as CustomException;
+  //       await _dialogService.showDialog(
+  //         title: 'End Day Failed',
+  //         description: 'Error: ${error.title} - ${error.description}',
+  //       );
+  //       print("Error: ${error.title} - ${error.description}");
   //     }
-  //   }).catchError((e) {
-  //     // print("data here -- error 0 " + e);
-  //     loadingStates = false;
-  //     notifyListeners();
-  //   });
+  //   } catch (e) {
+  //     // Handle unexpected exceptions
+  //     await _dialogService.showDialog(
+  //       title: 'Error',
+  //       description: 'An unexpected error occurred: ${e.toString()}',
+  //     );
+  //   }
   // }
+
+  Future<void> endDayProcess(BuildContext context) async {
+    final hasPermission = await Helper().handleLocationPermission(context);
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) async {
+      _currentPosition = position;
+      try {
+        // Prepare the payload for ending the day
+        Map<String, dynamic> data = {
+          "salesRepUser": user.id,
+          "territory": 4,
+          "lastLoginLat": currentPosition.latitude.toString(),
+          "lastLoginLon": currentPosition.longitude.toString(),
+        };
+        setBusy(true);
+        var result = await api.endDay(token: user.token, data: data);
+        setBusy(false);
+
+        if (result == true) {
+          // Show success message
+          await _dialogService.showDialog(
+            title: 'Success',
+            description: 'Your day has been successfully ended.',
+          );
+          loadingStates = false;
+          isDayStarted = false;
+          await _saveDayState();
+          notifyListeners();
+          print("Day successfully ended");
+        } else {
+          // Handle the error response
+          CustomException error = result as CustomException;
+          await _dialogService.showDialog(
+            title: 'End Day Failed',
+            description: 'Error: ${error.title} - ${error.description}',
+          );
+          loadingStates = false;
+          notifyListeners();
+          print("Error: ${error.title} - ${error.description}");
+        }
+      } catch (e) {
+        // Handle unexpected exceptions
+        await _dialogService.showDialog(
+          title: 'Error',
+          description: 'An unexpected error occurred: ${e.toString()}',
+        );
+        loadingStates = false;
+        notifyListeners();
+      }
+    }).catchError((e) {
+      // print("data here -- error 0 " + e);
+      loadingStates = false;
+      notifyListeners();
+    });
+  }
 
   User get user => _userService.user;
   bool get hasJourney => _logisticsService.hasJourney;
@@ -403,7 +398,7 @@ class CRMDashboardViewModel extends FutureViewModel<List<Customer>> {
       await _logisticsService.fetchJourneys();
     }
     loadcrmDashboardTiles();
-    // _handleLocationPermission();
+    _handleLocationPermission();
     // _getCurrentPosition();
 
     setBusy(true);

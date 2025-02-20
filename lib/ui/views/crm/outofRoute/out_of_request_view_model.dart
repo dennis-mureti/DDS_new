@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:distributor/app/locator.dart';
+import 'package:distributor/core/helper.dart';
 import 'package:distributor/services/customer_service.dart';
 import 'package:distributor/ui/views/crm/outofRoute/outofroutes/all_out-of-routes.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
@@ -118,7 +120,7 @@ class OutOfRouteViewModel extends ReactiveViewModel {
       var payload = {
         "salesRepUser": user.id,
         "currentSchedule": 3,
-        "customer": selectedCustomer.id,
+        "customer": selectedCustomer.customerCode,
         "territory": 1,
         // "reason": selectedReason,
         "reason": selectedReason,
@@ -251,52 +253,112 @@ class OutOfRouteViewModel extends ReactiveViewModel {
     }
   }
 
+  // void toggleCheckin(BuildContext context, int visitId) async {
+  //   if (!isOutOfRouteCheckedIn) {
+  //     checkInTime = DateTime.now();
+
+  //     // Show the confirmation dialog before starting the day
+  //     var dialogResponse = await _dialogService.showConfirmationDialog(
+  //       title: 'Check  In',
+  //       description: 'Are you sure you want to check In?',
+  //       cancelTitle: 'No',
+  //       confirmationTitle: 'Yes',
+  //     );
+
+  //     if (dialogResponse.confirmed) {
+  //       // If confirmed, proceed to start the day
+  //       isOutOfRouteCheckedIn = true;
+  //       await _saveOutofRouteCheckInState(true, checkInTime); // Save state
+  //       notifyListeners();
+  //       _startTimer();
+  //       checkInRequest(context, visitId);
+  //     }
+  //   } else {
+  //     // Show the confirmation dialog before ending the day
+  //     var dialogResponse = await _dialogService.showConfirmationDialog(
+  //       title: 'Check Out',
+  //       description: 'Are you sure you want to check Out?',
+  //       cancelTitle: 'No',
+  //       confirmationTitle: 'Yes',
+  //     );
+
+  //     if (dialogResponse.confirmed) {
+  //       // If confirmed, proceed to end the day
+  //       isOutOfRouteCheckedIn = false;
+  //       await _saveOutofRouteCheckInState(false, null); // Save state
+  //       // notifyListeners();
+  //       _stopTimer();
+  //       _calculateDuration();
+  //       checkOutProcess(context, requestId: visitId).then((_) {
+  //         Navigator.pop(context);
+  //         Navigator.pushReplacement(
+  //           context,
+  //           MaterialPageRoute(
+  //             builder: (context) => OutOfRoutesView(),
+  //           ),
+  //         );
+  //       });
+  //     }
+  //   }
+  // }
+
   void toggleCheckin(BuildContext context, int visitId) async {
     if (!isOutOfRouteCheckedIn) {
       checkInTime = DateTime.now();
 
-      // Show the confirmation dialog before starting the day
+      // Show the confirmation dialog before checking in
       var dialogResponse = await _dialogService.showConfirmationDialog(
-        title: 'Check  In',
-        description: 'Are you sure you want to check In?',
+        title: 'Check In',
+        description: 'Are you sure you want to check in?',
         cancelTitle: 'No',
         confirmationTitle: 'Yes',
       );
 
-      if (dialogResponse.confirmed) {
-        // If confirmed, proceed to start the day
-        isOutOfRouteCheckedIn = true;
-        await _saveOutofRouteCheckInState(true, checkInTime); // Save state
-        notifyListeners();
-        _startTimer();
-        checkInRequest(context, visitId);
-      }
+      if (!dialogResponse.confirmed) return;
+
+      setBusy(true); // Show loader
+      bool checkInSuccess = await checkInRequest(context, visitId);
+      setBusy(false); // Hide loader
+
+      if (!checkInSuccess) return; // Do not update state if check-in fails
+
+      // Proceed with state update only on success
+      isOutOfRouteCheckedIn = true;
+      await _saveOutofRouteCheckInState(true, checkInTime); // Save state
+      _startTimer();
+      notifyListeners();
     } else {
-      // Show the confirmation dialog before ending the day
+      // Show the confirmation dialog before checking out
       var dialogResponse = await _dialogService.showConfirmationDialog(
         title: 'Check Out',
-        description: 'Are you sure you want to check Out?',
+        description: 'Are you sure you want to check out?',
         cancelTitle: 'No',
         confirmationTitle: 'Yes',
       );
 
-      if (dialogResponse.confirmed) {
-        // If confirmed, proceed to end the day
-        isOutOfRouteCheckedIn = false;
-        await _saveOutofRouteCheckInState(false, null); // Save state
-        // notifyListeners();
-        _stopTimer();
-        _calculateDuration();
-        checkOutProcess(context, requestId: visitId).then((_) {
-          Navigator.pop(context);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OutOfRoutesView(),
-            ),
-          );
-        });
-      }
+      if (!dialogResponse.confirmed) return;
+
+      setBusy(true); // Show loader
+      bool checkOutSuccess = await checkOutProcess(context, requestId: visitId);
+      setBusy(false); // Hide loader
+
+      if (!checkOutSuccess) return; // Do not update state if check-out fails
+
+      // Proceed with state update only on success
+      isOutOfRouteCheckedIn = false;
+      await _saveOutofRouteCheckInState(false, null); // Save state
+      _stopTimer();
+      _calculateDuration();
+
+      notifyListeners();
+
+      Navigator.pop(context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OutOfRoutesView(),
+        ),
+      );
     }
   }
 
@@ -336,123 +398,272 @@ class OutOfRouteViewModel extends ReactiveViewModel {
         '${seconds.toString().padLeft(2, '0')}sec';
   }
 
-  Future<void> checkInRequest(BuildContext context, int requestId) async {
+  Position _currentPosition;
+
+  // Future<void> checkInRequest(BuildContext context, int requestId) async {
+  //   try {
+  //     var payload = {
+  //       "outOfRouteVisitId": requestId,
+  //       "checkInTime": DateTime.now().toUtc().toIso8601String(),
+  //       // "checkInTime": "2024-12-08T12:23:06.189+0000",
+  //       "lat": -1.26777778,
+  //       "lon": 36.90222222
+  //     };
+
+  //     // var dialogResponse = await _dialogService.showConfirmationDialog(
+  //     //   title: 'Checkin',
+  //     //   description: 'Are you sure you want to check in?',
+  //     //   cancelTitle: 'No',
+  //     //   confirmationTitle: 'Yes',
+  //     // );
+
+  //     // if (dialogResponse.confirmed) {
+  //     setBusy(true);
+
+  //     var response = await api.outOfRoutCheckIn(user.token, payload);
+
+  //     // if (response is bool && response) {
+  //     if (response == 'Check-in successful') {
+  //       await _dialogService.showDialog(
+  //         title: 'Success',
+  //         description: 'Checkin successfully started.',
+  //       );
+  //       isOutOfRouteCheckedIn = true;
+  //     } else if (response is CustomException) {
+  //       // var errorMessage = response['payload'] ?? response['errorMessage'];
+  //       await _dialogService.showDialog(
+  //         // title: 'Checkin Failed',
+  //         // // description: 'There was an issue checking in.\n$errorMessage',
+  //         // description:
+  //         //     'There was an issue checkin in.\nError: ${response.code}\nDescription: ${response.description}',
+  //         title: 'Warning',
+  //         description:
+  //             'There was an issue checkin in because this check in was started.',
+  //       );
+  //     }
+  //     // }
+  //   } catch (e) {
+  //     await _dialogService.showDialog(
+  //       title: 'Error',
+  //       description: 'An unexpected error occurred: ${e.toString()}',
+  //       // title: 'Success',
+  //       // description: 'Checkout successfull.',
+  //     );
+  //   } finally {
+  //     setBusy(false);
+  //     notifyListeners();
+  //   }
+  // }
+
+  Future<bool> checkInRequest(BuildContext context, int requestId) async {
+    final hasPermission = await Helper().handleLocationPermission(context);
+    if (!hasPermission) {
+      await _dialogService.showDialog(
+        title: 'Location Permission Denied',
+        description:
+            'Kindly enable location services to proceed with check-in.',
+      );
+      return false;
+    }
+
     try {
+      setBusy(true); // Show loader
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      _currentPosition = position;
       var payload = {
         "outOfRouteVisitId": requestId,
         "checkInTime": DateTime.now().toUtc().toIso8601String(),
-        // "checkInTime": "2024-12-08T12:23:06.189+0000",
-        "lat": -1.26777778,
-        "lon": 36.90222222
+        "lat": _currentPosition.latitude.toString(),
+        "lon": _currentPosition.longitude.toString()
       };
-
-      // var dialogResponse = await _dialogService.showConfirmationDialog(
-      //   title: 'Checkin',
-      //   description: 'Are you sure you want to check in?',
-      //   cancelTitle: 'No',
-      //   confirmationTitle: 'Yes',
-      // );
-
-      // if (dialogResponse.confirmed) {
-      setBusy(true);
 
       var response = await api.outOfRoutCheckIn(user.token, payload);
 
-      // if (response is bool && response) {
       if (response == 'Check-in successful') {
         await _dialogService.showDialog(
           title: 'Success',
-          description: 'Checkin successfully started.',
+          description: 'Check-in successfully started.',
         );
         isOutOfRouteCheckedIn = true;
+        return true;
       } else if (response is CustomException) {
-        // var errorMessage = response['payload'] ?? response['errorMessage'];
+        String errorMessage = response.description ?? 'Check-in failed.';
+
+        // Handle specific error messages for clarity
+        if (response.code == 'LOCATION_ERROR') {
+          errorMessage =
+              'Kindly make sure you are at the customer location before checking in.';
+        } else if (response.code == 'DUPLICATE_CHECKIN') {
+          errorMessage = 'This check-in was already started.';
+        }
+
         await _dialogService.showDialog(
-          // title: 'Checkin Failed',
-          // // description: 'There was an issue checking in.\n$errorMessage',
-          // description:
-          //     'There was an issue checkin in.\nError: ${response.code}\nDescription: ${response.description}',
-          title: 'Warning',
+          title: 'Check-in Failed',
+          // description: 'Error: ${response.code}\nDescription: $errorMessage',
           description:
-              'There was an issue checkin in because this check in was started.',
+              'Kindly make sure you are at the customer location before checking in.',
         );
+
+        return false;
+      } else {
+        await _dialogService.showDialog(
+          title: 'Check-in Failed',
+          description: 'An unexpected issue occurred during check-in.',
+        );
+        return false;
       }
-      // }
     } catch (e) {
       await _dialogService.showDialog(
         title: 'Error',
         description: 'An unexpected error occurred: ${e.toString()}',
-        // title: 'Success',
-        // description: 'Checkout successfull.',
       );
+      return false;
     } finally {
-      setBusy(false);
+      setBusy(false); // Hide loader
       notifyListeners();
     }
   }
 
-  Future<void> checkOutProcess(
+  // Future<void> checkOutProcess(
+  //   BuildContext context, {
+  //   // String checkinId,
+  //   int requestId,
+  // }) async {
+  //   try {
+  //     // Show a confirmation dialog before checking out
+  //     // var dialogResponse = await _dialogService.showConfirmationDialog(
+  //     //   title: 'Check Out',
+  //     //   description: 'Are you sure you want to check out?',
+  //     //   cancelTitle: 'No',
+  //     //   confirmationTitle: 'Yes',
+  //     // );
+
+  //     // // Proceed only if the user confirms
+  //     // if (dialogResponse.confirmed) {
+  //     Map<String, dynamic> payload = {
+  //       "outOfRouteVisitId": requestId,
+  //       "checkOutLat": -1.26877778,
+  //       "checkOutLon": 36.90322222,
+  //       "generalFeedback": feedbackController.text,
+  //       // "activations": "Yes, three umbrellas",
+  //       // "marketingRequest": "Yes",
+  //       // "brandingRequest": "Yes",
+  //       // "premisesPhotoUrl": "/volume/photos/premises/premises.png"
+  //     };
+
+  //     setBusy(true); // Show a loading spinner
+
+  //     // Call the API to process the checkout
+  //     var result = await api.outOfRoutCheckOut(
+  //       token: user.token,
+  //       id: requestId,
+  //       data: payload,
+  //     );
+
+  //     setBusy(false);
+
+  //     if (result == true) {
+  //       // Show success
+  //       await _dialogService.showDialog(
+  //         title: 'Success',
+  //         description: 'You have successfully checked out.',
+  //       );
+  //       print("Checkout successful");
+  //     } else {
+  //       // Show error dialog
+  //       CustomException error = result as CustomException;
+  //       await _dialogService.showDialog(
+  //         title: 'Check Out Failed',
+  //         description: 'Error: ${error.title} - ${error.description}',
+  //       );
+  //       print("Error: ${error.title} - ${error.description}");
+  //     }
+  //     // }
+  //   } catch (e) {
+  //     setBusy(false);
+  //     await _dialogService.showDialog(
+  //       title: 'Error',
+  //       description: 'An unexpected error occurred: ${e.toString()}',
+  //     );
+  //     print("Unexpected error: $e");
+  //   }
+  // }
+
+  Future<bool> checkOutProcess(
     BuildContext context, {
     // String checkinId,
     int requestId,
   }) async {
-    try {
-      // Show a confirmation dialog before checking out
-      // var dialogResponse = await _dialogService.showConfirmationDialog(
-      //   title: 'Check Out',
-      //   description: 'Are you sure you want to check out?',
-      //   cancelTitle: 'No',
-      //   confirmationTitle: 'Yes',
-      // );
+    final hasPermission = await Helper().handleLocationPermission(context);
+    if (!hasPermission) return false;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) async {
+      _currentPosition = position;
+      try {
+        // Show a confirmation dialog before checking out
+        // var dialogResponse = await _dialogService.showConfirmationDialog(
+        //   title: 'Check Out',
+        //   description: 'Are you sure you want to check out?',
+        //   cancelTitle: 'No',
+        //   confirmationTitle: 'Yes',
+        // );
 
-      // // Proceed only if the user confirms
-      // if (dialogResponse.confirmed) {
-      Map<String, dynamic> payload = {
-        "outOfRouteVisitId": requestId,
-        "checkOutLat": -1.26877778,
-        "checkOutLon": 36.90322222,
-        "generalFeedback": feedbackController.text,
-        // "activations": "Yes, three umbrellas",
-        // "marketingRequest": "Yes",
-        // "brandingRequest": "Yes",
-        // "premisesPhotoUrl": "/volume/photos/premises/premises.png"
-      };
+        // // Proceed only if the user confirms
+        // if (dialogResponse.confirmed) {
+        Map<String, dynamic> payload = {
+          "outOfRouteVisitId": requestId,
+          "checkOutLat": _currentPosition.latitude.toString(),
+          "checkOutLon": _currentPosition.longitude.toString(),
+          "generalFeedback": feedbackController.text,
+          "activations": "Yes, three umbrellas",
+          "marketingRequest": "Yes",
+          "brandingRequest": "Yes",
+          "premisesPhotoUrl": "/volume/photos/premises/premises.png"
+        };
 
-      setBusy(true); // Show a loading spinner
-
-      // Call the API to process the checkout
-      var result = await api.outOfRoutCheckOut(
-        token: user.token,
-        id: requestId,
-        data: payload,
-      );
-
-      setBusy(false);
-
-      if (result == true) {
-        // Show success
-        await _dialogService.showDialog(
-          title: 'Success',
-          description: 'You have successfully checked out.',
+        // print("data here----- $payload");
+        setBusy(true); // Show a loading spinner
+        // Call the API to process the checkout
+        var result = await api.outOfRoutCheckOut(
+          token: user.token,
+          id: requestId,
+          data: payload,
         );
-        print("Checkout successful");
-      } else {
-        // Show error dialog
-        CustomException error = result as CustomException;
+
+        setBusy(false);
+
+        if (result == true) {
+          // Show success
+          await _dialogService.showDialog(
+            title: 'Success',
+            description: 'You have successfully checked out.',
+          );
+          print("Checkout successful");
+        } else {
+          // Show error dialog
+          CustomException error = result as CustomException;
+          await _dialogService.showDialog(
+            title: 'Check Out Failed',
+            description: 'Error: ${error.title} - ${error.description}',
+          );
+          print("Error: ${error.title} - ${error.description}");
+        }
+        // }
+      } catch (e) {
+        setBusy(false);
         await _dialogService.showDialog(
-          title: 'Check Out Failed',
-          description: 'Error: ${error.title} - ${error.description}',
+          title: 'Error',
+          description: 'An unexpected error occurred: ${e.toString()}',
         );
-        print("Error: ${error.title} - ${error.description}");
+        print("Unexpected error: $e");
       }
-      // }
-    } catch (e) {
+    }).catchError((e) {
       setBusy(false);
-      await _dialogService.showDialog(
-        title: 'Error',
-        description: 'An unexpected error occurred: ${e.toString()}',
-      );
-      print("Unexpected error: $e");
-    }
+      notifyListeners();
+    });
   }
 }
